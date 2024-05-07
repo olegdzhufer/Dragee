@@ -20,17 +20,17 @@ void buttons_setup(void)
     pinMode(BTN3, INPUT);
 }
 
-void controlLEDAndLCD(bool isLedOn, uint16_t led*, char text*) {
+void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text) {
     if (isLedOn) {
-        digitalWrite(led*, LOW);
+        digitalWrite(led, LOW);
         lcd.clear();  
         lcd.setCursor(0, 0);
-        lcd.print(text*);
+        lcd.print(text);
     } else {
-        digitalWrite(led*, HIGH);
+        digitalWrite(led, HIGH);
         lcd.clear();                       
         lcd.setCursor(0, 1);
-        lcd.print(text*);
+        lcd.print(text);
     }
 }
 
@@ -42,11 +42,11 @@ int reading = digitalRead(BTN1);
     if (reading != btn1.lastButtState) {
       btn1.lastButtState = reading;
       if (reading == HIGH) {
-        bool isLedOn = true;
-        controlLEDAndLCD(LED1, "Green on")
-      } else {
+        controlLEDAndLCD(true, LED1, "Green on");
+      }
+      else {
         bool isLedOn = false;
-        controlLEDAndLCD(LED1, "Green off") 
+        controlLEDAndLCD(false, LED1, "Green off");
       }
     }
   }
@@ -58,15 +58,11 @@ int reading = digitalRead(BTN1);
     if (reading_2 != btn2.lastButtState) {
       btn2.lastButtState = reading_2;
       if (reading_2 == HIGH) {
-        digitalWrite(LED2, LOW);
-        lcd.clear();  
-        lcd.setCursor(0, 0);
-        lcd.print("Blue");
-      } else {
-        digitalWrite(LED2, HIGH);
-        lcd.clear();                       
-        lcd.setCursor(0, 1);
-        lcd.print("Blue off");  
+        controlLEDAndLCD(true, LED2, "Blue on");
+      }
+      else {
+        bool isLedOn = false;
+        controlLEDAndLCD(false, LED2, "Blue off");
       }
     }
   }
@@ -78,15 +74,11 @@ int reading = digitalRead(BTN1);
     if (reading_3 != btn3.lastButtState) {
       btn3.lastButtState = reading_3;
       if (reading_3 == HIGH) {
-        digitalWrite(LED3, LOW);
-        lcd.clear();  
-        lcd.setCursor(0, 0);
-        lcd.print("Yellow");
-      } else {
-        digitalWrite(LED3, HIGH);
-        lcd.clear();                       
-        lcd.setCursor(0, 1);
-        lcd.print("Yellow off");  
+        controlLEDAndLCD(true, LED3, "Yellow on");
+      }
+      else {
+        bool isLedOn = false;
+        controlLEDAndLCD(false, LED3, "Yellow off");
       }
     }
   }
