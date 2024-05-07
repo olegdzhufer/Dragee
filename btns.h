@@ -33,7 +33,7 @@ void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text) {
         lcd.print(text);
     }
 }
-
+//
 void loop_buttons(){
 int reading = digitalRead(BTN1);  
 
