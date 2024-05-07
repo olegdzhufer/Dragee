@@ -8,8 +8,6 @@
 #include "encoder.h"
 
 
-//Encoder enc(CLK, DT, SW);
-
 void setup(void) {
   buttons_setup();
   lcd_setup();

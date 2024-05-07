@@ -1,7 +1,7 @@
 #include <EncButton>
 
 Encoder enc1(CLK, DT, SW);
-
+//
 void encoder_setup(){
     enc1.setType(TYPE2);
 }
