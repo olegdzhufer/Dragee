@@ -7,7 +7,7 @@
 #include "led.h"
 #include "encoder.h"
 
-
+//
 void setup(void) {
   buttons_setup();
   lcd_setup();

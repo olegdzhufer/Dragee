@@ -3,7 +3,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-
+//
 const float BETA = 3950;
 
 OneWire oneWire(10);
