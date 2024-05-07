@@ -12,3 +12,5 @@
 #define SW 4                          
 
 #define NTC_PIN A0
+
+#define REL 14
