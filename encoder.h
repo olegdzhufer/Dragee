@@ -9,7 +9,7 @@ void encoder_setup(){
 void encoder_loop(){
     enc1.tick();
   
-  if (enc1.isTurn()) {     // если был совершён поворот (индикатор поворота в любую сторону)
+  if (enc1.Turn()) {     // если был совершён поворот (индикатор поворота в любую сторону)
     lcd.clear();
     lcd.setBacklight(true);
     lcd.setCursor(2, 0);
