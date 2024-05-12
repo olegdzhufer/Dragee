@@ -1,5 +1,10 @@
+#ifndef RELAY_H
+#define RELAY_H
+
 void relay_setup()
 {
   digitalWrite(relayPin, HIGH);
-  pinMode(relayPin, OUTPUT);
+  pinMode(REL, OUTPUT);
 }
+
+#endif
