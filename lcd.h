@@ -15,12 +15,8 @@ void lcd_setup(){
   
 }
 
-void lcd_hadler(){
-
-}
-
 void lcd_loop(){
-  temperature_value_c = readNTC();
+  temperature_value_c = readNTCHandler();
   lcd.setCursor(16, 0); 
   lcd.print("Cur Temp.");
   lcd.print(temperature_value_c);

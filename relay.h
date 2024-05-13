@@ -26,7 +26,7 @@ void relay_handler(){
   }
 }
 
-void relay_loop(){
+void (){
   relay_handler();
 }
 #endif

@@ -1,3 +1,5 @@
+
+#include <Arduino.h>
 #include <EncButton.h>
 
 Encoder enc1(CLK, DT, SW);

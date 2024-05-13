@@ -1,6 +1,6 @@
 
 
-void setup(void) {
+void setupLed(void) {
   pinMode(LED1, OUTPUT);
   
   pinMode(LED2, OUTPUT);

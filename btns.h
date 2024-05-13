@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "led.h"
 
 int buttonState = 0;
 unsigned long debounceDelay = 100; 
@@ -7,9 +8,9 @@ bool changeRelayState2 = false;
 bool changeRelayState3 = false;
 
 struct Button{
-  uint16_t pin;
-  uint16_t lastDebTime ;
-  uint16_t lastButtState ;
+  uint8_t pin;
+  uint8_t lastDebTime ;
+  uint8_t lastButtState ;
 };
 
 struct Button btn1 = {5, 0, 0};
@@ -18,9 +19,14 @@ struct Button btn3 = {7, 0, 0};
 
 void buttons_setup(void)
 {
-    pinMode(BTN1, INPUT);
-    pinMode(BTN2, INPUT);
-    pinMode(BTN3, INPUT);
+  pinMode(BTN1, INPUT);
+  pinMode(BTN2, INPUT);
+  pinMode(BTN3, INPUT);
+
+  btn1.lastButtState = HIGH;
+  btn2.lastButtState = HIGH;
+  btn3.lastButtState = HIGH;
+    
 }
 
 void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text) {
