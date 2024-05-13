@@ -69,7 +69,7 @@ if (en.press())   //If we detect LOW signal, button is pressed
 void encoder_loop(){
     en.tick();
 
-   en.tick();
+  en.tick();
   read_encoder(); //Call The Read Encoder Function
   set_temp(); // Call the Set Temperature Function
   if (encoder_btn_count == 1) // check if the button is pressed and its in Free Running Mode -- in this mode the arduino continiously updates the screen and adjusts the PWM output according to the temperature.
@@ -81,7 +81,7 @@ void encoder_loop(){
     lcd.clear(); // Clear the display
     lcd.setCursor(16, 0); // Set the Display Cursor
     lcd.print("Cur Temp."); //Print to the Display
-    lcd.setCursor(45, 25);// Set the Display Cursor
+    lcd.setCursor(16, 4);// Set the Display Cursor
     lcd.print(temperature_value_c); // Print the Temperature value to the display in celcius
     lcd.display(); // Update the Display
 #ifdef __DEBUG__

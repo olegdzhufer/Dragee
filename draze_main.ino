@@ -17,5 +17,6 @@ void loop(void) {
    loop_buttons();
    lcd_loop();
    encoder_loop();
+   relay_loop();
 }
 
