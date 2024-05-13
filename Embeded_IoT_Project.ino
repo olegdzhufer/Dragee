@@ -6,6 +6,7 @@
 #include "encoder.h"
 #include  "relay.h"
 
+
 void setup(void) {
   buttons_setup();
   lcd_setup();

@@ -23,5 +23,4 @@ void lcd_loop(){
   lcd.print(temperature_value_c);
 }
 
-
-#endif //
+#endif 

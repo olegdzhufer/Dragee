@@ -1,7 +1,6 @@
 #ifndef LED_H
 #define LED_H
 
-
 void setupLed(void) {
   pinMode(LED1, OUTPUT);
   
@@ -9,6 +8,5 @@ void setupLed(void) {
 
   pinMode(LED3, OUTPUT);
 }
-
 
 #endif
