@@ -9,8 +9,6 @@ const float BETA = 3950;
 OneWire oneWire(10);
 DallasTemperature sensor(&oneWire);
 
-bool ntcState = false;
-
 float readNTC()
 { 
   int analogValue = analogRead(NTC_PIN);
