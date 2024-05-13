@@ -3,6 +3,7 @@
 #define LCD_H
 
 #include <LiquidCrystal_I2C.h> 
+#include "dallas_sensor.h"
 
 #define LCD_ADDR 0x3F
 #define LCD_ROWS 4
@@ -16,7 +17,7 @@ void lcd_setup(){
 }
 
 void lcd_loop(){
-  temperature_value_c = readNTCHandler();
+  float temperature_value_c = readNTC();
   lcd.setCursor(16, 0); 
   lcd.print("Cur Temp.");
   lcd.print(temperature_value_c);

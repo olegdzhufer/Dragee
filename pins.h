@@ -13,7 +13,9 @@
 
 #define NTC_PIN A0
 
-#define REL 12
+#define REL1 12
+#define REL2 13
+#define REL3 14
 
 #define NTC_PIN A0
 #define outputPin 10

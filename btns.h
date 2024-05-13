@@ -1,21 +1,23 @@
 #include "lcd.h"
 #include "led.h"
+#include "relay.h"
+#ifndef BTNS_H
+#define BTNS_H
+
 
 int buttonState = 0;
 unsigned long debounceDelay = 100; 
-bool changeRelayState1 = false;
-bool changeRelayState2 = false;
-bool changeRelayState3 = false;
 
-struct Button{
+
+struct MyButton{
   uint8_t pin;
   uint8_t lastDebTime ;
   uint8_t lastButtState ;
 };
 
-struct Button btn1 = {5, 0, 0};
-struct Button btn2 = {6, 0, 0};
-struct Button btn3 = {7, 0, 0};
+struct MyButton btn1 = {5, 0, 0};
+struct MyButton btn2 = {6, 0, 0};
+struct MyButton btn3 = {7, 0, 0};
 
 void buttons_setup(void)
 {
@@ -43,7 +45,7 @@ void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text) {
     }
 }
 
-void singleBtnHandler(struct Button btnX) {
+void singleBtnHandler(struct MyButton btnX) {
   int reading = digitalRead(btnX.pin);
   if (millis() - btnX.lastDebTime > debounceDelay) {
     btnX.lastDebTime = millis();
@@ -81,3 +83,5 @@ void loop_buttons(){
   singleBtnHandler(btn3);
 
 }
+
+#endif

@@ -4,7 +4,7 @@
 #include "dallas_sensor.h"
 #include "led.h"
 #include "encoder.h"
-
+#include  "relay.h"
 
 void setup(void) {
   buttons_setup();

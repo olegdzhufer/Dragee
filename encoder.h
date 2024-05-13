@@ -1,8 +1,9 @@
 
 #include <Arduino.h>
 #include <EncButton.h>
-
-Encoder enc1(CLK, DT, SW);
+#include <PIDController.h>
+#include "dallas_sensor.h"
+EncButton en(CLK, DT, SW);
 int set_temperature = 1;
 int clockPin; 
 int clockPinState;
@@ -19,8 +20,8 @@ void encoder_setup(){
   pid.setpoint(150);    // The "goal" the PID controller tries to "reach"
   pid.tune(__Kp, __Ki,__Kd);    // Tune the PID, arguments: kP, kI, kD
   pid.limit(0, 255);    // Limit the PID output between 0 and 255, this is important to get rid of integral windup!
-  en.setBtnLevel(HIGH);
   en.setEncType(EB_STEP4_LOW);
+  en.setBtnLevel(HIGH);
 }
 
 void set_temp()
@@ -53,7 +54,7 @@ void read_encoder() // In this function we read the encoder data and increment t
     Serial.println("right"); // print the set temperature value on the serial monitor window
 #endif
   }
-}
+
 if (en.press())   //If we detect LOW signal, button is pressed
   {
     if ( millis() - debounce > 80) { //debounce delay
@@ -65,7 +66,7 @@ if (en.press())   //If we detect LOW signal, button is pressed
     }
     debounce = millis(); // update the time variable
   }
-
+}
 
 
 void encoder_loop(){
