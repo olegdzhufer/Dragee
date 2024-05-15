@@ -3,8 +3,11 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "pins.h"
+#include "max6675.h"
+
 
 const float BETA = 3950;
+
 
 OneWire oneWire(10);
 DallasTemperature sensor(&oneWire);

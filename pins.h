@@ -11,11 +11,12 @@
 #define DT 3                       
 #define SW 4                          
 
+#define NTC_PIN A0
+
 #define REL1 12
 #define REL2 13
 #define REL3 14
 
-#define NTC_PIN A0
 #define outputPin 10
 #define mosfet_pin 12
 

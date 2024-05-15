@@ -4,10 +4,10 @@
 
 #include <LiquidCrystal_I2C.h> 
 #include "dallas_sensor.h"
+#include <Menulib.h>
 
-#define LCD_ADDR 0x3F
-#define LCD_ROWS 4
-#define LCD_COLS 20
+
+
 
 LiquidCrystal_I2C lcd(0x3F,20,4);
 

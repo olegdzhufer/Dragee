@@ -1,4 +1,4 @@
-#include "encoder.h"
+/*#include "encoder.h"
 #include "pins.h"
 #include "dallas_sensor.h"
 
@@ -60,7 +60,7 @@ void Potentiometer(bool action)// fan setting 0 to 100%
   lcd.print ((int) (speedPercent));
 }
 
-float SetpointGenerator()// Set Point 0 to 110 dg C
+float SetpointGenerator()
 {
   float setTemp;
   
@@ -90,10 +90,10 @@ Limiter_Switch = 1;
 
 if (action==false)
   {
-  Er = (process-setpoint);// forward or direct acting
+  Er = (process-setpoint);
   } else if (action==true)
   {
-  Er=(setpoint-process); //reverse acting
+  Er=(setpoint-process);
   }
 
 if ((Cont >= 1 && Er > 0) || (Cont <= 0 && Er < 0) || (Integ >= 3600)) 
@@ -101,15 +101,15 @@ if ((Cont >= 1 && Er > 0) || (Cont <= 0 && Er < 0) || (Integ >= 3600))
 else
         Limiter_Switch = 1;     
   
-Integral = Integral + 100 / Prop / Integ * Er *deltaT * Limiter_Switch;// Integral calculator
-derivative = 100 / Prop * deriv * (Er - Olderror) / deltaT;// Derivative calculator
+Integral = Integral + 100 / Prop / Integ * Er *deltaT * Limiter_Switch;
+derivative = 100 / Prop * deriv * (Er - Olderror) / deltaT;
 filteredDerivative=DerivativefilterFunction(5, 1.0,derivative, 1000);
-proportional = 100 / Prop * Er;// Proportional calculator
+proportional = 100 / Prop * Er;
         
 Cont = proportional + Integral + filteredDerivative;
-Olderror = Er;// remember previous error for deriative calculator
+Olderror = Er;
 
-if (Cont > 1) // limit controller output between 0.0 and 1.0 a normalized value
+if (Cont > 1) 
     Cont = 1;
 
 if (Cont < 0) 
