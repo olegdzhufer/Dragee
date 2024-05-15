@@ -25,11 +25,11 @@ void setup() {
 
     store = *(initStore());
 
-    menu.newScreen(&menu, "Settings", "Settings");
+    menu.newScreen(&menu, "Setup", "Relays");
     
-    menu.addLine(&menu, "Fan : ", "FAN");
-    menu.addLine(&menu, "Ten : ", "TEN");
-    menu.addLine(&menu, "Cool : ", "COOL");
+    menu.addLine(&menu, "Relay_1: ", "FAN");
+    menu.addLine(&menu, "Relay_2: ", "TEN");
+    menu.addLine(&menu, "Relay_3: ", "COOL");
 
     store.inStore(menu.currentScreen, &store);
     store.allUp(&store);
