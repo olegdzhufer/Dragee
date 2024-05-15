@@ -10,12 +10,14 @@ typedef struct Liner{
 
     String name;
     String text;
-    int val;
+
+    bool val;
 
     Liner* next;
 
 
     void (*updateLine)  (Liner* line);
+    void (*changeState) (Liner* line);
     
     
 
@@ -27,13 +29,14 @@ typedef struct Storage{
     Liner*  (*finder)   (Storage* st,String name);
     void    (*inStore)  (Screen* screen, Storage* st);
     void    (*allUp)    (Storage* store);
-    void    (*addElem)  (Storage* store, String name, String text, int val, Line* line);
+    void    (*addElem)  (Storage* store, String name, String text, bool val, Line* line);
 
 
 }Storage;
 
 Storage* initStore();
-Liner* initliner    (String name, String text, int val, Line* line);
+Liner* initliner    (String name, String text, bool val, Line* line);
+void changeState  (Liner* line);
 
 void updateLine     (Liner* line);
 
@@ -41,6 +44,6 @@ Liner* finder       (Storage* st, String name);
 void inStore        (Screen* screen, Storage* st);
 void allUp          (Storage* store);
 
-void addElem  (Storage* store, String name, String text, int val, Line* line);
+void addElem  (Storage* store, String name, String text, bool val, Line* line);
 
 #endif

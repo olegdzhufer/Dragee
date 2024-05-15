@@ -29,7 +29,6 @@ void encoder_setup(){
 
 
 int read_encoder(){
-    Serial.print("\n S");
     if(en.leftH()){
       Serial.print("1");
       return 0x01;
