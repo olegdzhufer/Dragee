@@ -1,37 +1,26 @@
+#ifndef TM_H
+#define TM_H
+
+#include <Arduino.h>
 #include "dallas_sensor.h"
+#include "relay.h"
 
-volatile int interruptCounter;
-int totalInterruptCounter;
-hw_timer_t * timer = NULL;
+bool should_read_temperature = false;
 
-portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
-
-void IRAM_ATTR onTimer() {      //Defining Inerrupt function with IRAM_ATTR for faster access
- portENTER_CRITICAL_ISR(&timerMux);
- interruptCounter++;
- portEXIT_CRITICAL_ISR(&timerMux);
- isFlagTemp = true;
+void temperatureTimerISR()
+{
+  should_read_temperature = 1;
 }
 
-void timer_setup() {
- Serial.begin(115200);
- 
- timer = timerBegin(0, 80, true);           	// timer 0, prescalar: 80, UP counting
- timerAttachInterrupt(timer, &onTimer, true); 	// Attach interrupt
- timerAlarmWrite(timer, 1000000, true);  		// Match value= 1000000 for 1 sec. delay.
- timerAlarmEnable(timer); 
+void timer_setup(){
+
+  pinMode(REL1, OUTPUT);
+
+  timer1_attachInterrupt(temperatureTimerISR);
+  timer1_enable(TIM_DIV16, TIM_EDGE, TIM_LOOP);
+  timer1_write(5000000 * 5);
 }
 
-void timer_loop() {
-   if (interruptCounter > 0) {
- 
-   portENTER_CRITICAL(&timerMux);
-   interruptCounter--;
-   portEXIT_CRITICAL(&timerMux);
- 
-   totalInterruptCounter++;         	//counting total interrupt
+void timer_loop(){}
 
-   isFlagTemp = !isFlagTemp;  				//toggle logic
-   
- }
-}
+#endif
