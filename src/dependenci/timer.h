@@ -11,7 +11,7 @@ void temperatureTimerISR()
 {
   should_read_temperature = 1;
 }
-
+/
 void timer_setup(){
 
   pinMode(REL1, OUTPUT);
