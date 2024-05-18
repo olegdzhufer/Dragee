@@ -4,23 +4,33 @@
 #include <Arduino.h>
 #include "dallas_sensor.h"
 #include "relay.h"
+#include <Ticker.h>
 
 bool should_read_temperature = false;
+float most_recent_temperature_measurement;
 
 void temperatureTimerISR()
 {
-  should_read_temperature = 1;
+  should_read_temperature = true;
 }
+
+// Глобальний об'єкт Ticker
+Ticker temperatureTicker;
 
 void timer_setup(){
-
   pinMode(REL1, OUTPUT);
-
-  timer1_attachInterrupt(temperatureTimerISR);
-  timer1_enable(TIM_DIV16, TIM_EDGE, TIM_LOOP);
-  timer1_write(5000000 * 5);
+  // Налаштування таймера з інтервалом 5 секунд
+  temperatureTicker.attach(5, temperatureTimerISR);
 }
 
-void timer_loop(){}
+void timer_loop(){
+  if (should_read_temperature)
+  {
+    should_read_temperature = false;
+    most_recent_temperature_measurement = readTemperatureSensor(temperatureSensor);
+    Serial.print("Temperature: ");
+    Serial.println(most_recent_temperature_measurement);
+  }
+}
 
 #endif

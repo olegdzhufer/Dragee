@@ -82,6 +82,6 @@ void loop() {
 //     if(name == "TEN") return REL2;
 //     if(name == "COOL")return REL3;
 //     return 0;
-dallas_loop();
 timer_loop();
+
 }

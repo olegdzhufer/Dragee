@@ -1,3 +1,5 @@
+#ifndef DLS_H
+#define DLS_H
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -6,7 +8,7 @@
 
 OneWire oneWire(ONE_WIRE_BUS);
 
-DallasTemperature sensors(&oneWire);
+DallasTemperature temperatureSensor(&oneWire);
 
 bool isFlagTemp = false;
 
@@ -14,28 +16,33 @@ int count = 0;
 
 void dallas_setup(void)
 {
-  Serial.begin(9600);
-  Serial.println("Dallas Temperature IC Control Library Demo");
+  Serial.begin(9600);  // Переконайтеся, що Serial.begin викликається тільки один раз в setup()
 
-  sensors.begin();
-
+  temperatureSensor.begin();
+  temperatureSensor.setResolution(12);
+  temperatureSensor.requestTemperatures();
 }
 
-void dallas_loop(void)
+float readTemperatureSensor(DallasTemperature sensor) 
 {
-  if(isFlagTemp == true){
-  Serial.print("Requesting temperatures...");
-  sensors.requestTemperatures(); 
-  Serial.println("DONE");
+  temperatureSensor.requestTemperatures();
 
-  Serial.print("Temperature for the device 1 (index 0) is: ");
-  Serial.println(sensors.getTempCByIndex(0));
-
-  count++;
-  sensors.setUserDataByIndex(0, count);
-  int x = sensors.getUserDataByIndex(0);
-  Serial.println(count);
+  uint32_t timeout = millis();
+  while (!temperatureSensor.isConversionComplete())
+  {
+    if (millis() - timeout >= 800) 
+    {
+      Serial.println("ERROR: timeout or disconnect");
+      return -127.0; 
+    }
   }
+
+  float temperature = temperatureSensor.getTempCByIndex(0);
+
+  Serial.println(temperature); 
+  return temperature;
 }
 
+
+#endif
 
