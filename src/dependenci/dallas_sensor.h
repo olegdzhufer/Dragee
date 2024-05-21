@@ -1,19 +1,53 @@
-#pragma once
+#ifndef DLS_H
+#define DLS_H
 
-#include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "pins.h"
 
-const float BETA = 3950;
+#define ONE_WIRE_BUS 13
 
-OneWire oneWire(10);
-DallasTemperature sensor(&oneWire);
+OneWire oneWire(ONE_WIRE_BUS);
 
-float readNTC()
-{ 
-  int analogValue = analogRead(NTC_PIN);
-  float celsius = 1 / (log(1 / (1023. / analogValue - 1)) / BETA + 1.0 / 298.15) - 273.15;
-  return celsius;
+DallasTemperature temperatureSensor(&oneWire);
+
+bool isFlagTemp = false;
+
+int count = 0;
+
+void dallas_setup(void)
+{
+  Serial.begin(9600);
+
+  pinMode(V33, OUTPUT);
+  pinMode(Gnd, OUTPUT);
+
+  digitalWrite(V33, HIGH);
+  digitalWrite(Gnd, LOW);
+
+  temperatureSensor.begin();
+  temperatureSensor.setResolution(12);
+  temperatureSensor.requestTemperatures();
 }
 
+float readTemperatureSensor(DallasTemperature sensor) 
+{
+  temperatureSensor.requestTemperatures();
+
+  uint32_t timeout = millis();
+  while (!temperatureSensor.isConversionComplete())
+  {
+    if (millis() - timeout >= 800) 
+    {
+      Serial.println("ERROR: timeout or disconnect");
+      return -127.0; 
+    }
+  }
+
+  float temperature = temperatureSensor.getTempCByIndex(0);
+
+  Serial.println(temperature); 
+  return temperature;
+}
+
+
+#endif

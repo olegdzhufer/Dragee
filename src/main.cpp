@@ -1,82 +1,72 @@
 #include <Arduino.h>
 #include <Menulib.h>
 
-Menu menu ;
+
+static Menu menu;
+Screen* mainS;
 
 #include "dependenci/pins.h"
 #include "dependenci/btns.h"
-// #include "dependenci/dallas_sensor.h"
+#include "dependenci/dallas_sensor.h"
 #include "dependenci/led.h"
 #include "dependenci/menu.h"
 #include "dependenci/encoder.h"
-
-#include "dependenci/encWork.h"
-Storage store;
+#include "dependenci/TimerSet.h"
 
 int encderVal = 0x00;
 
+
 int key;
-int pinComeBack(String name);
+float temp = readTemperatureSensor(temperatureSensor);
 
 
 void setup() {
     Serial.begin(9600);
-    menu = * (initMenu());
-
-    store = *(initStore());
-
-    menu.newScreen(&menu, "Settings", "Settings");
-    
-    menu.addLine(&menu, "Fan : ", "FAN");
-    menu.addLine(&menu, "Ten : ", "TEN");
-    menu.addLine(&menu, "Cool : ", "COOL");
-
-    store.inStore(menu.currentScreen, &store);
-    store.allUp(&store);
-
-    // buttons_setup();
     encoder_setup();
-    // relay_setup();
+    timer_setup();
+    menu = *(initMenu());
+    setup_Menu(&menu);
+
+    dallas_setup();
+
+    menu.printScreen(&menu);
+    mainS = menu.curr;
+    
   
 }
 
 
 void loop() {
-    delay(10);
-    Line* line;
-    Liner* liner;
     
-    en.tick();
-    key = read_encoder();
+    int press = read_encoder();
+    if(press){
+        Screen* curr;
+        switch (press)
+        {
+        case 1:
+            menu.prevLine(&menu);
+        break;
+        case 2:
+            menu.nextLine(&menu);
+        break;
+        case 3:
+            menu.curr = mainS;
+        break;
+        case 4:
+            menu.nextScreen(&menu);
+        break;
 
-    if(key == 0x01){
-        key = 0x00;
-        menu.nextLine(&menu);
-    }else if(key == 0x02){
-        key = 0x00;
-        menu.prevLine(&menu);
-    }else if(key = 0x05){
-        liner = store.finder(&store, menu.getName(&menu));
-        line = liner->line;
+        case 5:            
+            Serial.print(mainS->name);
 
-        int pin = pinComeBack(menu.getName(&menu));
 
-        if (digitalRead(pin) == HIGH){
-            digitalWrite(pin, LOW);
-            liner->val = false;
-        }else{
-            digitalWrite(pin, HIGH);
-            liner->val = true;
+
+        break;
+        
+        default:
+
+            break;
         }
-        store.allUp(&store);
-
     }
-
 }
 
-int pinComeBack(String name){
-    if(name == "FAN") return REL1;
-    if(name == "TEN") return REL2;
-    if(name == "COOL")return REL3;
-    return 0;
-}

@@ -1,69 +1,70 @@
-#include "Menulib.h"
+#include "MenuLib.h"
 
-Screen* initScreen(String id, String description,  Screen* next, Screen* prev){
-    Screen* scr = new Screen;
+Line* newLine(Screen* screen, char* name, char* description, valLine* valuer){
 
-    scr->descLine = initLine("description", description, NULL, NULL);
+    Line* line = initLine(name, description, valuer);
 
-    scr->id = id;
-    //func
+    if (line){
 
-    scr->getLine = getLine;
-    scr->newLine = newLine;
-    scr->removeLine = removeLine;
+        if(screen->current == NULL){
+            screen->current = line;
+            screen->current->next = line;
+            screen->current->prev = line;
+        } else{
+            line->next = screen->current;
+            line->prev = screen->current->prev;
 
+            screen->current->prev->next = line;
+            screen->current->prev = line;
+        }
+        return line;
 
-    if(next != NULL)scr->next = next;
-    if(prev != NULL)scr->prev = prev;
-
-
-
-    return scr;
-}
-
-Line* getLine(Screen* scr, String id){
-    Line* curr = scr->currentLine;
-    if (curr->id == id)return curr;
-
-    if(curr->next != scr->currentLine && curr->next != NULL) curr = curr->next;
-
-    while (curr->next != scr->currentLine && curr->next != NULL){
-        if(curr->id == id) return curr;
-        curr = curr->next;
     }
     return NULL;
     
 }
 
-Line* newLine(Screen* scr, String content, String id){
 
-    Line* line = initLine(id, content, NULL, NULL);
+Line* getLine(Screen* screen, char* name){
+    if(screen->current == NULL) return NULL;
+    if(name == NULL) return NULL;
+    Line* cur = screen->current;
 
-    if (scr->currentLine != NULL) {
+    if(cur->name == name) return cur;
+    cur = cur->next;
 
-        scr->currentLine = line;
-        scr->currentLine->next = line;
-        scr->currentLine->prev = line;
-
-        return line;
-
-    }else{
-        
-
-        line->prev = scr->currentLine->prev;
-        line->next = scr->currentLine;
-
-        line->prev->next = line;
-
-        scr->currentLine->prev = line;
-
-        return line;
-        
+    while(cur != screen->current){
+        if(cur->name == name){
+            return cur;
+        }
+        cur = cur->next;
     }
-    
-}
-void  removeLine(Screen* scr, String Id){
-    Line* remLine = getLine(scr, Id);
 
-    delete remLine;
+    return NULL;
+
+}
+
+
+void removeLineByName(Screen* screen, char* name){
+    Line* line = screen->getLine_ptr(screen, name);
+
+    removeLineByPtr(screen, line);
+}
+
+
+void removeLineByPtr(Screen* screen, Line* Line){
+    if(Line){
+
+        if(Line->next = Line){
+            screen->current = NULL;
+            
+        }
+        else{
+            
+        Line->prev->next = Line->next;
+        Line->next->prev = Line->prev;
+        }
+            
+        destructLine(Line);
+    }
 }

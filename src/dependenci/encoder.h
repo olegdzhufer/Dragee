@@ -29,6 +29,14 @@ void encoder_setup(){
 
 
 int read_encoder(){
+
+  int currtime;
+  if(!currtime)currtime = 0;
+  if( millis() > currtime + 10){
+    currtime += millis();
+    
+    en.tick();
+
     if(en.leftH()){
       Serial.print("1");
       return 0x01;
@@ -53,6 +61,9 @@ int read_encoder(){
     }
 
     return 0x00;
+
+  }
+
 }
 
 

@@ -15,6 +15,9 @@
 #define REL2 13
 #define REL3 14
 
+#define V33 12
+#define Gnd 14
+
 #define NTC_PIN A0
 #define outputPin 10
 #define mosfet_pin 12
