@@ -26,7 +26,7 @@ void relay_setup()
   pinMode(REL3, OUTPUT);
 }
 
-void relay_handler1(){
+void turnOnHeating(){
   if(changeRelayState1){
     RelayState1 =! RelayState1;
     digitalWrite(REL1, RelayState1);
@@ -34,7 +34,7 @@ void relay_handler1(){
   }
 }
 
-void relay_handler2(){
+void turnOnCooling(){
   if(changeRelayState2){
     RelayState2 != RelayState2;
     digitalWrite(REL2, RelayState2);
@@ -50,9 +50,17 @@ void relay_handler3(){
   }
 }
 
+void turnOffHeating(){
+  digitalWrite(REL1, LOW);
+}
+
+void turnOffCooling(){
+  digitalWrite(REL2, LOW);
+}
+
 void relay_loop(){
-  relay_handler1();
-  relay_handler2();
+  turnOnHeating();
+  turnOnCooling();
   relay_handler3();
 }
 #endif
