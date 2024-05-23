@@ -3,7 +3,7 @@
 #include <dependenci/dallas_sensor.h>
 #include <dependenci/pins.h>
 #include <dependenci/relay.h>
-/
+
 const double P = temperature*1.980354879594423; 
 const double I = temperature*0.000002574461343; 
 const double D = temperature*99.017743979721166;
@@ -21,6 +21,9 @@ bool err;
 
 float desiredTemp = -1;
 
+void set() {
+  changeTemp = true;
+}
 
 void pid_setup() {
   attachInterrupt(digitalPinToInterrupt(5), set, FALLING); 
@@ -91,9 +94,7 @@ void pidControl() {
   }
 }
 
-void set() {
-  changeTemp = true;
-}
+
 
 void serialIO() {
   while(changeTemp == true) {

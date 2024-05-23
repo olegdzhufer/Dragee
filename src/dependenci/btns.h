@@ -2,6 +2,7 @@
 #include "relay.h"
 #ifndef BTNS_H
 #define BTNS_H
+#include "TimerSet.h"
 
 int buttonState = 0;
 unsigned long debounceDelay = 100;
@@ -52,19 +53,37 @@ void singleBtnHandler(struct MyButton btnX)
     {
       btnX.lastButtState = reading;
       if (btnX.pin == BTN1)
-      {
+      { 
         controlLEDAndLCD(true, LED1, "Green on");
         changeRelayState1 = true;
+        if (!is_timing) {
+          is_timing = true;
+          start_time = millis();
+        } else {
+          is_timing = false;
+        }
       }
       else if (btnX.pin == BTN2)
       {
         controlLEDAndLCD(true, LED2, "Blue on");
         changeRelayState2 = true;
+        if (!is_timing) {
+          is_timing = true;
+          start_time = millis();
+        } else {
+          is_timing = false;
+        }
       }
       else if (btnX.pin == BTN3)
       {
         controlLEDAndLCD(true, LED3, "Yellow on");
         changeRelayState3 = true;
+        if (!is_timing) {
+          is_timing = true;
+          start_time = millis();
+        } else {
+          is_timing = false;
+        }
       }
     }
     else

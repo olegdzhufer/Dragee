@@ -5,7 +5,6 @@
 #include <EncButton.h>
 #include <PIDController.h>
 
-
 EncButton en(CLK, DT, SW);
 
 int set_temperature = 1;
@@ -30,7 +29,6 @@ void encoder_setup(){
   en.setBtnLevel(HIGH);
 }
 
-
 int read_encoder(){
     if(en.leftH()){
       Serial.print("1");
@@ -40,7 +38,6 @@ int read_encoder(){
       Serial.print("2");
       return 0x02;
     }
-
     if (en.left()) {
       Serial.print("3");
         return 0x03; 
@@ -49,7 +46,7 @@ int read_encoder(){
       Serial.print("4");
         return 0x04;
     }
-    if (en.press())  
+    if(en.press())  
     {
       Serial.print("5");
         return 0x05;
@@ -58,5 +55,20 @@ int read_encoder(){
     return 0x00;
 }
 
+void change_temperature(){
+  int action = read_encoder(); 
+  switch(action) {
+    case 0x01:
+    case 0x03:
+      desiredTemp--;
+      break;
+    case 0x02:
+    case 0x04:
+      desiredTemp++;
+      break;
+    default:
+      break;
+  }
+}
 
 #endif
