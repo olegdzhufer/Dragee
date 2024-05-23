@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "C:\Users\igora\.platformio\packages\framework-arduinoespressif32\libraries\SPI\src\SPI.h"
+#include <SPI.h>
 
 #include "shift.h"
 

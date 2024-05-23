@@ -12,6 +12,8 @@ DallasTemperature temperatureSensor(&oneWire);
 
 bool isFlagTemp = false;
 
+float temperature;
+
 int count = 0;
 
 void dallas_setup(void)
@@ -37,7 +39,7 @@ float readTemperatureSensor(DallasTemperature sensor)
     }
   }
 
-  float temperature = temperatureSensor.getTempCByIndex(0);
+  temperature = temperatureSensor.getTempCByIndex(0);
 
   Serial.println(temperature); 
   return temperature;

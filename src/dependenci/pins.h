@@ -17,11 +17,6 @@
 
 #define NTC_PIN A0
 #define outputPin 10
-#define mosfet_pin 12
-
-#define __Kp 30 
-#define __Ki 0.7 
-#define __Kd 200
 
 #define LCD_ADDR 0x3F
 #define LCD_ROWS 4

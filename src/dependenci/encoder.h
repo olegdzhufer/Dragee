@@ -7,22 +7,25 @@
 
 
 EncButton en(CLK, DT, SW);
-PIDController pid;
 
 int set_temperature = 1;
-int clockPin; 
 int clockPinState;
 float debounce = 0;
 int encoder_btn_count = 0;
 float temperature_value_c = 0.0;
 
+void enc_cb(){
+  switch (en.action())
+  {
+  case EB_CLICK:
+    break;
+  
+  default:
+    break;
+  }
+}
 
 void encoder_setup(){
-  pinMode(mosfet_pin, OUTPUT); 
-  pid.begin();          
-  pid.setpoint(150);  
-  pid.tune(__Kp, __Ki,__Kd);  
-  pid.limit(0, 255);    
   en.setEncType(EB_STEP4_LOW);
   en.setBtnLevel(HIGH);
 }
