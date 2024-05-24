@@ -5,7 +5,9 @@ char* textGenerator(Line* line){
     char booler[4];
     int iterationCounter = 0;
 
-    text = charGenerator(line->descript, 10);
+    text = charGenerator(line->descript, 14);
+    
+
 
     switch(line->val->TYPE){
         case valLine::INTEGER:
@@ -35,8 +37,9 @@ char* textGenerator(Line* line){
             free(text);
         break;
 
+
         case valLine::FLOAT:
-            val = floatToString(line->val->var.temp, 6);
+            val = floatToString(line->val->var.temp, 2);
             result = mergeChar(text, val);
             free(text);
             free(val);
@@ -58,6 +61,70 @@ char* textGenerator(Line* line){
 
     return result;
 }
+
+char* textGeneratorCurr(Line* line){
+    char *val, *text, *result;
+    char booler[4];
+    int iterationCounter = 0;
+
+    text = charGenerator(line->descript, 12);
+    
+
+
+    switch(line->val->TYPE){
+        case valLine::INTEGER:
+
+            val = IntToString(line->val->var.count);
+            result = mergeChar(text, val);
+            free(text);
+            free(val);
+        break;
+
+        case valLine::BOOLING:
+            if(line->val->var.status == true){
+                
+                booler[0] = 'O';
+                booler[1] = 'N';
+                booler[2] = ' '; 
+                booler[3] = '\0';
+                
+            }else{
+                booler[0] = 'O';
+                booler[1] = 'F';
+                booler[2] = 'F'; 
+                booler[3] = '\0';
+            }
+            
+            result = mergeChar(text, booler);
+            free(text);
+        break;
+
+
+        case valLine::FLOAT:
+            val = floatToString(line->val->var.temp, 2);
+            result = mergeChar(text, val);
+            free(text);
+            free(val);
+        break;
+
+        case valLine::TEXT:
+            val = line->val->var.mode;
+
+            result = mergeChar(text, val);
+            free(text);
+        break;
+
+        case valLine::NULLTYPE:
+            result = text;
+            free(text);
+        break;
+        
+    }
+
+    return result;
+}
+
+
 
 
 void setParam (Line* line, valLine* valuer){

@@ -168,6 +168,7 @@ void setNull(valLine* data);
 //Line
 
 char* textGenerator(Line* line);
+char* textGeneratorCurr(Line* line);
 void setParam (Line* line, valLine* valuer);
 char* getType(Line* line);
 

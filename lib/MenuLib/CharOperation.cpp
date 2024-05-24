@@ -2,99 +2,90 @@
 
 
 char* IntToString(int val) {
-    int i = 0, temp, digitCount;
-    digitCount = 0;
-    temp = val;
+    if (val == 0) {
+        char* zeroStr = (char*)malloc(2 * sizeof(char));
+        zeroStr[0] = '0';
+        zeroStr[1] = '\0';
+        return zeroStr;
+    }
+
+    int isNegative = val < 0;
+    int temp = isNegative ? -val : val;
+    int digitCount = 0;
 
     while (temp != 0) {
         temp /= 10;
         digitCount++;
     }
 
-    char* arr = (char*)malloc((digitCount + 1) * sizeof(char));
-
-    i = digitCount;
-    while (val) {
-        arr[--i] = (char)(val % 10) + '0'; 
-        val /= 10;
+    char* arr = (char*)malloc((digitCount + isNegative + 1) * sizeof(char));
+    if (isNegative) {
+        arr[0] = '-';
+        val = -val;
     }
 
-    arr[digitCount] = '\0';
+    arr[digitCount + isNegative] = '\0';
+    for (int i = digitCount + isNegative - 1; i >= isNegative; --i) {
+        arr[i] = (val % 10) + '0';
+        val /= 10;
+    }
 
     return arr;
 }
 
-char* charGenerator(char* rev, int space){
-    char* result = (char*) malloc(space* sizeof(char));
-    int i = 0;
-    while(rev[i] != '\0'){
-        i ++;
+
+
+char* charGenerator(char* rev, int space) {
+    int len = strlen(rev);
+    int copyLength = len < space - 1 ? len : space - 1;
+
+    char* result = (char*)malloc(space * sizeof(char));
+    if (result == NULL) {
+        return NULL;
     }
 
-    if(result){
-        if(i > space - 1){
-            free(result);
-            return NULL;
-        }
-        
-        for(int n = 0; n < space - 1; n++){
-            if(rev[n] != '\0'){
-                result[n] = rev[n];
-                
-            }
-            else{
-                i = n;
-                break;
-            }
-            
-        }
-        while (i < space -1)
-        {
-            result[i] = ' ';
-            i ++;
-        }
-        
-        result[space - 1] = '\0';
-
-        return result;
+    strncpy(result, rev, copyLength);
+    for (int i = copyLength; i < space - 1; i++) {
+        result[i] = ' ';
     }
-    return NULL;
+
+    result[space - 1] = '\0';
+
+    return result;
 }
 
+
 char* floatToString(float num, int precision) {
-    char* str = (char*)malloc(6 * sizeof(char)); // Виділяємо пам'ять для рядка
-    snprintf(str, 6, "%.*f", precision, num); // Використовуємо snprintf для конвертації
+    int bufferSize = precision + 5; // Розраховуємо розмір буфера (запас для цілого числа та символів '*C')
+    char* str = (char*)malloc(bufferSize * sizeof(char));
+    if (str == NULL) {
+        return NULL;
+    }
+
+    snprintf(str, bufferSize - 2, "%.*f", precision, num);
+    strcat(str, "*C");
+
     return str;
 }
 
+
 char* mergeChar(const char* first, const char* second) {
-    int sizeOfFirst = 0;
-    int sizeOfSecond = 0;
+    int sizeOfFirst = strlen(first);
+    int sizeOfSecond = strlen(second);
 
-    // Визначаємо довжину першого рядка
-    while (first[sizeOfFirst] != '\0') {
-        sizeOfFirst++;
-    }
-    // Визначаємо довжину другого рядка
-    while (second[sizeOfSecond] != '\0') {
-        sizeOfSecond++;
-    }
-    // Виділяємо пам'ять для об'єднаного рядка
     char* result = (char*)malloc((sizeOfFirst + sizeOfSecond + 1) * sizeof(char));
+    if (result == NULL) {
+        return NULL;
+    }
 
-    // Об'єднуємо перший рядок
     for (int i = 0; i < sizeOfFirst; i++) {
-        if(first[i] == '_')result[i] = ' ';
-        else result[i] = first[i];
+        result[i] = (first[i] == '_') ? ' ' : first[i];
     }
 
-    // Об'єднуємо другий рядок
     for (int i = 0; i < sizeOfSecond; i++) {
-        if(result[sizeOfFirst + i] == '_')result[sizeOfFirst + i] = ' ' ;
-        else result[sizeOfFirst + i] = second[i];
+        result[sizeOfFirst + i] = (second[i] == '_') ? ' ' : second[i];
     }
 
-    // Додаємо нульовий символ в кінець об'єднаного рядка
     result[sizeOfFirst + sizeOfSecond] = '\0';
 
     return result;

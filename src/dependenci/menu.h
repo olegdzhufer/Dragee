@@ -3,60 +3,81 @@
 
 #include <Menulib.h>
 
+Screen* Heap, *Cooling, *FAN, *STOP;
+Line* TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
 
+
+void setTemp();
+
+void setup_Menu(Menu* menu );
+
+
+void init_Screen(Menu* menu){
+    
+unsigned long timer = millis();
+unsigned long start_time = millis();
+
+while (!(REG_FLAG & (1 << 7))) {
+    unsigned long current_time = millis();
+    
+    if (current_time - timer >= 600) {
+        timer = current_time;
+        menu->lcd->clear();
+        menu->lcd->setCursor(0, 0);
+        menu->lcd->printf("      INIT.....   ");
+        
+        if (current_time - start_time >= 600) {
+            menu->lcd->setCursor(0, 1);
+            menu->lcd->printf(" Slava Ukraine");
+        }
+        
+        if (current_time - start_time >= 1200) {
+            menu->lcd->setCursor(0, 2);
+            menu->lcd->printf("     Smert Moskalam");
+        }
+        
+        if (current_time - start_time >= 1800) {
+            REG_FLAG |= (1 << 7);
+            REG_FLAG |= (1 << 0);
+        }
+    }
+
+    setup_Menu(menu);
+}
+menu->printScreen(menu);
+
+}
 
 
 void setup_Menu(Menu* menu ){
-    Screen* setting = menu->addScreen_ptr(menu, "Setting");
-    Screen* FanScreen = menu->addScreen_ptr(menu, "FAN");
-    Screen* TenScreen = menu->addScreen_ptr(menu, "TEN");
-    Screen* CoolScreen = menu->addScreen_ptr(menu, "COOL");
 
-    Line* fanSet = setting->newLine_ptr(setting, "FAN", " Fan :", NULL);
-    Line* coolSet = setting->newLine_ptr(setting, "COOL", " Cool :", NULL);
-    Line* tenSet = setting->newLine_ptr(setting, "TEN", " Ten :", NULL);
+    if(!(REG_FLAG & (1 << 6))){
+        Heap = menu->addScreen_ptr(menu, "HEAP");
 
-    Line* fanStat = FanScreen->newLine_ptr(FanScreen, "STATUS", "Power :", NULL);
-    Line* fanSped = FanScreen->newLine_ptr(FanScreen, "SPEED", "Speed :", NULL);
+        TempSetH = Heap->newLine_ptr(Heap, "TSet","TempSet:", NULL);
+        TempSetH->val->setfloat(TempSetH->val, 45.60);
+        TempCurH = Heap->newLine_ptr(Heap, "TCur","TempCurr:", NULL);
+        TempCurH->val->setfloat(TempCurH->val, 60.1);
 
-    Line* tenStat = TenScreen->newLine_ptr(TenScreen, "STATUS", "Power :", NULL);
-    Line* tenTemp = TenScreen->newLine_ptr(TenScreen, "TEMP", "Temp :", NULL);
-    Line* tenSetTemp = TenScreen->newLine_ptr(TenScreen, "TEMPSET", "Set tem:", NULL);
+        Cooling = menu->addScreen_ptr(menu, "COOLING");
 
-    Line* coolStat = CoolScreen->newLine_ptr(CoolScreen, "STATUS", "Power :", NULL);
-    Line* cooltemp = CoolScreen->newLine_ptr(CoolScreen, "STATUS", "Temp :", NULL);
+        TempSetC = Cooling->newLine_ptr(Cooling,"TSet", "TempSet:", NULL);
+        TempSetC->val->setfloat(TempSetC->val, 60.1);
+        TempCurC = Cooling->newLine_ptr(Cooling, "TCur", "TempCurr:", NULL);
+        TempCurC->val->setfloat(TempCurC->val, 60.1);
 
 
-    valLine* fanSetV = fanSet->val;
-    valLine* fanStataV = fanStat->val;
-    valLine* fanSpeedV = fanSped->val;
+        FAN = menu->addScreen_ptr(menu, "FAN");
+        TempCurF = FAN->newLine_ptr(FAN, "TCur", "TempCurr:", NULL);
+        TempCurF->val->setfloat(TempCurF->val, 60.1);
 
-    valLine* coolSetV = coolSet->val;
-    valLine* coolStatV = coolStat->val;
-    valLine* cooltempV = cooltemp->val;
-
-    valLine* tenSetV = tenSet->val;
-    valLine* tenStatV = tenStat->val;
-    valLine* tenTempV = tenTemp->val;
-    valLine* tenSetTempV = tenSetTemp->val;
-
-    fanSetV->setBool(fanSetV, false);
-    fanStataV->setBool(fanStataV, false);
-    fanSpeedV->setInt(fanSpeedV, 1);
-
-    coolSetV->setBool(coolSetV, false);
-    coolStatV->setBool(coolStatV, false);
-    cooltempV->setfloat(cooltempV, 0.00);
-
-    tenSetV->setBool(tenSetV,false);
-    tenStatV->setBool(tenStatV, false);
-    tenTempV->setfloat(tenTempV, 0.00);
-    tenSetTempV->setfloat(tenSetTempV, 0.00);
-
-    menu->curr = setting;
+        STOP = menu->addScreen_ptr(menu, "STOP");
+        TempCurS = STOP->newLine_ptr(STOP, "STOP", "", NULL);
 
 
-    
+        menu->curr = Heap;
+        REG_FLAG |= (1 << 6);
+    }
 }
 
 

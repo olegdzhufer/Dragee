@@ -5,6 +5,7 @@
 #include <DallasTemperature.h>
 
 #define ONE_WIRE_BUS 13
+#define GPIO_OUTPUT_PIN_SEL  (1ULL<<V33)
 
 OneWire oneWire(ONE_WIRE_BUS);
 
@@ -18,15 +19,11 @@ void dallas_setup(void)
 {
   Serial.begin(9600);
 
-  pinMode(V33, OUTPUT);
-  pinMode(Gnd, OUTPUT);
-
-  digitalWrite(V33, HIGH);
-  digitalWrite(Gnd, LOW);
-
   temperatureSensor.begin();
   temperatureSensor.setResolution(12);
   temperatureSensor.requestTemperatures();
+
+
 }
 
 float readTemperatureSensor(DallasTemperature sensor) 

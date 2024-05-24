@@ -2,8 +2,26 @@
 #include <Menulib.h>
 
 
+
 static Menu menu;
 Screen* mainS;
+
+
+//flag to use
+
+// 0 - bit flag updata LCD
+// 1 - bit flag updata tepm data
+// 2 - bit flag data in enc
+// 3 - bit flag button pres
+// 4 - bit flag FAN is on
+// 5 - bit flag
+// 6 - bit flag setup LCD
+// 7 - bit flag end init Menu
+
+
+uint8_t REG_FLAG;
+
+
 
 #include "dependenci/pins.h"
 #include "dependenci/btns.h"
@@ -14,32 +32,53 @@ Screen* mainS;
 #include "dependenci/TimerSet.h"
 
 int encderVal = 0x00;
-
+int prin = 0;
+int press = 0;
 
 int key;
-float temp = readTemperatureSensor(temperatureSensor);
+
+
+
+
 
 
 void setup() {
+
+
     Serial.begin(9600);
     encoder_setup();
-    timer_setup();
     menu = *(initMenu());
-    setup_Menu(&menu);
-
+    init_Screen(&menu);
     dallas_setup();
+    setup_Menu(&menu);
+    timer_setup();
 
-    menu.printScreen(&menu);
-    mainS = menu.curr;
-    
-  
+    mainS = menu.curr;  
 }
 
 
 void loop() {
-    
-    int press = read_encoder();
+
+    read_encoder();
+    if(REG_FLAG & (1 << 2)){
+        press = getResult();
+    }
+
+    timer_loop();
+
+
+    if(REG_FLAG & (1 << 0)){
+        TempCurH->val->setfloat(TempCurH->val, most_recent_temperature_measurement);
+        TempCurC->val->setfloat(TempCurC->val, most_recent_temperature_measurement);
+        TempCurF->val->setfloat(TempCurF->val, most_recent_temperature_measurement);
+
+        menu.printScreen(&menu);
+        REG_FLAG &= ~(1 << 0);
+    }
+
+
     if(press){
+
         Screen* curr;
         switch (press)
         {
@@ -49,24 +88,12 @@ void loop() {
         case 2:
             menu.nextLine(&menu);
         break;
-        case 3:
-            menu.curr = mainS;
-        break;
-        case 4:
-            menu.nextScreen(&menu);
-        break;
-
         case 5:            
-            Serial.print(mainS->name);
+            menu.nextLine(&menu);
 
-
-
-        break;
-        
-        default:
-
-            break;
         }
+
+        press = 0;
     }
 }
 

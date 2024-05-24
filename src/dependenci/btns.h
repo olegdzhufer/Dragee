@@ -13,87 +13,97 @@ struct MyButton
   uint8_t lastButtState;
 };
 
-struct MyButton btn1 = {5, 0, 0};
-struct MyButton btn2 = {6, 0, 0};
-struct MyButton btn3 = {7, 0, 0};
+struct MyButton btn1 = {BTN1, 0, 0};
+struct MyButton btn2 = {BTN2, 0, 0};
+struct MyButton btn3 = {BTN3, 0, 0};
 
-void buttons_setup(void)
-{
-  pinMode(BTN1, INPUT);
-  pinMode(BTN2, INPUT);
-  pinMode(BTN3, INPUT);
+void buttons_setup(void){
+  REG_FLAG &= ~(1 << 3);
+
+  pinMode(BTN1, INPUT_PULLUP);
+  pinMode(BTN2, INPUT_PULLUP);
+  pinMode(BTN3, INPUT_PULLUP);
 
   btn1.lastButtState = HIGH;
   btn2.lastButtState = HIGH;
   btn3.lastButtState = HIGH;
 }
 
-void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text)
-{
-  if (isLedOn)
-  {
-    digitalWrite(led, LOW);
+// void controlLEDAndLCD(bool isLedOn, uint16_t led, const char *text)
+// {
+//   if (isLedOn)
+//   {
+//     digitalWrite(led, LOW);
 
-  }
-  else
-  {
-    digitalWrite(led, HIGH);
+//   }
+//   else
+//   {
+//     digitalWrite(led, HIGH);
 
-  }
-}
+//   }
+// }
 
-void singleBtnHandler(struct MyButton btnX)
-{
-  int reading = digitalRead(btnX.pin);
-  if (millis() - btnX.lastDebTime > debounceDelay)
-  {
-    btnX.lastDebTime = millis();
-    if (reading != btnX.lastButtState)
-    {
-      btnX.lastButtState = reading;
-      if (btnX.pin == BTN1)
-      {
-        controlLEDAndLCD(true, LED1, "Green on");
-        changeRelayState1 = true;
-      }
-      else if (btnX.pin == BTN2)
-      {
-        controlLEDAndLCD(true, LED2, "Blue on");
-        changeRelayState2 = true;
-      }
-      else if (btnX.pin == BTN3)
-      {
-        controlLEDAndLCD(true, LED3, "Yellow on");
-        changeRelayState3 = true;
-      }
-    }
-    else
-    {
-      if (btnX.pin == BTN1)
-      {
-        controlLEDAndLCD(false, LED1, "Green off");
-        changeRelayState1 = false;
-      }
-      else if (btnX.pin == BTN2)
-      {
-        controlLEDAndLCD(false, LED2, "Blue off");
-        changeRelayState2 = false;
-      }
-      else if (btnX.pin == BTN3)
-      {
-        controlLEDAndLCD(false, LED3, "Yellow off");
-        changeRelayState3 = false;
-      }
-    }
-  }
-}
+// void singleBtnHandler(struct MyButton btnX)
+// {
+//   int reading = digitalRead(btnX.pin);
+//   if (millis() - btnX.lastDebTime > debounceDelay)
+//   {
+//     btnX.lastDebTime = millis();
+//     if (reading != btnX.lastButtState)
+//     {
+//       btnX.lastButtState = reading;
+//       if (btnX.pin == BTN1)
+//       {
+//         controlLEDAndLCD(true, LED1, "Green on");
+//         changeRelayState1 = true;
+//       }
+//       else if (btnX.pin == BTN2)
+//       {
+//         controlLEDAndLCD(true, LED2, "Blue on");
+//         changeRelayState2 = true;
+//       }
+//       else if (btnX.pin == BTN3)
+//       {
+//         controlLEDAndLCD(true, LED3, "Yellow on");
+//         changeRelayState3 = true;
+//       }
+//     }
+//     else
+//     {
+//       if (btnX.pin == BTN1)
+//       {
+//         controlLEDAndLCD(false, LED1, "Green off");
+//         changeRelayState1 = false;
+//       }
+//       else if (btnX.pin == BTN2)
+//       {
+//         controlLEDAndLCD(false, LED2, "Blue off");
+//         changeRelayState2 = false;
+//       }
+//       else if (btnX.pin == BTN3)
+//       {
+//         controlLEDAndLCD(false, LED3, "Yellow off");
+//         changeRelayState3 = false;
+//       }
+//     }
+//   }
+// }
 
-void loop_buttons()
-{
+// void loop_buttons()
+// {
 
-  singleBtnHandler(btn1);
-  singleBtnHandler(btn2);
-  singleBtnHandler(btn3);
+//   singleBtnHandler(btn1);
+//   singleBtnHandler(btn2);
+//   singleBtnHandler(btn3);
+// }
+
+
+void loop_btn(){
+  if(!digitalRead(BTN1))REG_FLAG |= (1 << 4);
+  else REG_FLAG &= ~(1 << 4);
+
+
+  if(digitalRead(BTN2)) REG_FLAG |=  (1 << 3);
 }
 
 #endif

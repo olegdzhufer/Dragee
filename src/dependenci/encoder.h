@@ -3,11 +3,13 @@
 
 #include <Arduino.h>
 #include <EncButton.h>
+#include "pins.h"
 #include <PIDController.h>
 
 
 EncButton en(CLK, DT, SW);
 PIDController pid;
+int enc_pre;
 
 int set_temperature = 1;
 int clockPin; 
@@ -27,8 +29,13 @@ void encoder_setup(){
   en.setBtnLevel(HIGH);
 }
 
+int getResult(){
+  REG_FLAG &= ~(1 << 2);
+  return enc_pre; 
+}
 
-int read_encoder(){
+
+void read_encoder(){
 
   int currtime;
   if(!currtime)currtime = 0;
@@ -38,32 +45,28 @@ int read_encoder(){
     en.tick();
 
     if(en.leftH()){
-      Serial.print("1");
-      return 0x01;
+      enc_pre = 0x01;
+      REG_FLAG |= (1 << 2);
     }
-    if(en.rightH()){
-      Serial.print("2");
-      return 0x02;
+    else if(en.rightH()){
+      enc_pre = 0x02;
+      REG_FLAG |= (1 << 2);
     }
 
-    if (en.left()) {
-      Serial.print("3");
-        return 0x03; 
+    else if (en.left()) {
+        enc_pre = 0x03;
+        REG_FLAG |= (1 << 2);
     }
-    if(en.right()){
-      Serial.print("4");
-        return 0x04;
+    else if(en.right()){
+        enc_pre = 0x04;
+        REG_FLAG |= (1 << 2);
     }
-    if (en.press())  
+     else if (en.press())  
     {
-      Serial.print("5");
-        return 0x05;
+        enc_pre = 0x05;
+        REG_FLAG |= (1 << 2);
     }
-
-    return 0x00;
-
   }
-
 }
 
 

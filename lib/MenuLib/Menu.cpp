@@ -1,51 +1,89 @@
 
 #include "MenuLib.h"
 
+char* charToCur(char* text){
+    uint8_t iter = 0, space = 0, size = 0;
+    char* result = (char*)malloc(21 * sizeof(char)); 
+
+    while(text[size] == '\0') size ++;
+    
+    
+    while (text[iter] == '\0'){
+        if(text[iter] == ' ' && space > 2){ 
+            while (text[iter] != ' ' && text[iter+1] != '\0'){
+                iter++;
+            }
+        }else if(text[iter] == ' '){
+            result[iter] = text[iter];
+            space ++;
+        }else{
+            space = 0;
+            result[iter] = text[iter];
+        }
+        iter++;
+    }
+
+    
+    return result;
+
+}
+
 void printScreen (Menu* menu){
+
+    
     int cursor = 0;
     Line* line = menu->curr->current->prev;
 
+
     LiquidCrystal_I2C* lcd = menu->lcd; 
+
     Screen* screen = menu->curr;
-        Serial.print('1');
     lcd->clear();
     lcd->setCursor(0, cursor);
-    lcd->printf(">> ");
-    lcd->printf(screen->header->textGen(screen->header));
-    Serial.print('2');
-    cursor ++;
-    Serial.print('3');
 
-    Serial.print('4');
+    char* header = screen->header->textGen(screen->header);
+    char* curr;
+    int iter = 0;
+    int size = 0;
+
+
+    while (header[iter] == '\0'){
+        size ++;
+        iter ++;
+    }
+    
+
+    lcd->printf("");
+    lcd->printf(screen->header->textGen(screen->header));
+    cursor ++;
+
+
     while( cursor < ROWS  || (line != screen->current && cursor < 3) ){
         lcd->setCursor(0, cursor);
-        Serial.print('5');
         if(line == screen->current){
-            lcd->print('>');
-            lcd->printf(line->textGen(line));
+            lcd->printf("> ");
+            lcd->printf(textGeneratorCurr(line));
         }
         else lcd->printf(line->textGen(line));
 
         line = line->next;
         cursor ++;
-        Serial.print('6');
     }
     if(screen->footer){
-        Serial.print('7');
         lcd->setCursor(0, cursor);
         lcd->printf(screen->footer->textGen(screen->footer));
     }
-    Serial.print('8');
+
 }
 
 
 void autoPrEn (Menu* menu){
-    menu->printScreen(menu); // Timer
+    menu->printScreen(menu); 
 }
 
 
 void autoPrDe (Menu* menu){
-    menu->printScreen(menu); // Timer off
+    menu->printScreen(menu);
 }
 
 

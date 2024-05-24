@@ -3,9 +3,10 @@
 #define LED2 9
 #define LED3 11
 
-#define BTN1 5
-#define BTN2 6
-#define BTN3 7
+#define BTN1 3
+
+#define BTN2 32
+#define BTN3 35
 
 #define CLK 25                      
 #define DT  26                      
