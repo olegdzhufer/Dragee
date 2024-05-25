@@ -1,45 +1,12 @@
-#include <Arduino.h>
-#include <Menulib.h>
+#include "dependenci/inc&var.h"
 
 
+void updataTemp();
 
-static Menu menu;
-Screen* mainS;
+void flagCheker();
+void lcdSenter();
 
-
-//flag to use
-
-// 0 - bit flag updata LCD
-// 1 - bit flag updata tepm data
-// 2 - bit flag data in enc
-// 3 - bit flag button pres
-// 4 - bit flag FAN is on
-// 5 - bit flag
-// 6 - bit flag setup LCD
-// 7 - bit flag end init Menu
-
-
-uint8_t REG_FLAG;
-
-
-
-#include "dependenci/pins.h"
-#include "dependenci/btns.h"
-#include "dependenci/dallas_sensor.h"
-#include "dependenci/led.h"
-#include "dependenci/menu.h"
-#include "dependenci/encoder.h"
-#include "dependenci/TimerSet.h"
-
-int encderVal = 0x00;
-int prin = 0;
-int press = 0;
-
-int key;
-
-
-
-
+void btnWork();
 
 
 void setup() {
@@ -50,30 +17,36 @@ void setup() {
     menu = *(initMenu());
     init_Screen(&menu);
     dallas_setup();
+    buttons_setup();
     setup_Menu(&menu);
     timer_setup();
 
     mainS = menu.curr;  
+
+    ActiveTime time;
 }
 
 
+
+
 void loop() {
+    
+
 
     read_encoder();
-    if(REG_FLAG & (1 << 2)){
-        press = getResult();
-    }
+    loop_btn();
+    flagCheker();
 
+    updataTemp();
     timer_loop();
 
+    
 
-    if(REG_FLAG & (1 << 0)){
-        TempCurH->val->setfloat(TempCurH->val, most_recent_temperature_measurement);
-        TempCurC->val->setfloat(TempCurC->val, most_recent_temperature_measurement);
-        TempCurF->val->setfloat(TempCurF->val, most_recent_temperature_measurement);
 
-        menu.printScreen(&menu);
-        REG_FLAG &= ~(1 << 0);
+    if(pressbtn){
+
+        btnWork();
+        pressbtn = 0;
     }
 
 
@@ -97,3 +70,56 @@ void loop() {
     }
 }
 
+
+void updataTemp(){
+    if(REG_FLAG & (1 << 4)){
+        Serial.print(1);
+    }
+
+    if(REG_FLAG & (1 << 0)){
+        TempCurH->val->setfloat(TempCurH->val, most_recent_temperature_measurement);
+        TempCurC->val->setfloat(TempCurC->val, most_recent_temperature_measurement);
+        TempCurF->val->setfloat(TempCurF->val, most_recent_temperature_measurement);
+
+        menu.printScreen(&menu);
+        REG_FLAG &= ~(1 << 0);
+    }
+}
+
+void flagCheker(){
+    if(REG_FLAG & (1 << 2)){
+        press = getResult();
+    }
+    if(REG_FLAG & (1 << 3)){
+        pressbtn = getBtn();
+    }
+    if(REG_FLAG & FAN_STATUS)
+}
+
+void btnWork(){
+    Serial.printf("");
+    switch (pressbtn)
+        {
+        case 0x01:
+
+            if(!(REG_FLAG & (1 << 4)) | (REG_STATUS & (1 << 0))){
+                REG_STATUS = 0;
+            }else if(REG_FLAG & (1 << 4)){
+                menu.curr = Heap;
+                REG_STATUS |= (1 << 0);
+            }
+
+        break;
+
+
+        case 0x02:
+            if(!(REG_FLAG & (1 << 4)) | (REG_STATUS & (1 << 1))){
+                REG_STATUS &= ~(1 << 1);
+            }else if(REG_FLAG & (1 << 4)){
+                menu.curr = Heap;
+                REG_STATUS |= (1 << 1);
+            }
+        break;
+
+        }
+}

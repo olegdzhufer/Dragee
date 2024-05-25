@@ -1,22 +1,9 @@
 #ifndef ENCODER_H
 #define ENCODER_H
 
-#include <Arduino.h>
-#include <EncButton.h>
-#include "pins.h"
-#include <PIDController.h>
-
 
 EncButton en(CLK, DT, SW);
 PIDController pid;
-int enc_pre;
-
-int set_temperature = 1;
-int clockPin; 
-int clockPinState;
-float debounce = 0;
-int encoder_btn_count = 0;
-float temperature_value_c = 0.0;
 
 
 void encoder_setup(){

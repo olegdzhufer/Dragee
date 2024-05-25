@@ -1,19 +1,15 @@
 #ifndef DLS_H
 #define DLS_H
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
 
-#define ONE_WIRE_BUS 13
-#define GPIO_OUTPUT_PIN_SEL  (1ULL<<V33)
+
+
 
 OneWire oneWire(ONE_WIRE_BUS);
 
 DallasTemperature temperatureSensor(&oneWire);
 
-bool isFlagTemp = false;
 
-int count = 0;
 
 void dallas_setup(void)
 {

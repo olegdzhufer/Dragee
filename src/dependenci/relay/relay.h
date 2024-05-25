@@ -1,18 +1,7 @@
-#include <Arduino.h>
 #ifndef RELAY_H
 #define RELAY_H
 
-#include "pins.h"
 
-uint8_t RelayState1 = LOW;
-uint8_t RelayState2 = LOW;
-uint8_t RelayState3 = LOW;
-
-bool changeRelayState1 = false;
-bool changeRelayState2 = false;
-bool changeRelayState3 = false;
-
-bool relayState;
 
 void relay_setup()
 {

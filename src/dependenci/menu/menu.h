@@ -1,11 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
-
-#include <Menulib.h>
-
-Screen* Heap, *Cooling, *FAN, *STOP;
-Line* TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
-
+#include "charList.h"
 
 void setTemp();
 
@@ -17,6 +12,9 @@ void init_Screen(Menu* menu){
 unsigned long timer = millis();
 unsigned long start_time = millis();
 
+
+
+
 while (!(REG_FLAG & (1 << 7))) {
     unsigned long current_time = millis();
     
@@ -24,16 +22,16 @@ while (!(REG_FLAG & (1 << 7))) {
         timer = current_time;
         menu->lcd->clear();
         menu->lcd->setCursor(0, 0);
-        menu->lcd->printf("      INIT.....   ");
+        menu->lcd->printf(initFLine);
         
         if (current_time - start_time >= 600) {
             menu->lcd->setCursor(0, 1);
-            menu->lcd->printf(" Slava Ukraine");
+            menu->lcd->printf(initSLine);
         }
         
         if (current_time - start_time >= 1200) {
             menu->lcd->setCursor(0, 2);
-            menu->lcd->printf("     Smert Moskalam");
+            menu->lcd->printf(initTLine);
         }
         
         if (current_time - start_time >= 1800) {
@@ -52,33 +50,39 @@ menu->printScreen(menu);
 void setup_Menu(Menu* menu ){
 
     if(!(REG_FLAG & (1 << 6))){
-        Heap = menu->addScreen_ptr(menu, "HEAP");
 
-        TempSetH = Heap->newLine_ptr(Heap, "TSet","TempSet:", NULL);
-        TempSetH->val->setfloat(TempSetH->val, 45.60);
-        TempCurH = Heap->newLine_ptr(Heap, "TCur","TempCurr:", NULL);
+
+
+
+        Heap = menu->addScreen_ptr(menu, (char*)HeapName);
+
+        TempSetH = Heap->newLine_ptr(Heap, (char*)TSet, (char*)TempSet, NULL);
+        TempSetH->val->setfloat(TempSetH->val, tcH);
+        TempCurH = Heap->newLine_ptr(Heap, (char*)TCur ,(char*)TempCurr, NULL);
         TempCurH->val->setfloat(TempCurH->val, 60.1);
 
-        Cooling = menu->addScreen_ptr(menu, "COOLING");
+        Cooling = menu->addScreen_ptr(menu, (char*)CoolingName);
 
-        TempSetC = Cooling->newLine_ptr(Cooling,"TSet", "TempSet:", NULL);
-        TempSetC->val->setfloat(TempSetC->val, 60.1);
-        TempCurC = Cooling->newLine_ptr(Cooling, "TCur", "TempCurr:", NULL);
+        TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempCurr, NULL);
+        TempSetC->val->setfloat(TempSetC->val, tcC);
+        TempCurC = Cooling->newLine_ptr(Cooling, (char*)TCur, (char*)TempCurr, NULL);
         TempCurC->val->setfloat(TempCurC->val, 60.1);
 
 
-        FAN = menu->addScreen_ptr(menu, "FAN");
-        TempCurF = FAN->newLine_ptr(FAN, "TCur", "TempCurr:", NULL);
+        FAN = menu->addScreen_ptr(menu, (char*)Fan);
+        TempCurF = FAN->newLine_ptr(FAN, (char*)TCur, (char*)TempCurr, NULL);
         TempCurF->val->setfloat(TempCurF->val, 60.1);
 
-        STOP = menu->addScreen_ptr(menu, "STOP");
-        TempCurS = STOP->newLine_ptr(STOP, "STOP", "", NULL);
+        STOP = menu->addScreen_ptr(menu, (char*)Stop);
+        TempCurS = STOP->newLine_ptr(STOP, (char*)Stop, (char*)Empty, NULL);
 
 
         menu->curr = Heap;
         REG_FLAG |= (1 << 6);
     }
 }
+
+
 
 
 #endif

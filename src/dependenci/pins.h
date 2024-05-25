@@ -1,12 +1,6 @@
-
-#define LED1 8
-#define LED2 9
-#define LED3 11
-
-#define BTN1 3
-
-#define BTN2 32
-#define BTN3 35
+#define BTN1 32
+#define BTN2 33
+#define BTN3 18
 
 #define CLK 25                      
 #define DT  26                      
@@ -17,7 +11,6 @@
 #define REL3 14
 
 #define V33 12
-#define Gnd 14
 
 #define NTC_PIN A0
 #define outputPin 10
@@ -30,4 +23,6 @@
 #define LCD_ADDR 0x3F
 #define LCD_ROWS 4
 #define LCD_COLS 20
+
+#define ONE_WIRE_BUS 13
 
