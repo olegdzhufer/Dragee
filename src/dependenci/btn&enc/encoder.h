@@ -7,7 +7,6 @@ PIDController pid;
 
 
 void encoder_setup(){
-  pinMode(mosfet_pin, OUTPUT); 
   pid.begin();          
   pid.setpoint(150);  
   pid.tune(__Kp, __Ki,__Kd);  

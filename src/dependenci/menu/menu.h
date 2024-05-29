@@ -52,8 +52,6 @@ void setup_Menu(Menu* menu ){
     if(!(REG_FLAG & (1 << 6))){
 
 
-
-
         Heap = menu->addScreen_ptr(menu, (char*)HeapName);
 
         TempSetH = Heap->newLine_ptr(Heap, (char*)TSet, (char*)TempSet, NULL);
@@ -80,6 +78,42 @@ void setup_Menu(Menu* menu ){
         menu->curr = Heap;
         REG_FLAG |= (1 << 6);
     }
+}
+
+void SwichMenu(){
+
+    if(REG_FLAG & CHANGEMOD){
+
+        if(REG_MENU_STATUS & HEAP_STATUS){
+            menu.curr = Heap;
+            REG_FLAG |= RELOAD_LCD;
+        }
+        else if(REG_MENU_STATUS & COOLING_SELECT){
+            menu.curr = Cooling;
+            REG_FLAG |= RELOAD_LCD; 
+        }
+        else if(REG_MENU_STATUS & FAN_SELECT) {
+            menu.curr = FAN;
+            REG_FLAG |= RELOAD_LCD; 
+        }
+        else{
+            menu.curr = STOP;
+            REG_FLAG |= RELOAD_LCD;
+        }
+
+        REG_FLAG &= ~CHANGEMOD;
+    }
+}
+
+
+void ExeptDropFanIsNotEnable(){
+    menu.lcd->clear();
+    menu.lcd->setCursor(6, 0);
+    menu.lcd->print("Error");
+    menu.lcd->setCursor(0,2);
+    menu.lcd->print("Fan is not enable");
+    delay(700);
+    menu.lcd->clear();
 }
 
 

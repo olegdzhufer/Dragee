@@ -4,9 +4,7 @@ LiquidCrystal_I2C* initLCD(){
     static LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
     if (lcd.begin(COLUMS, ROWS, LCD_5x8DOTS, SDA_PIN, SCL_PIN, SPEED_I2C, TIME_I2C) != 1){
-        
-        Serial.printf("ajkshfkjahsjkfhakjshfnkajshfkjhaskjfhashfkjashfkjhassjkfhakjsfhakjsf");
-        Serial1.printf("jksahfkjahskjfhakjshfkjashfkjashfkjhaskjfhakjsfhakjhfkjahsfkjahkfjhasf \n");
+
         return NULL;
     }
 

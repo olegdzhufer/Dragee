@@ -56,15 +56,17 @@ void printScreen (Menu* menu){
     lcd->printf("");
     lcd->printf(screen->header->textGen(screen->header));
     cursor ++;
+    
 
 
     while( cursor < ROWS  || (line != screen->current && cursor < 3) ){
         lcd->setCursor(0, cursor);
-        if(line == screen->current){
+
+        if(line == screen->current && cursor == 2){
             lcd->printf("> ");
             lcd->printf(textGeneratorCurr(line));
         }
-        else lcd->printf(line->textGen(line));
+        else if(line != screen->current) lcd->printf(line->textGen(line));
 
         line = line->next;
         cursor ++;

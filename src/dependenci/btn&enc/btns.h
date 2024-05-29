@@ -26,8 +26,8 @@ void loop_btn(){
 
     debounceDelay = millis();
 
-    if(!digitalRead(BTN3))REG_FLAG ^= FAN_STATUS;
-    // else REG_FLAG &= ~ FAN_STATUS;
+    if(!digitalRead(BTN3))REG_FLAG |= FAN_STATUS;
+    else REG_FLAG &= ~ FAN_STATUS;
 
     if(!digitalRead(BTN2)){
       REG_FLAG |=  BTN_INT;

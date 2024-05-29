@@ -6,17 +6,14 @@
 #define DT  26                      
 #define SW  27                       
 
-#define REL1 12
-#define REL2 13
-#define REL3 14
+#define REL1 15
+#define REL2 2
+
+#define REL3 4 
 
 #define V33 12
 
-#define NTC_PIN A0
-#define outputPin 10
-#define mosfet_pin 12
-
-#define __Kp 30 
+#define __Kp 30
 #define __Ki 0.7 
 #define __Kd 200
 
