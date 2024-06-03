@@ -46,7 +46,7 @@ STATUS_C menuSetup()
     STOP = menu.addScreen_ptr(&menu, (char*)Stop);
     TempCurS = STOP->newLine_ptr(STOP, (char*)Stop, (char*)Empty, NULL);
 
-
+    menu.printScreen(&menu);
 
     
     return STATUS_OK;
