@@ -2,7 +2,12 @@
 #define MENU_SETUP_H
 
 #include <MenuLib.h>
-#include "lcd.h"
+//#include "lcd.h"
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include "mDef.h"
+#include "charList.h"
 
 Menu menu;
 
@@ -17,16 +22,16 @@ float tcH = 0, tcC = 0 ;
 STATUS_C menuSetup()
 {
     
-    menu = initMenu();
+    menu = *(initMenu());
 
-    Heap = menu->addScreen_ptr(menu, (char*)HeapName);
+    Heap = menu.addScreen_ptr(&menu, (char*)HeapName);
 
     TempSetH = Heap->newLine_ptr(Heap, (char*)TSet, (char*)TempSet, NULL);
     TempSetH->val->setfloat(TempSetH->val, tcH);
     TempCurH = Heap->newLine_ptr(Heap, (char*)TCur ,(char*)TempCurr, NULL);
     TempCurH->val->setfloat(TempCurH->val, 60.1);
 
-    Cooling = menu->addScreen_ptr(menu, (char*)CoolingName);
+    Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);
 
     TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempCurr, NULL);
     TempSetC->val->setfloat(TempSetC->val, tcC);
@@ -34,11 +39,11 @@ STATUS_C menuSetup()
     TempCurC->val->setfloat(TempCurC->val, 60.1);
 
 
-    FAN = menu->addScreen_ptr(menu, (char*)Fan);
+    FAN = menu.addScreen_ptr(&menu, (char*)Fan);
     TempCurF = FAN->newLine_ptr(FAN, (char*)TCur, (char*)TempCurr, NULL);
     TempCurF->val->setfloat(TempCurF->val, 60.1);
 
-    STOP = menu->addScreen_ptr(menu, (char*)Stop);
+    STOP = menu.addScreen_ptr(&menu, (char*)Stop);
     TempCurS = STOP->newLine_ptr(STOP, (char*)Stop, (char*)Empty, NULL);
 
 
