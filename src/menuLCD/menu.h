@@ -14,14 +14,8 @@ float tcH = 0, tcC = 0 ;
 //________________________________
 
 
-STATUS menuSetup()
+STATUS_C menuSetup()
 {
-    STATUS sts = lcdSetup();
-
-    if (sts != STATUS_OK)
-    {
-        return sts;
-    }
     
     menu = initMenu();
 
@@ -56,7 +50,7 @@ STATUS menuSetup()
 
 void menuLoop()
 {
-    menuLoop();
+    
 }
 
 #endif

@@ -2,7 +2,7 @@
 #ifndef CHAR_LIST_H
 #define CHAR_LIST_H
 
-#include <avr/pgmspace.h>
+#include <pgmspace.h>
 
 #define EMPTY_CHAR ""
 

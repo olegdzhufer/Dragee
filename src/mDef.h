@@ -32,8 +32,8 @@
 #define ONE_WIRE_BUS 13
 
 #define STATUS_CODES \
-    X(STATUS_OK       , 0)\
-    X(FAIL          , -1)\
+    X(STATUS_OK     , 0)\
+    X(FAILURE       , -1)\
     X(UNDEFINED     , -2)\
     X(UNAUTHORIZED  , -3)\
     X(NOT_FOUND     , -4)\
@@ -48,14 +48,12 @@
     X(CLOSE_ERROR   , -13)\
     X(FLUSH_ERROR   , -14)\
     X(SEEK_ERROR    , -15)\
-    X(I2C_ERROR   , -16)\
+    X(I2C_ERROR     , -16)\
 
-   
-    
 #define X(a, b) a = (b),
 typedef enum {
-	STATUS_CODES
-} STATUS;
+    STATUS_CODES
+} STATUS_C;
 #undef X
 
 
