@@ -12,12 +12,8 @@
 
 #include "mDef.h"
 #include "pins.h"
-
 #include "menuLCD/menu.h"
 
-
-
-
-
+#include "data/site.h"
 
 #endif

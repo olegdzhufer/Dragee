@@ -1,5 +1,4 @@
-#include <pgmspace.h>
-#include <Arduino.h>
+#include "site.h"
 
 const char index_html[] PROGMEM = R"rawliteral(
 <script type="text/javascript">
