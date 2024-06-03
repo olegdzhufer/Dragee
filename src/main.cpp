@@ -8,9 +8,6 @@ void setup() {
     if(menuSetup() != STATUS_C::STATUS_OK){
         Serial.print("\n LCD exeption !\n");
     }
-
-
-
 }
 
 
