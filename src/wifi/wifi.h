@@ -1,26 +1,40 @@
 #ifndef WIFI_CONF_H
 #define WIFI_CONF_H
 
-#ifdef ESP8266
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#else
+#include <Arduino.h>
+
+
 #include <WiFi.h>
+#include <AsyncTCP.h>
+#include <esp_task_wdt.h>
+#include <ESPAsyncWebServer.h>
+#include <ThingSpeak.h>
+#include <OpenTherm.h>
+
 #include <HTTPClient.h>
-#endif
 
 #include <WiFiClient.h>
 
 #include "mDef.h"
 
-const char *ssid = "AsusLyra";
-const char *password = "123456qwerty";
+#define SSDI_C "realme 11"
+#define PASSWORD_C "a4na8x5u"
+
+
+extern const char index_html[];
+extern const char css[];
+extern const char js[];
+extern const int favico_ico_length;
+extern const byte favico_ico[];
+
+void siteSetup();
+void siteLoop();
 
 
 void setupWifi()
 {
     WiFi.mode(WIFI_AP);
-    WiFi.begin(ssid, password);
+    WiFi.begin(SSDI_C, PASSWORD_C);
     Serial.print("Connecting.");
 
     // int retry_count = 0

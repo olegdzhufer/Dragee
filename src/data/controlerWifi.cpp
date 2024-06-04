@@ -1,9 +1,9 @@
-#include "site.h"
+#include <Arduino.h>
+#include "wifi/wifi.h"
+#include "webData.h"
 
 // API settings
 
-const char* ssid = "SSID";
-const char* password = "PASSWORD";
 unsigned long myChannelNumber = 0;
 const char* myReadAPIKey = "TOKEN";
 const char* myWriteAPIKey = "TOKEN";
@@ -18,11 +18,6 @@ const int sOutPin = 23; //5 for Arduino, 13 for ESP8266 (D7), 23 for ESP32
 
 // code
 
-extern const char index_html[];
-extern const char css[];
-extern const char js[];
-extern const int favico_ico_length;
-extern const byte favico_ico[];
 
 
 
@@ -193,17 +188,7 @@ String htmlVarProcessor(const String& var)
 
 
 void siteSetup() {
-  Serial.begin(9600);
-  Serial.println("WiFi...");
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.printf("WiFi Failed!\n");
-    return;
-  }
-
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+ 
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send_P(200, "text/html", index_html, htmlVarProcessor);

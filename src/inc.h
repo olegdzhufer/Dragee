@@ -9,11 +9,19 @@
 #include <BigNumbers_I2C.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <AsyncTCP.h>
+#include <esp_task_wdt.h>
+#include <ESPAsyncWebServer.h>
+#include <ThingSpeak.h>
+#include <OpenTherm.h>
+
+#include <HTTPClient.h>
+
+#include <WiFiClient.h>
 
 #include "mDef.h"
 #include "pins.h"
 #include "menuLCD/menu.h"
-
-#include "data/site.h"
+#include "wifi/wifi.h"
 
 #endif
