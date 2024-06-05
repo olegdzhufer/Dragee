@@ -4,13 +4,14 @@
 int timer_46 = 0;
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
+    dallas_setup();
     setupWifi();
 }
 
 
 void loop() {
-    
+    loopWifi();
 }
 
 

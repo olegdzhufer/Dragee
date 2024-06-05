@@ -1,6 +1,8 @@
 #ifndef WIFI_CONF_H
 #define WIFI_CONF_H
 
+#include "relayTemp/tempSensors.h"
+
 #include <Arduino.h>
 
 
@@ -17,9 +19,17 @@
 
 #include "mDef.h"
 
-#define SSDI_C "realme 11"
-#define PASSWORD_C "a4na8x5u"
+#include <LittleFS.h>
 
+
+#define SSDI_C "Shoko-cli_A"
+#define PASSWORD_C "Shock2009"
+
+unsigned long myChannelNumber = 2570068;
+const char * myWriteAPIKey = "2KWEPCTBOYPEDPMW";
+
+unsigned long lastTime = 0;
+unsigned long timerDelay = 30000;
 
 extern const char index_html[];
 extern const char css[];
@@ -30,25 +40,48 @@ extern const byte favico_ico[];
 void siteSetup();
 void siteLoop();
 
+AsyncWebServer server(80);
+
+WiFiClient  client;
 
 void setupWifi()
-{
-    WiFi.mode(WIFI_AP);
-    WiFi.begin(SSDI_C, PASSWORD_C);
-    Serial.print("Connecting.");
+{   
+ Serial.begin(115200);  
+ WiFi.mode(WIFI_STA);   
+ ThingSpeak.begin(client);
+ IPAddress IP = WiFi.softAPIP();
+ Serial.print("AP IP address: ");
+ Serial.println(IP);
 
-    // int retry_count = 0
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        Serial.print(".");
-        // if (++retry_count > 1000) ESP.restart();
-        // spinner();
+ temperatureSensor.begin();
+ temperatureSensor.setResolution(12);
+ temperatureSensor.requestTemperatures();
+}
+
+void loopWifi(){
+    if ((millis() - lastTime) > timerDelay) {
+    
+    if(WiFi.status() != WL_CONNECTED){
+      Serial.print("Attempting to connect");
+      while(WiFi.status() != WL_CONNECTED){
+        WiFi.begin(SSDI_C, PASSWORD_C); 
+        delay(5000);     
+      } 
+      Serial.println("\nConnected.");
     }
-    Serial.println();
-    Serial.println("\n\nWiFi connected\n\n");
-    Serial.print("ESP IP Address: http://");
-    Serial.println(WiFi.localIP());
+    temperature = readTemperatureSensor(temperatureSensor);
+    Serial.println(temperature);
+
+    int x = ThingSpeak.writeField(myChannelNumber, 1, temperature, myWriteAPIKey);
+
+    if(x == 200){
+      Serial.println("Channel update successful.");
+    }
+    else{
+      Serial.println("Problem updating channel. HTTP error code " + String(x));
+    }
+    lastTime = millis();
+  }
 }
 
 #endif
