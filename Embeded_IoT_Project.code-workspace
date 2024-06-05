@@ -1,13 +1,11 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
+	"folders": [],
 	"settings": {
 		"files.associations": {
 			"random": "cpp",
-			"cstddef": "cpp"
+			"cstddef": "cpp",
+			"*.tcc": "cpp",
+			"fstream": "cpp"
 		}
 	}
 }
