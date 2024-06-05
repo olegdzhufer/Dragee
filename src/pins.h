@@ -16,5 +16,7 @@
 
 #define V33 12
 
+#define ONE_WIRE_BUS 13
+
 
 #endif

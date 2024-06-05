@@ -6,16 +6,20 @@
 
 
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if (DEBUG == 1)
 #define DEBUG_SERIAL Serial
 #define DEBUG_BAUD 115200
 #define DEBUG_BEGIN Serial.begin(DEBUG_BAUD)
+#define DEBUG_PRINT(x) DEBUG_SERIAL.print(x)
+#define DEBUG_PRINTLN(x) DEBUG_SERIAL.println(x)
 #else
 #define DEBUG_SERIAL 
 #define DEBUG_BAUD 
 #define DEBUG_BEGIN 
+#define DEBUG_PRINT(x)
+#define DEBUG_PRINTLN(x)
 #endif
 
 

@@ -1,23 +1,18 @@
 #ifndef DLS_H
 #define DLS_H
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
-
-#define ONE_WIRE_BUS 13
+// #include <Arduino.h>
+// #include <OneWire.h>
+// #include <DallasTemperature.h>
+#include "mDef.h"
 
 
 OneWire oneWire(ONE_WIRE_BUS);
 
 DallasTemperature temperatureSensor(&oneWire);
-float temperature;
-
-
 
 void dallas_setup(void)
 {
-  Serial.begin(115200);
-
   temperatureSensor.begin();
   temperatureSensor.setResolution(12);
   temperatureSensor.requestTemperatures();
@@ -25,10 +20,10 @@ void dallas_setup(void)
 
 float readTemperatureSensor(DallasTemperature sensor) 
 {
-  temperatureSensor.requestTemperatures();
+  sensor.requestTemperatures();
 
   uint32_t timeout = millis();
-  while (!temperatureSensor.isConversionComplete())
+  while (!sensor.isConversionComplete())
   {
     if (millis() - timeout >= 800) 
     {
@@ -37,7 +32,7 @@ float readTemperatureSensor(DallasTemperature sensor)
     }
   }
 
-  temperature = temperatureSensor.getTempCByIndex(0);
+  float temperature = sensor.getTempCByIndex(0);
 
   Serial.println(temperature); 
   return temperature;
