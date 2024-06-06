@@ -13,7 +13,7 @@ Menu menu;
 
 //menu
 Screen* mainS;
-Screen* Heap, *Cooling, *FAN, *STOP;
+Screen* Heat, *Cooling, *FAN, *STOP;
 Line* TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
 float tcH = 0, tcC = 0 ;
 //________________________________
@@ -24,11 +24,11 @@ STATUS_t menuSetup()
     
     menu = *(initMenu());
 
-    Heap = menu.addScreen_ptr(&menu, (char*)HeapName);
+    Heat = menu.addScreen_ptr(&menu, (char*)HeatName);
 
-    TempSetH = Heap->newLine_ptr(Heap, (char*)TSet, (char*)TempSet, NULL);
+    TempSetH = Heat->newLine_ptr(Heat, (char*)TSet, (char*)TempSet, NULL);
     TempSetH->val->setfloat(TempSetH->val, tcH);
-    TempCurH = Heap->newLine_ptr(Heap, (char*)TCur ,(char*)TempCurr, NULL);
+    TempCurH = Heat->newLine_ptr(Heat, (char*)TCur ,(char*)TempCurr, NULL);
     TempCurH->val->setfloat(TempCurH->val, 60.1);
 
     Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);

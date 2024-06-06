@@ -19,9 +19,9 @@ STATUS_t lcdSetup()
     lcd.backlight();
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Hello, world!");
+    lcd.print(initFLine);
     lcd.setCursor(0, 1);
-    lcd.print("Hello, world!");
+    lcd.print(initSLine);
     delay(2000);
     lcd.clear();
     return STATUS_OK;

@@ -55,7 +55,16 @@ void setupWifi_STA()
 {   
  WiFi.mode(WIFI_STA);   
  
+ WiFi.begin(ssid, pass);
+  while(WiFi.status() != WL_CONNECTED)
+  {
+  delay(1000);
+  Serial.print(".");
+  }
+
+  
  ThingSpeak.begin(speak_thing_client);
+
 
  IPAddress IP = WiFi.softAPIP();
  
@@ -71,12 +80,12 @@ bool reconnect_STA()
         WiFi.begin(ssid, pass);
         while(WiFi.status() != WL_CONNECTED)
         {
-          delay(500);
+          delay(1000);
           DEBUG_THINGSPEAK(".");
         }
       } 
       DEBUGLN_THINGSPEAK("\nConnected.");
-     DEBUGLN_THINGSPEAK();
+      DEBUGLN_THINGSPEAK();
       DEBUGLN_THINGSPEAK("ESP IP Address: http://");
       DEBUGLN_THINGSPEAK(WiFi.localIP());
       DEBUG_THINGSPEAK("RRSI: ");
