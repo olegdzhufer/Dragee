@@ -2,23 +2,26 @@
 #define WIFI_CONF_H
 
 
-#include <Arduino.h>
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <esp_task_wdt.h>
-#include <ESPAsyncWebServer.h>
-#include <ThingSpeak.h>
-#include <OpenTherm.h>
-#include <HTTPClient.h>
-#include <WiFiClient.h>
+// #include <Arduino.h>
+// #include <WiFi.h>
+// #include <AsyncTCP.h>
+// #include <esp_task_wdt.h>
+// #include <ESPAsyncWebServer.h>
+// #include <ThingSpeak.h>
+// #include <OpenTherm.h>
+// #include <HTTPClient.h>
+// #include <WiFiClient.h>
 
-#include <LittleFS.h>
+// #include <LittleFS.h>
 
 #include "mDef.h"
+#include "wifi.h"
 #include "relayTemp/tempSensors.h"
 
-const unsigned long myChannelNumber = 2570068;
-const char * myWriteAPIKey = "2KWEPCTBOYPEDPMW";
+#define THINGSPEAK_PORT 80
+
+unsigned long myChannelNumber = SECRET_CH_ID;
+const char * myWriteAPIKey = SECRET_WRITE_APIKEY;
 
 unsigned long thingSpeak_timer = 0;
 unsigned long thingSpeak_delay = 30000;
@@ -31,9 +34,6 @@ unsigned long thingSpeak_delay = 30000;
 
 #define DEBUG_THINGSPEAK DEBUG_PRINT
 #define DEBUGLN_THINGSPEAK DEBUG_PRINTLN
-
-
-
 
     // #define TS_OK_SUCCESS              200     // OK / Success
     // #define TS_ERR_BADAPIKEY           400     // Incorrect API key (or invalid ThingSpeak server address)
@@ -48,14 +48,14 @@ unsigned long thingSpeak_delay = 30000;
     // #define TS_ERR_NOT_INSERTED        -401    // Point was not inserted (most probable cause is the rate limit of once every 15 seconds)
 
 
-AsyncWebServer server(80);
-WiFiClient  client;
+AsyncWebServer server(THINGSPEAK_PORT);
+WiFiClient  speak_thing_client;
 
 void setupWifi_STA()
 {   
  WiFi.mode(WIFI_STA);   
  
- ThingSpeak.begin(client);
+ ThingSpeak.begin(speak_thing_client);
 
  IPAddress IP = WiFi.softAPIP();
  
@@ -67,11 +67,20 @@ void setupWifi_STA()
 bool reconnect_STA()
 {
       Serial.print("Attempting to connect");
-      while(WiFi.status() != WL_CONNECTED){
-        WiFi.begin(SSDI_C, PASSWORD_C); 
-        delay(5000);     
+      if(WiFi.status() != WL_CONNECTED){
+        WiFi.begin(ssid, pass);
+        while(WiFi.status() != WL_CONNECTED)
+        {
+          delay(500);
+          DEBUG_THINGSPEAK(".");
+        }
       } 
-      Serial.println("\nConnected.");
+      DEBUGLN_THINGSPEAK("\nConnected.");
+     DEBUGLN_THINGSPEAK();
+      DEBUGLN_THINGSPEAK("ESP IP Address: http://");
+      DEBUGLN_THINGSPEAK(WiFi.localIP());
+      DEBUG_THINGSPEAK("RRSI: ");
+      DEBUGLN_THINGSPEAK(WiFi.RSSI());
     return true;
 }
 
@@ -92,12 +101,15 @@ void loopThingSpeak(){
     }
 
     float temperature = readTemperatureSensor(temperatureSensor);
+    //int writeFields(unsigned long channelNumber, const char * writeAPIKey)
+     // Write to ThingSpeak. There are up to 8 fields in a channel, allowing you to store up to 8 different
+  // pieces of information in a channel.  Here, we write to field 1.
     int sts = ThingSpeak.writeField(myChannelNumber, 1, temperature, myWriteAPIKey);
     if(sts == TS_OK_SUCCESS){
-      Serial.println("Channel update successful.");
+      DEBUGLN_THINGSPEAK("Channel update successful.");
     }
     else{
-      Serial.println("Problem updating channel. HTTP error code " + String(sts));
+      DEBUGLN_THINGSPEAK("Problem updating channel. HTTP error code " + String(sts));
     }
     thingSpeak_timer = millis();
   }

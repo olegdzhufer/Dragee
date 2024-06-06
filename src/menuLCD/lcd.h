@@ -12,7 +12,7 @@ bool lcdFlag = false;
 
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 
-STATUS_C lcdSetup()
+STATUS_t lcdSetup()
 {
     lcd.init();
    

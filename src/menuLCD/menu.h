@@ -19,7 +19,7 @@ float tcH = 0, tcC = 0 ;
 //________________________________
 
 
-STATUS_C menuSetup()
+STATUS_t menuSetup()
 {
     
     menu = *(initMenu());

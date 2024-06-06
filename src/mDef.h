@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "pins.h"
+#include "inc.h"
 
 
 
@@ -11,8 +12,8 @@
 #if (DEBUG == 1)
 #define DEBUG_SERIAL Serial
 #define DEBUG_BAUD 115200
-#define DEBUG_BEGIN Serial.begin(DEBUG_BAUD)
-#define DEBUG_PRINT(x) DEBUG_SERIAL.print(x)
+#define DEBUG_BEGIN Serial.begin(DEBUG_BAUD) 
+#define DEBUG_PRINT(x) DEBUG_SERIAL.print(x) //++ args
 #define DEBUG_PRINTLN(x) DEBUG_SERIAL.println(x)
 #else
 #define DEBUG_SERIAL 
@@ -55,11 +56,12 @@
     X(FLUSH_ERROR   , -14)\
     X(SEEK_ERROR    , -15)\
     X(I2C_ERROR     , -16)\
+    X(FS_NOT_INITED     , -17)\
 
 #define X(a, b) a = (b),
 typedef enum {
     STATUS_CODES
-} STATUS_C;
+} STATUS_t;
 #undef X
 
 

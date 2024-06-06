@@ -53,6 +53,11 @@ void btnsSetup() {
     btn2.attach(callbackBtn2);
     btnSwitch.attach(callbackBtnSwitch);
 
+    // pinMode(btnGPIO, INPUT_PULLUP);
+  // attachInterrupt(digitalPinToInterrupt(btnGPIO), btnIsrHigh, CHANGE);
+//   attachInterrupt(digitalPinToInterrupt(btnGPIO), btnIsrHigh, RISING);
+//   attachInterrupt(digitalPinToInterrupt(btnGPIO), btnIsrLow, FALLING);
+
 }
 
 void btnsLoop();

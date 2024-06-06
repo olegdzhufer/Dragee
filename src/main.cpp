@@ -1,16 +1,30 @@
 #include "inc.h"
 #include "mDef.h"
 
-int timer_46 = 0;
+#define RUN_MODE 1
+
+void setupWifi()
+{
+#if(RUN_MODE ==1)
+    setupWifi_AP();
+#elif(RUN_MODE == 2)
+    setupWifi_STA();
+#else
+#endif
+}
 
 void setup() {
-    Serial.begin(115200);
-    dallas_setup();
+    DEBUG_BEGIN
+    DEBUG_PRINTLN(__FILE__);
+    // dallas_setup();
     setupWifi();
+    
 }
 
 
 void loop() {
-    wifiLoop();
+#if(RUN_MODE ==1)
+    loopThingSpeak();
+#endif
 }
 
