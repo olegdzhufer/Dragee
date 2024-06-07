@@ -12,7 +12,6 @@
 #include <WiFiClient.h>
 #include <SPIFFS.h>
 #include "mDef.h"
-#include <LittleFS.h>
 
 #define SSDI_C "Susid"
 #define PASSWORD_C "lvbnhbr2016"
