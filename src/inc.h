@@ -19,6 +19,7 @@
 
 #include <WiFiClient.h>
 
+#include "Flag.h"
 #include "mDef.h"
 #include "pins.h"
 #include "menuLCD/menu.h"
