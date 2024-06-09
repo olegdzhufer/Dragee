@@ -22,13 +22,6 @@ uint8_t FLAG_CONTROL_REG = 0x00;
 
 
 
-
-
-
-
-
-
-
 //Flag FAN operation
 #define FAN_FLAG    (1 << 0)
 
