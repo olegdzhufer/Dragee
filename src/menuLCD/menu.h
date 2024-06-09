@@ -1,8 +1,9 @@
 #ifndef MENU_SETUP_H
+
 #define MENU_SETUP_H
 
 #include <MenuLib.h>
-//#include "lcd.h"
+
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -23,7 +24,10 @@ STATUS_C initSection();
 
 STATUS_C menuSetup()
 {
-    
+    while(1){
+
+    }
+
     return STATUS_OK;
 }
 
@@ -33,8 +37,6 @@ void menuLoop()
     
 }
 
-
-//________________________________________________________________________
 
 STATUS_C initSection(){
     menu = *(initMenu());

@@ -11,25 +11,26 @@
  * 4 bit - COOLING status (on = 1, off = 0)
  * 5 bit - STOP mode (on = 1, off = 0)
  * 6 bit - EMPTY
- * 7 bit - EMPTY
+ * 7 bit - ERROR BTN OR ENC FLAG
  */
 uint8_t FLAG_CONTROL_REG = 0x00;
 
 /**
  * 0 bit - Init flag (1 - ready to work, 0 - init is not complete)
- * 1 bit - update flag (1 - need update, 0 - not need)
- * 2 bit - EMPTY
+ * 1 bit - Inti section flag (1- all variable ok, 0 - work (init) is not complete)
+ * 2 bit - Update Menu flag (1 - time to update, 0 - not need update now)
  * 3 bit - EMPTY
  * 4 bit - EMPTY
  * 5 bit - EMPTY
  * 6 bit - EMPTY
- * 7 bit - ERROR FLAG
+ * 7 bit - ERROR MENU FLAG
  */
 uint8_t FLAG_MENU_REG = 0x00;
 
 
 
-#define CONTROLE_FLAG FLAG_CONTROL_REG
+#define CONTROLE_FLAG   FLAG_CONTROL_REG
+#define MENU_FLAG       FLAG_MENU_REG
 
 
 
@@ -91,6 +92,23 @@ uint8_t FLAG_MENU_REG = 0x00;
 
 //________________________________________________
 
+//------------------ERROR_SECTION--------------------
+
+#define ERROR_BTN_ENC (1 << 7)
+#define CHECK_ERROR (CONTROLE_FLAG & ERROR_BTN_ENC)
+
+//---------------------------------------------------
+
+
+// |____________________________________________________________________________________________________________________|
+// |__________________________________________________|__MENU_FLAG_|____________________________________________________|
+// |____________________________________________________________________________________________________________________|
+
+#define INIT_FLAG           (1 << 0)
+#define INIT_SECTION_FLAG   (1 << 1)
+#define UPDATE_FLAG         (1 << 2)
+
+#define COMPLETE_INIT_MENU  (MENU_FLAG & INIT_FLAG)
 
 
 
