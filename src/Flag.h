@@ -15,6 +15,18 @@
  */
 uint8_t FLAG_CONTROL_REG = 0x00;
 
+/**
+ * 0 bit - Init flag (1 - ready to work, 0 - init is not complete)
+ * 1 bit - update flag (1 - need update, 0 - not need)
+ * 2 bit - EMPTY
+ * 3 bit - EMPTY
+ * 4 bit - EMPTY
+ * 5 bit - EMPTY
+ * 6 bit - EMPTY
+ * 7 bit - ERROR FLAG
+ */
+uint8_t FLAG_MENU_REG = 0x00;
+
 
 
 #define CONTROLE_FLAG FLAG_CONTROL_REG
