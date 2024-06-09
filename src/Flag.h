@@ -16,15 +16,26 @@
 uint8_t FLAG_CONTROL_REG = 0x00;
 
 
-#define CONTOLE_FLAG FLAG_CONTROL_REG
+
+#define CONTROLE_FLAG FLAG_CONTROL_REG
+
+
+
+
+
+
+
+
+
+
 
 //Flag FAN operation
 #define FAN_FLAG    (1 << 0)
 
-#define FAN_CHECK   (CONTOLE_FLAG & FAN_FLAG)
+#define FAN_CHECK   (CONTROLE_FLAG & FAN_FLAG)
 
-#define FAN_ON      CONTOLE_FLAG |= FAN_FLAG
-#define FAN_OFF     CONTOLE_FLAG &= ~FAN_FLAG
+#define FAN_ON      CONTROLE_FLAG |= FAN_FLAG
+#define FAN_OFF     CONTROLE_FLAG &= ~FAN_FLAG
 
 //________________________________________________
 
@@ -33,16 +44,16 @@ uint8_t FLAG_CONTROL_REG = 0x00;
 #define HEAP_FLAG               (1 << 2)
 #define HEAP_ONSCREEN_FLAG      (1 << 1)
 
-#define HEAP_CHECK              (CONTOLE_FLAG & HEAP_FLAG)
-#define HEAP_ONSCREEN_CHECK     (CONTOLE_FLAG & HEAP_ONSCREEN_FLAG)
+#define HEAP_CHECK              (CONTROLE_FLAG & HEAP_FLAG)
+#define HEAP_ONSCREEN_CHECK     (CONTROLE_FLAG & HEAP_ONSCREEN_FLAG)
 
-#define HEAP_ONSCREEN           CONTOLE_FLAG |= HEAP_ONSCREEN_FLAG
-#define HEAP_OURSCREEN          CONTOLE_FLAG &= ~HEAP_ONSCREEN_FLAG
+#define HEAP_ONSCREEN           CONTROLE_FLAG |= HEAP_ONSCREEN_FLAG
+#define HEAP_OURSCREEN          CONTROLE_FLAG &= ~HEAP_ONSCREEN_FLAG
 
-#define HEAP_ONSCREEN           CONTOLE_FLAG |= HEAP_ONSCREEN_FLAG
-#define HEAP_OURSCREEN          CONTOLE_FLAG &= ~HEAP_ONSCREEN_FLAG
-#define HEAP_ON                 CONTOLE_FLAG |= HEAP_FLAG
-#define HEAP_OFF                CONTOLE_FLAG &= ~HEAP_FLAG
+#define HEAP_ONSCREEN           CONTROLE_FLAG |= HEAP_ONSCREEN_FLAG
+#define HEAP_OURSCREEN          CONTROLE_FLAG &= ~HEAP_ONSCREEN_FLAG
+#define HEAP_ON                 CONTROLE_FLAG |= HEAP_FLAG
+#define HEAP_OFF                CONTROLE_FLAG &= ~HEAP_FLAG
 
 //________________________________________________
 
@@ -50,20 +61,33 @@ uint8_t FLAG_CONTROL_REG = 0x00;
 #define COOLING_FLAG               (1 << 4)
 #define COOLING_ONSCREEN_FLAG      (1 << 3)
 
-#define COOLING_CHECK              (CONTOLE_FLAG & COOLING_FLAG)
-#define COOLING_ONSCREEN_CHECK     (CONTOLE_FLAG & COOLING_ONSCREEN_FLAG)
+#define COOLING_CHECK              (CONTROLE_FLAG & COOLING_FLAG)
+#define COOLING_ONSCREEN_CHECK     (CONTROLE_FLAG & COOLING_ONSCREEN_FLAG)
 
-#define COOLING_ONSCREEN           CONTOLE_FLAG |= COOLING_ONSCREEN_FLAG
-#define COOLING_OURSCREEN          CONTOLE_FLAG &= ~COOLING_ONSCREEN_FLAG
+#define COOLING_ONSCREEN           CONTROLE_FLAG |= COOLING_ONSCREEN_FLAG
+#define COOLING_OURSCREEN          CONTROLE_FLAG &= ~COOLING_ONSCREEN_FLAG
 
-#define COOLING_ONSCREEN           CONTOLE_FLAG |= COOLING_ONSCREEN_FLAG
-#define COOLING_OURSCREEN          CONTOLE_FLAG &= ~COOLING_ONSCREEN_FLAG
-#define COOLING_ON                 CONTOLE_FLAG |= COOLING_FLAG
-#define COOLING_OFF                CONTOLE_FLAG &= ~COOLING_FLAG
+#define COOLING_ONSCREEN           CONTROLE_FLAG |= COOLING_ONSCREEN_FLAG
+#define COOLING_OURSCREEN          CONTROLE_FLAG &= ~COOLING_ONSCREEN_FLAG
+#define COOLING_ON                 CONTROLE_FLAG |= COOLING_FLAG
+#define COOLING_OFF                CONTROLE_FLAG &= ~COOLING_FLAG
 
 //________________________________________________
 
 
-//
+//Flag Stop operation
+
+#define STOP_FLAG   (1 << 5)
+
+#define STOP_CHECK  (CONTROLE_FLAG & STOP_FLAG)
+
+#define STOP_ON     CONTROLE_FLAG |= STOP_FLAG 
+#define STOP_OFF    CONTROLE_FLAG &= ~STOP_FLAG 
+
+//________________________________________________
+
+
+
+
 
 #endif
