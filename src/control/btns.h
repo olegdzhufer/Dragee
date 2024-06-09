@@ -78,11 +78,11 @@ void callbackSwitch() {
     switch (btnSwitch.action()) {
       
         case EB_HOLD:
-            
+                FAN_ON;
             break;
 
         case EB_RELEASE:
-            
+                FAN_OFF;
             break;
         default:
             //Serial.println();
