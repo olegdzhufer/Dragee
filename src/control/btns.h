@@ -49,12 +49,28 @@ void callbackBtn1() {
 
 void callbackBtn2() {
     switch (btn2.action()) {
-      
+        
         case EB_CLICK:
-            
+            if(!(COOLING_ONSCREEN)){
+                COOLING_ONSCREEN;
+                FULL_OFF_HEAP;
+                STOP_OFF;
+            }
+            else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)){
+                COOLING_ON;
+                FULL_OFF_HEAP;
+                STOP_OFF;
+            }else if(COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)){
+                //Here plase code to print in MENU such as "FAN is not on !"
+
+            }else if(COOLING_ONSCREEN && COOLING_CHECK){
+                FULL_OFF_COOLING;
+                STOP_ON;
+            }
             break;
+
         default:
-            //Serial.println();
+        break;
     }
 }
 
