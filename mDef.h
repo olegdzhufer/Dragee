@@ -3,40 +3,8 @@
 
 #include <Arduino.h>
 #include "pins.h"
-#include "inc.h"
 
 
-
-#define DEBUG 1
-
-#if (DEBUG == 1)
-#define DEBUG_SERIAL Serial
-#define DEBUG_BAUD 115200
-#define DEBUG_BEGIN Serial.begin(DEBUG_BAUD) 
-#define DEBUG_PRINT(x) DEBUG_SERIAL.print(x) //++ args
-#define DEBUG_PRINTLN(x) DEBUG_SERIAL.println(x)
-#else
-#define DEBUG_SERIAL 
-#define DEBUG_BAUD 
-#define DEBUG_BEGIN 
-#define DEBUG_PRINT(x)
-#define DEBUG_PRINTLN(x)
-#endif
-
-
-#define WIFI_SSID "ssid"
-#define WIFI_PASS "pass"
-
-
-#define __Kp 30
-#define __Ki 0.7 
-#define __Kd 200
-
-#define LCD_ADDR 0x3F
-#define LCD_ROWS 4
-#define LCD_COLS 20
-
-#define ONE_WIRE_BUS 13
 
 #define STATUS_CODES \
     X(STATUS_OK     , 0)\

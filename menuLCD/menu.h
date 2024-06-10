@@ -9,6 +9,7 @@
 #include "mDef.h"
 #include "charList.h"
 
+
 Menu menu;
 
 //menu

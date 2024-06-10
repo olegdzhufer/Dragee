@@ -1,9 +1,9 @@
 #ifndef LCD_SETUP_H
 #define LCD_SETUP_H
 
+#include <Arduino.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include "mDef.h"
 #include "charList.h"
 
 

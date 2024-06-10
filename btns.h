@@ -3,7 +3,9 @@
 
 #include <Arduino.h>
 #include <EncButton.h>
-#include "mDef.h"
+// #include "mDef.h"
+
+
 
 
 class ButtonSwitch : public VirtButton {
@@ -18,7 +20,7 @@ class ButtonSwitch : public VirtButton {
     }
 
     void init(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW) {
-        self.btnPin = btnPin;
+        this->btnPin = btnPin;
         EB_mode(btnPin, btnMode);
         setBtnLevel(btnLevel);
 
@@ -45,8 +47,8 @@ class ButtonSwitch : public VirtButton {
 
 
     void setLed(uint8_t ledPin, uint8_t ledState = LOW) {
-        self.ledPin = ledPin;
-        self.ledState = ledState;
+        this->ledPin = ledPin;
+        this->ledState = ledState;
         pinMode(ledPin, OUTPUT);
         digitalWrite(ledPin, ledState);
     }
@@ -74,7 +76,7 @@ class ButtonSwitch : public VirtButton {
     }
 
     void attachCallback(void (*callback)()) {
-        self.callbackOnPress = callback;
+        this->callbackOnPress = callback;
     }
 
     void callCallback() {
@@ -114,15 +116,14 @@ void callbackSwitch() {
 
 
 void btnsSetup() {
-    btnSwitch.attachCallback(callbackBtnSwitch);
+    btnSwitch.attachCallback(callbackSwitch);
 }
 
-void btnsLoop();
+void btnsLoop()
 {
      btn1.tick();
      btn2.tick();
      btnSwitch.tick();
-
 }
 
 
