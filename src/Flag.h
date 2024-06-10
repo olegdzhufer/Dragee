@@ -94,8 +94,9 @@ uint8_t FLAG_MENU_REG = 0x00;
 
 //------------------ERROR_SECTION--------------------
 
-#define ERROR_BTN_ENC (1 << 7)
-#define CHECK_ERROR (CONTROLE_FLAG & ERROR_BTN_ENC)
+#define ERROR_BTN_ENC       (1 << 7)
+#define DROP_ERROR_BTN_ENC  CONTROLE_FLAG |= ERROR_BTN_ENC
+#define CHECK_ERROR         (CONTROLE_FLAG & ERROR_BTN_ENC)
 
 //---------------------------------------------------
 
@@ -104,13 +105,19 @@ uint8_t FLAG_MENU_REG = 0x00;
 // |__________________________________________________|__MENU_FLAG_|____________________________________________________|
 // |____________________________________________________________________________________________________________________|
 
-#define INIT_FLAG           (1 << 0)
-#define INIT_SECTION_FLAG   (1 << 1)
-#define UPDATE_FLAG         (1 << 2)
+#define INIT_FLAG                   (1 << 0)
+#define INIT_SECTION_FLAG           (1 << 1)
+#define UPDATE_FLAG                 (1 << 2)
 
-#define COMPLETE_INIT_MENU  (MENU_FLAG & INIT_FLAG)
+#define COMPLETE_INIT_MENU          (MENU_FLAG & INIT_FLAG)
+#define COMPLETE_INIT_SECTION_MENU  (MENU_FLAG & INIT_SECTION_FLAG)
+
+#define CHECK_UPDATE_MENU           (MENU_FLAG & UPDATE_FLAG)         
+
+//------------------------ERORR_SECTION------------------------
 
 
+//-------------------------------------------------------------
 
 
 #endif
