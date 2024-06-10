@@ -34,7 +34,7 @@ Line* TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
 //  Temperature          = 0.0;          // Variable for the current temperature
 // float  TargetTemp           = 25;         // Default thermostat value for set temperature
 // int    FrostTemp            = 5; 
-STATUS_C initSection(){
+STATUS_t initSection(){
     menu = *(initMenu());
 
     if(&menu){

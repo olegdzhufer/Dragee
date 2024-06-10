@@ -89,7 +89,7 @@ void serverHandlersSetup()
   // Set handler for '/timer'
   server.on("/timer", HTTP_GET, [](AsyncWebServerRequest *request)
             {
-    TimerSet();
+    timerSet();
     request->send(200, "text/html", webpage); });
   // Set handler for '/setup'
   server.on("/setup", HTTP_GET, [](AsyncWebServerRequest *request)

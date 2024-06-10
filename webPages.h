@@ -192,7 +192,7 @@ void graphs() {
 }
 
 
-void TimerSet() {
+void timerSet() {
   append_HTML_header(noRefresh);
   webpage += "<h2>Thermostat Schedule Setup</h2><br>";
   webpage += "<h3>Enter required temperatures and time, use Clock symbol for ease of time entry</h3><br>";
