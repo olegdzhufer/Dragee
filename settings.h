@@ -4,8 +4,12 @@
 #include <Arduino.h>
 #include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
 
+
 #include "pins.h"
 #include "secrets.h"
+#include "mDef.h"
+#include "flags.h"
+
 String version = "2.0";      // Programme version, see change log at end
 
 const char* serverName = "dragee"; //  http://dragee.local/ 
@@ -76,7 +80,6 @@ int connections = 0;
 String sitetitle            = "Dragee Machine IoT";
 String Year                 = "2024";     // For the footer line
 float  Temperature          = 0.0;          // Variable for the current temperature
-
 float  TargetTemp           = 25;         // Default thermostat value for set temperature
 int    FrostTemp            = 5;          // Default thermostat value for frost protection temperature
 float  ManOverrideTemp      = 21;         // Manual override temperature

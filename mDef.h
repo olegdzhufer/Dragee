@@ -2,9 +2,6 @@
 #define MDEF_H
 
 #include <Arduino.h>
-#include "pins.h"
-
-
 
 #define STATUS_CODES \
     X(STATUS_OK     , 0)\

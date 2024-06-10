@@ -68,11 +68,15 @@ void setup()
   actuateHeating(OFF);
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
+  btnsSetup();
+  initSection();
 
 }
 
 void loop()
 {
+  btnsLoop();
+
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {
     lastTimerSwitchCheck = millis(); // Reset time
@@ -95,6 +99,8 @@ void loop()
     Temperature = readSensor();
     thingSpeakSend(Temperature);
   }
+
+  lcdLoop();
 }
 
 

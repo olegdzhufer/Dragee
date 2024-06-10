@@ -3,9 +3,18 @@
 
 #include <Arduino.h>
 #include <EncButton.h>
-// #include "mDef.h"
+#include "settings.h"
 
 
+#define FULL_OFF_COOLING { \
+    COOLING_OURSCREEN; \
+    COOLING_OFF; \
+}
+
+#define FULL_OFF_HEAP { \
+    HEAP_OURSCREEN; \
+    HEAP_OFF; \
+}
 
 
 class ButtonSwitch : public VirtButton {
@@ -99,13 +108,16 @@ ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
 
 void callbackSwitch() {
+
     switch (btnSwitch.action()) {
       
         case EB_HOLD:
+            FAN_ON;
             Serial.println("HOLD");
             break;
 
         case EB_RELEASE:
+            FAN_OFF;
             Serial.println("RELEASE");
             break;
         default:
@@ -115,7 +127,66 @@ void callbackSwitch() {
 
 
 
+void callbackBtn1() {
+    switch (btn1.action()) {
+      
+        case EB_CLICK:
+            Serial.println("Btn1 clicked");
+            if(!(HEAP_ONSCREEN)){
+                HEAP_ONSCREEN;
+                FULL_OFF_COOLING;
+                STOP_OFF;
+            }
+            else if (HEAP_ONSCREEN && FAN_CHECK && !(HEAP_CHECK)){
+                HEAP_ON;
+                FULL_OFF_COOLING;
+                STOP_OFF;
+            }else if(HEAP_ONSCREEN && !(HEAP_CHECK) && !(FAN_CHECK)){
+                //Here plase code to print in MENU such as "FAN is not on !"
+
+            }else if(HEAP_ONSCREEN && HEAP_CHECK){
+                FULL_OFF_HEAP;
+                STOP_ON;
+            }
+            break;
+
+        default:
+        break;
+    }
+}
+
+void callbackBtn2() {
+    switch (btn2.action()) {
+        Serial.println("Btn2 clicked");
+        case EB_CLICK:
+            if(!(COOLING_ONSCREEN)){
+                COOLING_ONSCREEN;
+                FULL_OFF_HEAP;
+                STOP_OFF;
+            }
+            else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)){
+                COOLING_ON;
+                FULL_OFF_HEAP;
+                STOP_OFF;
+            }else if(COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)){
+                //Here plase code to print in MENU such as "FAN is not on !"
+
+            }else if(COOLING_ONSCREEN && COOLING_CHECK){
+                FULL_OFF_COOLING;
+                STOP_ON;
+            }
+            break;
+
+        default:
+        break;
+    }
+}
+
+
+
 void btnsSetup() {
+    btn1.attachCallback(callbackBtn1);
+    btn2.attachCallback(callbackBtn2);
     btnSwitch.attachCallback(callbackSwitch);
 }
 
