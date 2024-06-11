@@ -6,12 +6,12 @@
 
 #define EMPTY_CHAR ""
 
-const char initFLine[] PROGMEM = "      INIT.....   ";
-const char initSLine[] PROGMEM = " Slava Ukraine";
-const char initTLine[] PROGMEM = "     Smert Moskalam";
+const char initFirstLine[] PROGMEM = "      INIT.....   ";
+const char initSecondLine[] PROGMEM = " Slava Ukraine";
+const char initThirdLine[] PROGMEM = "     Smert Moskalam";
 
 
-const char* HeapName PROGMEM = "HEAP";
+const char* HeatName PROGMEM = "HEAT";
 const char* CoolingName PROGMEM = "COOLING";
 const char* Fan PROGMEM = "FAN";
 const char* Stop PROGMEM = "STOP";
