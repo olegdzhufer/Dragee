@@ -1,0 +1,15 @@
+{
+  "name": "EncMenu",
+  "keywords": "Menu, LCD, encoder navigation",
+  "description": "A library for I2C LCD displays to create navigation menu",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/VladVanyuk/MakeMenuLib.git"
+  },
+  "frameworks": "arduino",
+  "platforms":
+  [
+    "atmelavr"
+  ]
+}
