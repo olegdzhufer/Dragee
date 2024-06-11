@@ -1,16 +1,17 @@
+
 #include "MenuLib.h"
-
+#include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C* initLCD(){
-    static LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
+    static LiquidCrystal_I2C lcd(COLUMS, ROWS, LCD_SPACE_SYMBOL); // adding 3 arg, not 7
 
-    if (lcd.begin(COLUMS, ROWS, LCD_5x8DOTS, SDA_PIN, SCL_PIN, SPEED_I2C, TIME_I2C) != 1){
+    /*if*/ lcd.begin(COLUMS, ROWS, LCD_SPACE_SYMBOL); //void cannot be != with 1
 
-        return NULL;
-    }
+    //    return NULL;
+    //}
 
-    Serial.print("\n");
-    Serial.printf("LCDInit: %p", &lcd);
-    Serial.print("\n");
+    //Serial.print("\n"); Serial is not declared
+    //Serial.printf("LCDInit: %p", &lcd);
+    //Serial.print("\n");
 
     return &lcd;
 }
@@ -114,7 +115,7 @@ Menu* initMenu(){
         menu->lcd = lcd;
 
 
-        Serial.printf("\n %p \n" , &(menu->lcd));
+        //Serial.printf("\n %p \n" , &(menu->lcd)); Serial is not declared
 
         menu->curr = NULL;
 

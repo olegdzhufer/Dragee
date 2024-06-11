@@ -16,7 +16,7 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
-#include "./menuLCD/menu.h"
+#include "menu.h"
 #include "btns.h"
 // #include "relay.h"
 
