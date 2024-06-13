@@ -5,7 +5,6 @@
 #include <EncButton.h>
 #include "settings.h"
 
-
 #define FULL_OFF_COOLING \
   { \
     COOLING_OURSCREEN; \
@@ -65,7 +64,6 @@ public:
   }
 
 
-
   void toggleLed() {
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
@@ -121,8 +119,8 @@ void callbackSwitch() {
       FAN_OFF;
       Serial.println("RELEASE");
       break;
-    default:
-      Serial.println("ERROR");
+      //default:
+      //  Serial.println("ERROR");
   }
 }
 
@@ -180,6 +178,7 @@ void callbackBtn2() {
       break;
   }
 }
+
 
 
 

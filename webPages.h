@@ -4,16 +4,15 @@
 #include <Arduino.h>
 #include "settings.h"
 
-const String legendColour   = "#5d2212";           // Only use HTML colour names
-const String titleColour    = "#5a1500"; 
+const String legendColour = "#5d2212";  // Only use HTML colour names
+const String titleColour = "#5a1500";
 const String backgrndColour = "#ac8a7f";
 // const String data1Colour    = "blue";
 // const String data2Colour    = "orange";
 
-String WiFiSignal()
-{
+String WiFiSignal() {
   float Signal = WiFi.RSSI();
-  Signal = 90 / 40.0 * Signal + 212.5; // From Signal = 100% @ -50dBm and Signal = 10% @ -90dBm and y = mx + c
+  Signal = 90 / 40.0 * Signal + 212.5;  // From Signal = 100% @ -50dBm and Signal = 10% @ -90dBm and y = mx + c
   if (Signal > 100)
     Signal = 100;
   return " " + String(Signal, 0) + "%";
@@ -39,11 +38,11 @@ String WiFiSignal()
 // }
 
 void append_HTML_header(bool refreshMode) {
-  webpage  = "<!DOCTYPE html><html lang='en'>";
+  webpage = "<!DOCTYPE html><html lang='en'>";
   webpage += "<head>";
   webpage += "<title>" + sitetitle + "</title>";
   webpage += "<meta charset='UTF-8'>";
-  if (refreshMode) webpage += "<meta http-equiv='refresh' content='5'>"; // 5-secs refresh time, test needed to prevent auto updates repeating some commands
+  if (refreshMode) webpage += "<meta http-equiv='refresh' content='5'>";  // 5-secs refresh time, test needed to prevent auto updates repeating some commands
   webpage += "<script src=\"https://code.jquery.com/jquery-3.2.1.min.js\"></script>";
   webpage += "<style>";
   webpage += "body             {width:68em;margin-left:auto;margin-right:auto;font-family:Open Sans,sans-serif;font-size:16px;color: #5a1500;background-color:#e1e1ff;text-align:center;}";
@@ -79,6 +78,7 @@ void append_HTML_header(bool refreshMode) {
   webpage += "<a href='timer'>Schedule</a>";
   webpage += "<a href='setup'>Setup</a>";
   webpage += "<a href='help'>Help</a>";
+  webpage += "<a href='changemode'>Change Mode</a>";
   webpage += "<a href='btns?'></a>";
   webpage += "<a href='reload?'></a>";
   webpage += "<a href=''></a>";
@@ -110,9 +110,9 @@ void homepage() {
   }
   webpage += "</tr>";
   webpage += "<tr>";
-  webpage += "<td class='large'>" + String(Temperature, 1)       + "&deg;</td>";
+  webpage += "<td class='large'>" + String(Temperature, 1) + "&deg;</td>";
   webpage += "<td class='large'>" + String(TargetTemp, 1) + "&deg;</td>";
-  webpage += "<td class='large'><span class=" + String((RelayState == "ON" ? "'on'>" : "'off'>")) + RelayState + "</span></td>"; 
+  webpage += "<td class='large'><span class=" + String((RelayState == "ON" ? "'on'>" : "'off'>")) + RelayState + "</span></td>";
   webpage += "<td class='large'><span class=" + String((TimerState == "ON" ? "'on'>" : "'off'>")) + TimerState + "</span></td>";
   if (ManualOverride) {
     webpage += "<td class='large'>" + String(ManualOverride ? "ON" : "OFF") + "</td>";
@@ -131,7 +131,7 @@ String PreLoadChartData(byte Channel, String Type) {
     if (Type == "Temperature") {
       Data += "[" + String(r) + "," + String(sensordata[Channel][r].Temp, 1) + "," + String(TargetTemp, 1) + "],";
     }
-    
+
     r++;
   } while (r < SensorReadings);
   Data += "]";
@@ -143,15 +143,14 @@ void AddGraph(byte Channel, String Type, String Title, String GraphType, String 
   webpage += "function draw" + Type + String(Channel) + "() {";
   if (Type == "GraphT") {
     webpage += " var data = google.visualization.arrayToDataTable(" + String("[['Hour', 'Rm T°', 'Tgt T°'],") + Data + ");";
-  }
-  else
+  } else
     webpage += " var data = google.visualization.arrayToDataTable(" + String("[['Hour', 'RH %'],") + Data + ");";
   webpage += " var options = {";
   webpage += "  title: '" + Title + "',";
   webpage += "  titleFontSize: 14,";
   webpage += "  backgroundColor: '" + backgrndColour + "',";
   webpage += "  legendTextStyle: { color: '" + legendColour + "' },";
-  webpage += "  titleTextStyle:  { color: '" + titleColour  + "' },";
+  webpage += "  titleTextStyle:  { color: '" + titleColour + "' },";
   webpage += "  hAxis: {color: '#FFF'},";
   webpage += "  vAxis: {color: '#FFF', title: '" + Units + "'},";
   webpage += "  curveType: 'function',";
@@ -174,9 +173,9 @@ void graphs() {
   webpage += "<script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>";
   webpage += "<script type='text/javascript'>";
   webpage += "google.charts.load('current', {'packages':['corechart']});";
-  webpage += "google.charts.setOnLoadCallback(drawGraphT1);"; // Pre-load function names for Temperature graphs
+  webpage += "google.charts.setOnLoadCallback(drawGraphT1);";  // Pre-load function names for Temperature graphs
   // webpage += "google.charts.setOnLoadCallback(drawGraphH1);"; // Pre-load function names for Humidity graphs
-  AddGraph(1, "GraphT", "Temperature", "TS", "°C", "red",  "chart_div");
+  AddGraph(1, "GraphT", "Temperature", "TS", "°C", "red", "chart_div");
   // AddGraph(1, "GraphH", "Humidity",    "HS", "%",  "blue", "chart_div");
   webpage += "</script>";
   webpage += "<div id='outer'>";
@@ -201,18 +200,18 @@ void timerSet() {
   webpage += "<col><col><col><col><col><col><col><col>";
   webpage += "<tr><td>Control</td>";
   webpage += "<td>" + Timer[0].DoW + "</td>";
-  for (byte dow = 1; dow < 6; dow++) { // Heading line showing DoW
+  for (byte dow = 1; dow < 6; dow++) {  // Heading line showing DoW
     webpage += "<td>" + Timer[dow].DoW + "</td>";
   }
   webpage += "<td>" + Timer[6].DoW + "</td>";
   webpage += "</tr>";
   for (byte p = 0; p < NumOfEvents; p++) {
     webpage += "<tr><td>Temp</td>";
-    webpage += "<td><input type='text' name='" + String(0) + "." + String(p) + ".Temp' value='"  + Timer[0].Temp[p]   + "' maxlength='5' size='6'></td>";
+    webpage += "<td><input type='text' name='" + String(0) + "." + String(p) + ".Temp' value='" + Timer[0].Temp[p] + "' maxlength='5' size='6'></td>";
     for (int dow = 1; dow < 6; dow++) {
-      webpage += "<td><input type='text' name='" + String(dow) + "." + String(p) + ".Temp' value='"      + Timer[dow].Temp[p] + "' maxlength='5' size='5'></td>";
+      webpage += "<td><input type='text' name='" + String(dow) + "." + String(p) + ".Temp' value='" + Timer[dow].Temp[p] + "' maxlength='5' size='5'></td>";
     }
-    webpage += "<td><input type='text' name='" + String(6) + "." + String(p) + ".Temp' value='"  + Timer[6].Temp[p]   + "' maxlength='5' size='5'></td>";
+    webpage += "<td><input type='text' name='" + String(6) + "." + String(p) + ".Temp' value='" + Timer[6].Temp[p] + "' maxlength='5' size='5'></td>";
     webpage += "</tr>";
     webpage += "<tr><td>Start</td>";
     webpage += "<td><input type='time' name='" + String(0) + "." + String(p) + ".Start' value='" + Timer[0].Start[p] + "'></td>";
@@ -254,24 +253,25 @@ void Setup() {
   webpage += "</tr>";
   webpage += "<tr>";
   webpage += "<td><label for='hysteresis'>Hysteresis value (e.g. 0 - 1.0&deg;) [N.N]</label></td>";
-  webpage += "<td><input type='text' size='4' pattern='[0-9][.][0-9]' name='hysteresis' value='" + String(Hysteresis, 1) + "'></td>"; // 0.0 valid input style
+  webpage += "<td><input type='text' size='4' pattern='[0-9][.][0-9]' name='hysteresis' value='" + String(Hysteresis, 1) + "'></td>";  // 0.0 valid input style
   webpage += "</tr>";
   webpage += "<tr>";
   webpage += "<td><label for='frosttemp'>Frost Protection Temperature&deg; [NN]</label></td>";
-  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='frosttemp' value='" + String(FrostTemp) + "'></td>"; // 00-99 valid input style
+  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='frosttemp' value='" + String(FrostTemp) + "'></td>";  // 00-99 valid input style
   webpage += "</tr>";
   webpage += "<tr>";
   webpage += "<td><label for='earlystart'>Early start duration (mins) [NN]</label></td>";
-  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='earlystart' value='" + String(EarlyStart) + "'></td>"; // 00-99 valid input style
+  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='earlystart' value='" + String(EarlyStart) + "'></td>";  // 00-99 valid input style
   webpage += "</tr>";
   webpage += "<tr>";
   webpage += "<td><label for='manualoveride'>Manual heating over-ride </label></td>";
   webpage += "<td><select name='manualoverride'><option value='ON'>ON</option>";
-  webpage += "<option selected value='OFF'>OFF</option></select></td>"; // ON/OFF
+  webpage += "<option selected value='OFF'>OFF</option></select></td>";  // ON/OFF
   webpage += "</tr>";
   webpage += "<td><label for='manualoverridetemp'>Manual Override Temperature&deg; </label></td>";
-  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='manualoverridetemp' value='" + String(ManOverrideTemp, 0) + "'></td>"; // 00-99 valid input style
-  webpage += "</tr>";  webpage += "</table>";
+  webpage += "<td><input type='text' size='4' pattern='[0-9]*' name='manualoverridetemp' value='" + String(ManOverrideTemp, 0) + "'></td>";  // 00-99 valid input style
+  webpage += "</tr>";
+  webpage += "</table>";
   webpage += "<br><input type='submit' value='Enter'><br><br>";
   webpage += "</form>";
   append_HTML_footer();
@@ -302,6 +302,41 @@ void Help() {
   webpage += "<p>Displays the temperature the current state of the thermostat (ON/OFF) and ";
   webpage += "timer status (ON/OFF).</p>";
   webpage += "</div>";
+  append_HTML_footer();
+}
+
+
+void changeMode() {
+  append_HTML_header(noRefresh);
+  webpage += "<h2>Change Mode</h2><br>";
+  webpage += "<div style='text-align: left;font-size:1.1em;'>";
+  //<!-- button-->
+  webpage += "<button class=\"button\" onclick=\"send(1)\">LED ON</button>\n";
+  webpage += "<button class=\"button\" onclick=\"send(0)\">LED OFF</button><br>\n";
+  webpage += "</div>\n";
+  webpage += "<br>\n";
+  webpage += "<div><h2>\n";
+  webpage += "LED State: <span id=\"state\">NA</span>\n";
+  webpage += "</h2>\n";
+  webpage += "</div>\n";
+  webpage += "<script>\n";
+  webpage += "function send(led_sts) {\n";
+  webpage += "  var xhttp = new XMLHttpRequest();\n";
+  webpage += "  xhttp.onreadystatechange = function() {\n";
+  webpage += "    if (this.readyState == 4 && this.status == 200) {\n";
+  webpage += "      document.getElementById(\"state\").innerHTML = this.responseText;\n";
+  webpage += "    }\n";
+  webpage += "  };\n";
+  webpage += "  xhttp.open(\"GET\", \"led_set?state=\"+led_sts, true);\n";
+  webpage += "  xhttp.send();\n";
+  webpage += "}\n";
+  webpage += "setInterval(function() {\n";
+  webpage += "  getData();\n";
+  webpage += "}, 2000);\n";
+  webpage += "}\n";
+  webpage += "</script>\n";
+
+
   append_HTML_footer();
 }
 

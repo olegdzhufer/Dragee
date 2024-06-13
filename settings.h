@@ -22,8 +22,8 @@ const char* ntpServer = "pool.ntp.org";
 const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
 // "CET-1CEST,M3.5.0,M10.5.0/3";
 
-#define THINGSPEAK_PORT 80 // Thingspeak port
-#define WENPAGE_PORT 81 
+//#define THINGSPEAK_PORT 80 // Thingspeak port
+#define WENPAGE_PORT 80 
 
 #define SensorReadings  144            // maximum number of sensor readings, typically 144/day at 6-per-hour
 #define NumOfSensors    2              // number of sensors (+1), set by the graphing section
