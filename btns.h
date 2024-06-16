@@ -11,10 +11,10 @@
     COOLING_OFF; \
   }
 
-#define FULL_OFF_HEAP \
+#define FULL_OFF_HEAT \
   { \
-    HEAP_OURSCREEN; \
-    HEAP_OFF; \
+    HEAT_OURSCREEN; \
+    HEAT_OFF; \
   }
 
 
@@ -131,19 +131,19 @@ void callbackBtn1() {
 
     case EB_CLICK:
       Serial.println("Btn1 clicked");
-      if (!(HEAP_ONSCREEN)) {
-        HEAP_ONSCREEN;
+      if (!(HEAT_ONSCREEN)) {
+        HEAT_ONSCREEN;
         FULL_OFF_COOLING;
         STOP_OFF;
-      } else if (HEAP_ONSCREEN && FAN_CHECK && !(HEAP_CHECK)) {
-        HEAP_ON;
+      } else if (HEAT_ONSCREEN && FAN_CHECK && !(HEAT_CHECK)) {
+        HEAT_ON;
         FULL_OFF_COOLING;
         STOP_OFF;
-      } else if (HEAP_ONSCREEN && !(HEAP_CHECK) && !(FAN_CHECK)) {
+      } else if (HEAT_ONSCREEN && !(HEAT_CHECK) && !(FAN_CHECK)) {
         //Here plase code to print in MENU such as "FAN is not on !"
 
-      } else if (HEAP_ONSCREEN && HEAP_CHECK) {
-        FULL_OFF_HEAP;
+      } else if (HEAT_ONSCREEN && HEAT_CHECK) {
+        FULL_OFF_HEAT;
         STOP_ON;
       }
       break;
@@ -155,15 +155,15 @@ void callbackBtn1() {
 
 void callbackBtn2() {
   switch (btn2.action()) {
-    Serial.println("Btn2 clicked");
+    // Serial.println("Btn2 clicked");
     case EB_CLICK:
       if (!(COOLING_ONSCREEN)) {
         COOLING_ONSCREEN;
-        FULL_OFF_HEAP;
+        FULL_OFF_HEAT;
         STOP_OFF;
       } else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)) {
         COOLING_ON;
-        FULL_OFF_HEAP;
+        FULL_OFF_HEAT;
         STOP_OFF;
       } else if (COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)) {
         //Here plase code to print in MENU such as "FAN is not on !"
@@ -185,11 +185,11 @@ void heatControl(AsyncWebServerRequest *request) {
     String act_state = request->getParam("heat_state")->value();
     if (act_state == "1") {
       state = "ON";
-      HEAP_ON;
+      HEAT_ON;
       request->send(200, "text/html", state);
     } else if (act_state == "0") {
       state = "OFF";
-      HEAP_OFF;
+      HEAT_OFF;
       request->send(200, "text/html", state);
     }
   }
