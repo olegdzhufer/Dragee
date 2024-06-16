@@ -311,32 +311,61 @@ void changeMode() {
   webpage += "<h2>Change Mode</h2><br>";
   webpage += "<div style='text-align: left;font-size:1.1em;'>";
   //<!-- button-->
-  webpage += "<button class=\"button\" onclick=\"send(1)\">LED ON</button>\n";
-  webpage += "<button class=\"button\" onclick=\"send(0)\">LED OFF</button><br>\n";
-  webpage += "</div>\n";
-  webpage += "<br>\n";
-  webpage += "<div><h2>\n";
-  webpage += "LED State: <span id=\"state\">NA</span>\n";
-  webpage += "</h2>\n";
-  webpage += "</div>\n";
-  webpage += "<script>\n";
-  webpage += "function send(led_sts) {\n";
-  webpage += "  var xhttp = new XMLHttpRequest();\n";
-  webpage += "  xhttp.onreadystatechange = function() {\n";
-  webpage += "    if (this.readyState == 4 && this.status == 200) {\n";
-  webpage += "      document.getElementById(\"state\").innerHTML = this.responseText;\n";
-  webpage += "    }\n";
-  webpage += "  };\n";
-  webpage += "  xhttp.open(\"GET\", \"led_set?state=\"+led_sts, true);\n";
-  webpage += "  xhttp.send();\n";
-  webpage += "}\n";
-  webpage += "setInterval(function() {\n";
-  webpage += "  getData();\n";
-  webpage += "}, 2000);\n";
-  webpage += "}\n";
-  webpage += "</script>\n";
-
-
+  // Heat buttons
+  webpage += "      <button class=\"button\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #4CAF50; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_heat(1)\">HEAT ON</button>\n";
+  webpage += "      <button class=\"button off\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #f44336; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_heat(0)\">HEAT OFF</button><br>\n";
+  // Cold buttons
+  webpage += "      <button class=\"button\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #4CAF50; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_cold(2)\">COLD ON</button>\n";
+  webpage += "      <button class=\"button off\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #f44336; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_cold(3)\">COLD OFF</button><br>\n";
+  // Fan buttons
+  webpage += "      <button class=\"button\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #4CAF50; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_fan(4)\">FAN ON</button>\n";
+  webpage += "      <button class=\"button off\" style='font-size: 1.1em; padding: 10px 20px; margin: 5px; color: white; background-color: #f44336; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;' onclick=\"send_fan(5)\">FAN OFF</button><br>\n";
+  webpage += "    </div>\n";
+  webpage += "    <br>\n";
+  webpage += "    <div>\n";
+  webpage += "      <h2>\n";
+  webpage += "        HEAT State: <span id=\"heat_state\">NA</span>\n";
+  webpage += "      </h2>\n";
+  webpage += "      <h2>\n";
+  webpage += "        COLD State: <span id=\"cold_state\">NA</span>\n";
+  webpage += "      </h2>\n";
+  webpage += "      <h2>\n";
+  webpage += "        FAN State: <span id=\"fan_state\">NA</span>\n";
+  webpage += "      </h2>\n";
+  webpage += "    </div>\n";
+  webpage += "    <script>\n";
+  webpage += "      function send_heat(btn_sts) {\n";
+  webpage += "        var xhttp = new XMLHttpRequest();\n";
+  webpage += "        xhttp.onreadystatechange = function() {\n";
+  webpage += "          if (this.readyState == 4 && this.status == 200) {\n";
+  webpage += "            document.getElementById(\"heat_state\").innerHTML = this.responseText;\n";
+  webpage += "          }\n";
+  webpage += "        };\n";
+  webpage += "        xhttp.open(\"GET\", \"heat_set?heat_state=\" + btn_sts, true);\n";
+  webpage += "        xhttp.send();\n";
+  webpage += "      }\n";
+  webpage += "      function send_cold(btn_sts) {\n";
+  webpage += "        var xhttp = new XMLHttpRequest();\n";
+  webpage += "        xhttp.onreadystatechange = function() {\n";
+  webpage += "          if (this.readyState == 4 && this.status == 200) {\n";
+  webpage += "            document.getElementById(\"cold_state\").innerHTML = this.responseText;\n";
+  webpage += "          }\n";
+  webpage += "        };\n";
+  webpage += "        xhttp.open(\"GET\", \"cold_set?cold_state=\" + btn_sts, true);\n";
+  webpage += "        xhttp.send();\n";
+  webpage += "      }\n";
+  webpage += "      function send_fan(btn_sts) {\n";
+  webpage += "        var xhttp = new XMLHttpRequest();\n";
+  webpage += "        xhttp.onreadystatechange = function() {\n";
+  webpage += "          if (this.readyState == 4 && this.status == 200) {\n";
+  webpage += "            document.getElementById(\"fan_state\").innerHTML = this.responseText;\n";
+  webpage += "          }\n";
+  webpage += "        };\n";
+  webpage += "        xhttp.open(\"GET\", \"fan_set?fan_state=\" + btn_sts, true);\n";
+  webpage += "        xhttp.send();\n";
+  webpage += "      }\n";
+  webpage += "    </script>\n";
+  webpage += "\n";
   append_HTML_footer();
 }
 

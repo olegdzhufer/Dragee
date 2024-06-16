@@ -1,3 +1,4 @@
+#include "ESPAsyncWebServer.h"
 #ifndef serverHost_h
 #define serverHost_h
 
@@ -134,27 +135,20 @@ void serverHandlersSetup() {
   });
 
 
-  server.on("/led_set", HTTP_GET, [](AsyncWebServerRequest *request) {
+  server.on("/changemode", HTTP_GET, [](AsyncWebServerRequest *request) {
     changeMode();
     request->send(200, "text/html", webpage);
-    if (request->hasParam("state")) {
-      String state = request->getParam("state")->value();
-      if (state == "1") {
-        btn1.toggleLed();
-        state = "ON";
-      } else if (state == "0") {
-          state = "OFF";
-          btn1.toggleLed();
-        }
-    }
-  });
-
+});
+  server.on("/heat_set", HTTP_GET, heatControl);
+  server.on("/cold_set", HTTP_GET, coldControl);
+  server.on("/fan_set", HTTP_GET, fanControl);
 }
 
 void startServerHost() {
-    setupDeviceName(serverName);
-    serverHandlersSetup();
-    server.begin();
+  setupDeviceName(serverName);
+  serverHandlersSetup();
+  server.begin();
 }
+
 
 #endif

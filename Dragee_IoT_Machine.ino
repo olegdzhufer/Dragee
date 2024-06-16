@@ -74,7 +74,7 @@ void setup()
 }
 
 void loop()
-{
+{ 
   btnsLoop();
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)

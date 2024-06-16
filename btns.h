@@ -179,8 +179,53 @@ void callbackBtn2() {
   }
 }
 
+void heatControl(AsyncWebServerRequest *request) {
+  String state = "OFF";
+  if (request->hasParam("heat_state")) {
+    String act_state = request->getParam("heat_state")->value();
+    if (act_state == "1") {
+      state = "ON";
+      HEAP_ON;
+      request->send(200, "text/html", state);
+    } else if (act_state == "0") {
+      state = "OFF";
+      HEAP_OFF;
+      request->send(200, "text/html", state);
+    }
+  }
+}
 
+void coldControl(AsyncWebServerRequest *request) {
+  String state = "OFF";
+  if (request->hasParam("cold_state")) {
+    String act_state = request->getParam("cold_state")->value();
+    if (act_state == "2") {
+      state = "ON";
+      COOLING_ON;
+      request->send(200, "text/html", state);
+    } else if (act_state == "3") {
+      state = "OFF";
+      COOLING_OFF;
+      request->send(200, "text/html", state);
+    }
+  }
+}
 
+void fanControl(AsyncWebServerRequest *request) {
+  String state = "OFF";
+  if (request->hasParam("fan_state")) {
+    String act_state = request->getParam("fan_state")->value();
+    if (act_state == "4") {
+      state = "ON";
+      FAN_ON;
+      request->send(200, "text/html", state);
+    } else if (act_state == "5") {
+      state = "OFF";
+      FAN_OFF;
+      request->send(200, "text/html", state);
+    }
+  }
+}
 
 void btnsSetup() {
   btn1.attachCallback(callbackBtn1);
