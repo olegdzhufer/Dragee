@@ -8,7 +8,7 @@
 #include "pins.h"
 #include "secrets.h"
 #include "mDef.h"
-#include "flags.h"
+// #include "flags.h"
 
 String version = "2.0";      // Programme version, see change log at end
 

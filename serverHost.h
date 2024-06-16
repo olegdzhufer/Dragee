@@ -138,7 +138,8 @@ void serverHandlersSetup() {
   server.on("/changemode", HTTP_GET, [](AsyncWebServerRequest *request) {
     changeMode();
     request->send(200, "text/html", webpage);
-});
+  });
+  
   server.on("/heat_set", HTTP_GET, heatControl);
   server.on("/cold_set", HTTP_GET, coldControl);
   server.on("/fan_set", HTTP_GET, fanControl);

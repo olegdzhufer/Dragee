@@ -10,34 +10,21 @@
 #include "settings.h"
 #include "charList.h"
 
+
+
+
+
 Menu menu;
 
-//menu
 Screen* mainS;
 Screen *Heat, *Cooling, *FAN, *STOP;
 Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
-//float tcH = 0, tcC = 0 ;
-//________________________________
 
 
-
-// STATUS_C menuSetup()
-// {
-//     while(1){
-
-//     }
-
-//     return STATUS_OK;
-// }
-
-
-//  Temperature          = 0.0;          // Variable for the current temperature
-// float  TargetTemp           = 25;         // Default thermostat value for set temperature
-// int    FrostTemp            = 5;
 STATUS_t initSection() {
   menu = *(initMenu());
 
-  if (&menu) {
+  // if (&menu) {//always not null
 
     Heat = menu.addScreen_ptr(&menu, (char*)HeatName);
     Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);
@@ -76,8 +63,8 @@ STATUS_t initSection() {
       return FAILURE;
     }
     return STATUS_OK;
-  }
-  return FAILURE;
+  // }
+  // return FAILURE;
 }
 
 bool lcdLoop() {

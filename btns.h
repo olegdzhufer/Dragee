@@ -5,17 +5,6 @@
 #include <EncButton.h>
 #include "settings.h"
 
-#define FULL_OFF_COOLING \
-  { \
-    COOLING_OURSCREEN; \
-    COOLING_OFF; \
-  }
-
-#define FULL_OFF_HEAT \
-  { \
-    HEAT_OURSCREEN; \
-    HEAT_OFF; \
-  }
 
 
 class ButtonSwitch : public VirtButton {
@@ -111,12 +100,12 @@ void callbackSwitch() {
   switch (btnSwitch.action()) {
 
     case EB_HOLD:
-      FAN_ON;
+      // FAN_ON;
       Serial.println("HOLD");
       break;
 
     case EB_RELEASE:
-      FAN_OFF;
+      // FAN_OFF;
       Serial.println("RELEASE");
       break;
       //default:
@@ -130,22 +119,22 @@ void callbackBtn1() {
   switch (btn1.action()) {
 
     case EB_CLICK:
-      Serial.println("Btn1 clicked");
-      if (!(HEAT_ONSCREEN)) {
-        HEAT_ONSCREEN;
-        FULL_OFF_COOLING;
-        STOP_OFF;
-      } else if (HEAT_ONSCREEN && FAN_CHECK && !(HEAT_CHECK)) {
-        HEAT_ON;
-        FULL_OFF_COOLING;
-        STOP_OFF;
-      } else if (HEAT_ONSCREEN && !(HEAT_CHECK) && !(FAN_CHECK)) {
-        //Here plase code to print in MENU such as "FAN is not on !"
+      // Serial.println("Btn1 clicked");
+      // if (!(HEAT_ONSCREEN)) {
+      //   HEAT_ONSCREEN;
+      //   FULL_OFF_COOLING;
+      //   STOP_OFF;
+      // } else if (HEAT_ONSCREEN && FAN_CHECK && !(HEAT_CHECK)) {
+      //   HEAT_ON;
+      //   FULL_OFF_COOLING;
+      //   STOP_OFF;
+      // } else if (HEAT_ONSCREEN && !(HEAT_CHECK) && !(FAN_CHECK)) {
+      //   //Here plase code to print in MENU such as "FAN is not on !"
 
-      } else if (HEAT_ONSCREEN && HEAT_CHECK) {
-        FULL_OFF_HEAT;
-        STOP_ON;
-      }
+      // } else if (HEAT_ONSCREEN && HEAT_CHECK) {
+      //   FULL_OFF_HEAT;
+      //   STOP_ON;
+      // }
       break;
 
     default:
@@ -157,21 +146,21 @@ void callbackBtn2() {
   switch (btn2.action()) {
     // Serial.println("Btn2 clicked");
     case EB_CLICK:
-      if (!(COOLING_ONSCREEN)) {
-        COOLING_ONSCREEN;
-        FULL_OFF_HEAT;
-        STOP_OFF;
-      } else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)) {
-        COOLING_ON;
-        FULL_OFF_HEAT;
-        STOP_OFF;
-      } else if (COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)) {
-        //Here plase code to print in MENU such as "FAN is not on !"
+      // if (!(COOLING_ONSCREEN)) {
+      //   COOLING_ONSCREEN;
+      //   FULL_OFF_HEAT;
+      //   STOP_OFF;
+      // } else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)) {
+      //   COOLING_ON;
+      //   FULL_OFF_HEAT;
+      //   STOP_OFF;
+      // } else if (COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)) {
+      //   //Here plase code to print in MENU such as "FAN is not on !"
 
-      } else if (COOLING_ONSCREEN && COOLING_CHECK) {
-        FULL_OFF_COOLING;
-        STOP_ON;
-      }
+      // } else if (COOLING_ONSCREEN && COOLING_CHECK) {
+      //   FULL_OFF_COOLING;
+      //   STOP_ON;
+      // }
       break;
 
     default:
@@ -185,11 +174,11 @@ void heatControl(AsyncWebServerRequest *request) {
     String act_state = request->getParam("heat_state")->value();
     if (act_state == "1") {
       state = "ON";
-      HEAT_ON;
+      // HEAT_ON;
       request->send(200, "text/html", state);
     } else if (act_state == "0") {
       state = "OFF";
-      HEAT_OFF;
+      // HEAT_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -201,11 +190,11 @@ void coldControl(AsyncWebServerRequest *request) {
     String act_state = request->getParam("cold_state")->value();
     if (act_state == "2") {
       state = "ON";
-      COOLING_ON;
+      // COOLING_ON;
       request->send(200, "text/html", state);
     } else if (act_state == "3") {
       state = "OFF";
-      COOLING_OFF;
+      // COOLING_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -217,11 +206,11 @@ void fanControl(AsyncWebServerRequest *request) {
     String act_state = request->getParam("fan_state")->value();
     if (act_state == "4") {
       state = "ON";
-      FAN_ON;
+      // FAN_ON;
       request->send(200, "text/html", state);
     } else if (act_state == "5") {
       state = "OFF";
-      FAN_OFF;
+      // FAN_OFF;
       request->send(200, "text/html", state);
     }
   }

@@ -16,9 +16,10 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
-#include "menu.h"
+// #include "menu.h"
 #include "btns.h"
-// #include "relay.h"
+// #include "relay.h" &&&&???????????
+
 
 void thingSpeakSend(float temperature)
 {
@@ -69,7 +70,7 @@ void setup()
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   btnsSetup();
-  initSection();
+  // initSection();
 
 }
 
@@ -100,7 +101,7 @@ void loop()
     thingSpeakSend(Temperature);
   }
 
-  lcdLoop();
+  // lcdLoop();
 }
 
 
