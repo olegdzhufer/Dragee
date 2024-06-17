@@ -21,12 +21,7 @@ public:
   {
   }
 
-  Relay(uint8_t pin, uint8_t initState = LOW)
-  {
-    init(pin, initState);
-  }
-
-  void init(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
     this->pin = pin;
     this->state = initState;
@@ -109,17 +104,14 @@ public:
   }
 };
 
-Relay relayHeat();
-Relay relayCool();
-Relay relayFan();
+Relay relayHeat(HEAT_PIN, LOW);
+Relay relayCool(COOL_PIN, LOW);
+Relay relayFan(FAN_PIN, LOW);
 
 void relaySetup()
 {
   Serial.println(__FILE__);
 
-  relayHeat.init(HEAT_PIN, LOW);
-  relayCool.init(COOL_PIN, LOW);
-  relayFan.init(FAN_PIN, LOW);
 
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);
@@ -134,5 +126,6 @@ void relayTick()
   relayCool.tick();
   relayFan.tick();
 }
+
 
 #endif
