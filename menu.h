@@ -6,7 +6,6 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <MenuLib.h>
-
 #include "settings.h"
 #include "charList.h"
 
@@ -70,6 +69,7 @@ STATUS_t initSection() {
 bool lcdLoop() {
   if (CHECK_UPDATE_MENU) {
     menu.printScreen(&menu);
+    CHECK_UPDATE_MENU = false;
   }
 }
 

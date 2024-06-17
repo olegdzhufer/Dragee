@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "settings.h"
-
+#include "menu.h"
 class Relay
 {
 private:
@@ -15,6 +15,8 @@ public:
   bool allowed = true;
   bool isMain = false;
 
+  Screen *screen = NULL;
+
   Relay()
   {
   }
@@ -24,12 +26,28 @@ public:
     init(pin, initState);
   }
 
-  void init(uint8_t pin, uint8_t initState = LOW)
+  void init(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
     this->pin = pin;
     this->state = initState;
+
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state);
+
+    if(screen != NULL)
+    {
+      attachScreen(screen);
+    }
+  }
+
+  bool attachScreen(Screen* screen)
+  {
+    if(screen != NULL)
+    {
+      this->screen = screen;
+      return true;
+    }
+    return false;
   }
 
   void setMain(bool value)
@@ -68,7 +86,11 @@ public:
       {
         changeFlag = false;
         toggle();
+
+        menu.curr = screen;
+        CHECK_UPDATE_MENU = true;
       }
+      
     }
     else
     {
@@ -82,6 +104,8 @@ public:
 
   ~Relay()
   {
+
+    this->screen = NULL;
   }
 };
 
@@ -92,10 +116,15 @@ Relay relayFan();
 void relaySetup()
 {
   Serial.println(__FILE__);
-  
+
   relayHeat.init(HEAT_PIN, LOW);
   relayCool.init(COOL_PIN, LOW);
   relayFan.init(FAN_PIN, LOW);
+
+  relayHeat.attachScreen(Heat);
+  relayCool.attachScreen(Cooling);
+  relayFan.attachScreen(FAN);
+
   relayFan.setMain(true);
 }
 

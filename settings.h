@@ -65,6 +65,7 @@ int          SensorReadingPointer[NumOfSensors]; // Used for sensor data storage
 float        Hysteresis     = 0.2;               // Heating Hysteresis default value
 
 
+uint8_t CHECK_UPDATE_MENU = 0;
 
 //################ VARIABLES ################
 const char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
