@@ -17,6 +17,11 @@
 #define REL2 27
 #define REL3 14 
 
+#define HEAT_PIN REL1
+#define COOL_PIN REL2
+#define FAN_PIN REL3
+
+
 // #define V33 12
 
 #define ONE_WIRE_BUS 13

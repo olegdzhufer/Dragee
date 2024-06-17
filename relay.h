@@ -1,46 +1,109 @@
 #ifndef RELAY_H
 #define RELAY_H
 
+#include <Arduino.h>
+#include "settings.h"
 
-void relay_setup()
+class Relay
 {
-  digitalWrite(REL1, RelayState1);
-  pinMode(REL1, OUTPUT);
+private:
+  uint8_t pin;
+  uint8_t state = false;
+  uint8_t changeFlag = false;
 
-  digitalWrite(REL2, RelayState2);
-  pinMode(REL2, OUTPUT);
+public:
+  bool allowed = true;
+  bool isMain = false;
 
-  digitalWrite(REL3, RelayState3);
-  pinMode(REL3, OUTPUT);
-}
-
-void relay_handler1(){
-  if(changeRelayState1){
-    RelayState1 =! RelayState1;
-    digitalWrite(REL1, RelayState1);
-    changeRelayState1 = false;
+  Relay()
+  {
   }
-}
 
-void relay_handler2(){
-  if(changeRelayState2){
-    RelayState2 != RelayState2;
-    digitalWrite(REL2, RelayState2);
-    changeRelayState2 = false;
+  Relay(uint8_t pin, uint8_t initState = LOW)
+  {
+    init(pin, initState);
   }
-}
 
-void relay_handler3(){
-  if(changeRelayState3){
-    RelayState3 != RelayState3;
-    digitalWrite(REL3, RelayState3);
-    changeRelayState3 = false;
+  void init(uint8_t pin, uint8_t initState = LOW)
+  {
+    this->pin = pin;
+    this->state = initState;
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, state);
   }
+
+  void setMain(bool value)
+  {
+    isMain = value;
+  }
+
+  void setAllowed(bool value)
+  {
+    allowed = value;
+  }
+
+  void toggleFlag()
+  {
+    changeFlag = !changeFlag;
+  }
+
+  void toggle()
+  {
+    state = !state;
+    digitalWrite(pin, state);
+  }
+
+  void tick()
+  {
+
+    if (allowed || isMain)
+    {
+
+      if (isMain)
+      {
+        allowed = state;
+      }
+
+      if (changeFlag)
+      {
+        changeFlag = false;
+        toggle();
+      }
+    }
+    else
+    {
+      if (state == HIGH)
+      {
+        state = LOW;
+        digitalWrite(pin, state);
+      }
+    }
+  }
+
+  ~Relay()
+  {
+  }
+};
+
+Relay relayHeat();
+Relay relayCool();
+Relay relayFan();
+
+void relaySetup()
+{
+  Serial.println(__FILE__);
+  
+  relayHeat.init(HEAT_PIN, LOW);
+  relayCool.init(COOL_PIN, LOW);
+  relayFan.init(FAN_PIN, LOW);
+  relayFan.setMain(true);
 }
 
-void relay_loop(){
-  relay_handler1();
-  relay_handler2();
-  relay_handler3();
+void relayTick()
+{
+  relayHeat.tick();
+  relayCool.tick();
+  relayFan.tick();
 }
+
 #endif

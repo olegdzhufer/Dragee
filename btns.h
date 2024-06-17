@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <EncButton.h>
 #include "settings.h"
-
+#include "relay.h"
 
 
 class ButtonSwitch : public VirtButton {
@@ -66,6 +66,11 @@ public:
       case EB_CLICK:
         Serial.println("click");
         toggleLed();
+        if (relay != NULL)
+        {
+          relay->toggleFlag();
+        }
+        
         callCallback();
         break;
       default:
@@ -83,10 +88,23 @@ public:
     }
   }
 
+  bool attachRelay(Relay *relay) {
+    if (relay == NULL)
+    {
+      return false;
+    }
+    this->relay = relay;
+    return true;
+  }
+
+
+
 private:
   uint8_t btnPin;
   uint8_t ledPin;
   uint8_t ledState;
+
+  Relay *relay=NULL;
 };
 
 
@@ -108,11 +126,10 @@ void callbackSwitch() {
       // FAN_OFF;
       Serial.println("RELEASE");
       break;
-      //default:
-      //  Serial.println("ERROR");
+    default:
+      break;
   }
 }
-
 
 
 void callbackBtn1() {
@@ -217,9 +234,14 @@ void fanControl(AsyncWebServerRequest *request) {
 }
 
 void btnsSetup() {
+  Serial.println(__FILE__);
   btn1.attachCallback(callbackBtn1);
   btn2.attachCallback(callbackBtn2);
   btnSwitch.attachCallback(callbackSwitch);
+
+  btn1.attachRelay(&relayHeat);
+  btn2.attachRelay(&relayCool);
+  btnSwitch.attachRelay(&relayFan);
 }
 
 void btnsLoop() {

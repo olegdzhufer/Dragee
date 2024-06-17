@@ -18,7 +18,7 @@
 
 // #include "menu.h"
 #include "btns.h"
-// #include "relay.h" &&&&???????????
+#include "relay.h" 
 
 
 void thingSpeakSend(float temperature)
@@ -61,7 +61,10 @@ void setup()
   setupSystem();
   initWiFi();
   setupTime();
-  startSPIFFS();      // Start SPIFFS filing system
+  startSPIFFS();   
+
+  relaySetup();      
+
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
   startServerHost();
@@ -76,7 +79,8 @@ void setup()
 
 void loop()
 { 
-  btnsLoop();
+  btnsLoop(); 
+  relayTick();
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {
