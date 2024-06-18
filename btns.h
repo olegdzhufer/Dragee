@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "settings.h"
 #include "relay.h"
+#include "debug_helper.h"
 
 bool fan = false;
 
@@ -41,7 +42,9 @@ public:
     bool tick = VirtButton::tick(EB_read(btnPin));
     if (tick && this->workEn)
     {
-      Serial.print("check");
+      
+      debugMeseg("check");
+
       pressedBtn();
 
       return true;
@@ -64,21 +67,22 @@ public:
         toggleLed();
         if (relay != NULL)
         {
-          Serial.print("SWICH tick");
+          debugMeseg("SWICH tick");
+
           relay->toggleFlag();
-          
         }
-        // menu.printScreen(&menu);
         callCallback();
 
-        Serial.println("HOLD");
+        debugMeseg("HOLD");
+
         break;
 
       case EB_RELEASE:
         // FAN_OFF;
+        menu.curr = STOP;
         relay->toggleFlag();
         fan = false;
-        Serial.println("RELEASE");
+        debugMeseg("RELEASE");
         break;
       default:
         break;
@@ -93,7 +97,7 @@ public:
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
-    Serial.print("Led");
+    debugMeseg("Led");
     this->ledPin = ledPin;
     this->ledState = ledState;
     pinMode(ledPin, OUTPUT);
@@ -109,13 +113,13 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    Serial.println("Action \n");
+    debugMeseg("Action ");
 
     switch (btnState)
     {
 
     case EB_CLICK:
-      Serial.println("click");
+      debugMeseg("click");
       toggleLed();
       if (relay != NULL)
       {
@@ -125,7 +129,7 @@ public:
       callCallback();
       break;
     default:
-      Serial.println("other action");
+      debugMeseg("other action");
     }
   }
 
@@ -161,13 +165,17 @@ public:
     digitalWrite(ledPin, ledState);
   }
 
+  void OffMode(){
+    this->LedOff();
+    this->relay->relayOff();
+  }
+
   void EnWork(){
     this->workEn = true;
   }
   void DeWork(){
     this->workEn = false;
-    this->LedOff();
-    this->relay->relayOff();
+    OffMode();
   }
 
 private:
@@ -194,8 +202,7 @@ void callbackBtn1()
   {
 
   case EB_CLICK:
-    Serial.println("Btn1 clicked");
-   
+    btn2.OffMode();
     break;
 
   default:
@@ -209,8 +216,7 @@ void callbackBtn2()
   {
   
   case EB_CLICK:
-    Serial.println("Btn2 clicked");
-
+    btn1.OffMode();
     break;
 
   default:
@@ -227,13 +233,11 @@ void heatControl(AsyncWebServerRequest *request)
     if (act_state == "1")
     {
       state = "ON";
-      // HEAT_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "0")
     {
       state = "OFF";
-      // HEAT_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -248,13 +252,11 @@ void coldControl(AsyncWebServerRequest *request)
     if (act_state == "2")
     {
       state = "ON";
-      // COOLING_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "3")
     {
       state = "OFF";
-      // COOLING_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -269,13 +271,11 @@ void fanControl(AsyncWebServerRequest *request)
     if (act_state == "4")
     {
       state = "ON";
-      // FAN_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "5")
     {
       state = "OFF";
-      // FAN_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -287,7 +287,6 @@ void btnsSetup()
   btn1.attachCallback(callbackBtn1);
   btn2.attachCallback(callbackBtn2);
   btnSwitch.EnWork();
-  btnSwitch.callbackOnPress = callbackSwitch;
 
 
   btn1.attachRelay(&relayHeat);

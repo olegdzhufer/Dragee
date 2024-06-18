@@ -15,6 +15,7 @@
 #include "serverHost.h"
 #include "timerThermo.h"
 #include "webPages.h"
+#include "debug_helper.h"
 
 // #include "menu.h"
 #include "btns.h"
@@ -27,17 +28,11 @@ void thingSpeakSend(float temperature)
       WiFiClient client; 
       HTTPClient http;
 
-      // String url = "http://" + String(serverLinkApi) + "/update?api_key=" + apiKey + "&field1=" + String(temperature);
-      // http.begin(url);
       String url = "http://" + String(serverLinkApi) + "/update";
       http.begin(client, url);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
       String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);           
-      // int httpCode = http.GET();
-      // if(httpCode > 0) {
-        // String payload = http.getString();
-        // Serial.println(payload);
-      // }
+
 
       int httpResponseCode = http.POST(httpRequestData);
        /*
