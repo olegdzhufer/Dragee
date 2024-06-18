@@ -24,6 +24,7 @@
 
 void thingSpeakSend(float temperature)
 {
+  Serial.println(__func__);
   if(WiFi.status() == WL_CONNECTED) {
       WiFiClient client; 
       HTTPClient http;
@@ -102,6 +103,7 @@ void loop()
 
 void AssignSensorReadingsToArray()
 {
+  Serial.println(__func__);
   SensorReading[1][0] = 1;
   SensorReading[1][1] = Temperature;
   SensorReading[1][2] = RelayState;
@@ -110,6 +112,7 @@ void AssignSensorReadingsToArray()
 
 void AddReadingToSensorData(byte RxdFromID, float Temperature)
 { 
+  Serial.println(__func__);
   byte ptr, p;
   ptr = SensorReadingPointer[RxdFromID];
   sensordata[RxdFromID][ptr].Temp = Temperature;

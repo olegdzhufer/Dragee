@@ -190,11 +190,12 @@ ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
 void callbackSwitch()
 {
-
+  Serial.println(__func__);
 }
 
 void callbackBtn1()
 {
+  Serial.println(__func__);
   switch (btn1.action())
   {
 
@@ -209,6 +210,7 @@ void callbackBtn1()
 
 void callbackBtn2()
 {
+  Serial.println(__func__);
   switch (btn2.action())
   {
   
@@ -223,6 +225,7 @@ void callbackBtn2()
 
 void heatControl(AsyncWebServerRequest *request)
 {
+  Serial.println(__func__);
   String state = "OFF";
   if (request->hasParam("heat_state"))
   {
@@ -244,6 +247,7 @@ void heatControl(AsyncWebServerRequest *request)
 
 void coldControl(AsyncWebServerRequest *request)
 {
+  Serial.println(__func__);
   String state = "OFF";
   if (request->hasParam("cold_state"))
   {
@@ -265,6 +269,7 @@ void coldControl(AsyncWebServerRequest *request)
 
 void fanControl(AsyncWebServerRequest *request)
 {
+  Serial.println(__func__);
   String state = "OFF";
   if (request->hasParam("fan_state"))
   {
@@ -286,6 +291,7 @@ void fanControl(AsyncWebServerRequest *request)
 
 void btnsSetup()
 {
+  Serial.println(__func__);
   Serial.println(__FILE__);
   btn1.attachCallback(callbackBtn1);
   btn2.attachCallback(callbackBtn2);

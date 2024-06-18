@@ -122,6 +122,7 @@ Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()
 {
+  Serial.println(__func__);
   Serial.println(__FILE__);
 
   relayHeat.attachScreen(Heat);

@@ -21,6 +21,7 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
 
 
 STATUS_t initSection() {
+  Serial.println(__func__);
   menu = *(initMenu());
 
   // if (&menu) {//always not null
