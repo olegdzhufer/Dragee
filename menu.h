@@ -1,5 +1,4 @@
 #ifndef MENU_SETUP_H
-
 #define MENU_SETUP_H
 
 
@@ -8,17 +7,13 @@
 #include <MenuLib.h>
 #include "settings.h"
 #include "charList.h"
-
-
-
-
+#include "countUpTimer.h"
 
 Menu menu;
 
 Screen* mainS;
 Screen *Heat, *Cooling, *FAN, *STOP;
 Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
-
 
 STATUS_t initSection() {
   menu = *(initMenu());
@@ -35,6 +30,8 @@ STATUS_t initSection() {
       TempSetH->val->setfloat(TempSetH->val, TargetTemp);
       TempCurH = Heat->newLine_ptr(Heat, (char*)TCur, (char*)TempCurr, NULL);
       TempCurH->val->setfloat(TempCurH->val, Temperature);
+      onInterval();
+
     } else {
       return FAILURE;
     }
@@ -61,8 +58,6 @@ STATUS_t initSection() {
     } else {
       return FAILURE;
     }
-
-
     
     return STATUS_OK;
   // }
