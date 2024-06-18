@@ -35,13 +35,7 @@ void thingSpeakSend(float temperature)
 
 
       int httpResponseCode = http.POST(httpRequestData);
-       /*
-      // If you need an HTTP request with a content type: application/json, use the following:
-      http.addHeader("Content-Type", "application/json");
-      // JSON data to send with HTTP POST
-      String httpRequestData = "{\"api_key\":\"" + apiKey + "\",\"field1\":\"" + String(random(40)) + "\"}";           
-      // Send HTTP POST request
-      int httpResponseCode = http.POST(httpRequestData);*/
+
      
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);

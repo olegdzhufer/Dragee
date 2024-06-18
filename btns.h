@@ -6,7 +6,7 @@
 #include "menu.h"
 #include "settings.h"
 #include "relay.h"
-#include "debug_helper.h"
+
 
 bool fan = false;
 
@@ -42,9 +42,7 @@ public:
     bool tick = VirtButton::tick(EB_read(btnPin));
     if (tick && this->workEn)
     {
-      
-      debugMeseg("check");
-
+      Serial.print("check");
       pressedBtn();
 
       return true;
@@ -67,14 +65,13 @@ public:
         toggleLed();
         if (relay != NULL)
         {
-          debugMeseg("SWICH tick");
-
+          Serial.print("SWICH tick");
           relay->toggleFlag();
+          
         }
         callCallback();
 
-        debugMeseg("HOLD");
-
+        Serial.println("HOLD");
         break;
 
       case EB_RELEASE:
@@ -82,7 +79,7 @@ public:
         menu.curr = STOP;
         relay->toggleFlag();
         fan = false;
-        debugMeseg("RELEASE");
+        Serial.println("RELEASE");
         break;
       default:
         break;
@@ -97,7 +94,7 @@ public:
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
-    debugMeseg("Led");
+    Serial.print("Led");
     this->ledPin = ledPin;
     this->ledState = ledState;
     pinMode(ledPin, OUTPUT);
@@ -113,13 +110,13 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    debugMeseg("Action ");
+    Serial.println("Action \n");
 
     switch (btnState)
     {
 
     case EB_CLICK:
-      debugMeseg("click");
+      Serial.println("click");
       toggleLed();
       if (relay != NULL)
       {
@@ -129,7 +126,7 @@ public:
       callCallback();
       break;
     default:
-      debugMeseg("other action");
+      Serial.println("other action");
     }
   }
 
@@ -233,11 +230,13 @@ void heatControl(AsyncWebServerRequest *request)
     if (act_state == "1")
     {
       state = "ON";
+      // HEAT_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "0")
     {
       state = "OFF";
+      // HEAT_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -252,11 +251,13 @@ void coldControl(AsyncWebServerRequest *request)
     if (act_state == "2")
     {
       state = "ON";
+      // COOLING_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "3")
     {
       state = "OFF";
+      // COOLING_OFF;
       request->send(200, "text/html", state);
     }
   }
@@ -271,11 +272,13 @@ void fanControl(AsyncWebServerRequest *request)
     if (act_state == "4")
     {
       state = "ON";
+      // FAN_ON;
       request->send(200, "text/html", state);
     }
     else if (act_state == "5")
     {
       state = "OFF";
+      // FAN_OFF;
       request->send(200, "text/html", state);
     }
   }
