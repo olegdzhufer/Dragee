@@ -71,7 +71,11 @@ STATUS_t initSection() {
 
 bool lcdLoop() {
   if (CHECK_UPDATE_MENU) {
-    menu.printScreen(&menu);
+    if(menu.curr){
+ 
+     Serial.println(menu.curr->name);
+      menu.printScreen(&menu);
+    }
     CHECK_UPDATE_MENU = false;
   }
 }

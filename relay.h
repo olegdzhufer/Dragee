@@ -99,6 +99,15 @@ public:
     }
   }
 
+  void relayOff(){
+    state = LOW;
+    digitalWrite(pin, state);
+  }
+  void relayOn(){
+    state = HIGH;
+    digitalWrite(pin, state);
+  }
+
   ~Relay()
   {
 

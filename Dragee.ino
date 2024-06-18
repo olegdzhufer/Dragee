@@ -103,10 +103,10 @@ void loop()
   if (millis() - lastConnectionTime > 10000) {
     lastConnectionTime = millis();
     Temperature = readSensor();
-    thingSpeakSend(Temperature);
+    // thingSpeakSend(Temperature);
   }
 
-  // lcdLoop();
+  //lcdLoop();
 }
 
 

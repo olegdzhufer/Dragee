@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "settings.h"
 
-#define VIRT_SENSOR 0
+#define VIRT_SENSOR 1
 
 float readSensorComplete()
 {
