@@ -1,7 +1,7 @@
 #pragma once
 
-#define SECRET_SSID "Margaryta Guest"		
-#define SECRET_PASS "Margaryta"	
+#define SECRET_SSID "realme 11"		
+#define SECRET_PASS "alterPrimo4"	
 
 #define SECRET_AP_SSID "DrageeIoT"
 #define SECRET_AP_PASS "1234556789"

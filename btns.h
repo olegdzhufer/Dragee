@@ -38,6 +38,7 @@ public:
     bool tick = VirtButton::tick(EB_read(btnPin));
     if (tick)
     {
+      Serial.print("check");
       pressedBtn();
 
       return true;
@@ -58,6 +59,7 @@ public:
         toggleLed();
         if (relay != NULL)
         {
+          Serial.print("SWICH tick");
           relay->toggleFlag();
         }
         // menu.printScreen(&menu);
@@ -83,6 +85,7 @@ public:
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
+    Serial.print("Led");
     this->ledPin = ledPin;
     this->ledState = ledState;
     pinMode(ledPin, OUTPUT);
@@ -98,6 +101,8 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
+    Serial.println("Action \n");
+
     switch (btnState)
     {
 
@@ -161,22 +166,8 @@ void callbackBtn1()
   {
 
   case EB_CLICK:
-    // Serial.println("Btn1 clicked");
-    // if (!(HEAT_ONSCREEN)) {
-    //   HEAT_ONSCREEN;
-    //   FULL_OFF_COOLING;
-    //   STOP_OFF;
-    // } else if (HEAT_ONSCREEN && FAN_CHECK && !(HEAT_CHECK)) {
-    //   HEAT_ON;
-    //   FULL_OFF_COOLING;
-    //   STOP_OFF;
-    // } else if (HEAT_ONSCREEN && !(HEAT_CHECK) && !(FAN_CHECK)) {
-    //   //Here plase code to print in MENU such as "FAN is not on !"
-
-    // } else if (HEAT_ONSCREEN && HEAT_CHECK) {
-    //   FULL_OFF_HEAT;
-    //   STOP_ON;
-    // }
+    Serial.println("Btn1 clicked");
+   
     break;
 
   default:
@@ -188,23 +179,10 @@ void callbackBtn2()
 {
   switch (btn2.action())
   {
-  // Serial.println("Btn2 clicked");
+  
   case EB_CLICK:
-    // if (!(COOLING_ONSCREEN)) {
-    //   COOLING_ONSCREEN;
-    //   FULL_OFF_HEAT;
-    //   STOP_OFF;
-    // } else if (COOLING_ONSCREEN && FAN_CHECK && !(COOLING_CHECK)) {
-    //   COOLING_ON;
-    //   FULL_OFF_HEAT;
-    //   STOP_OFF;
-    // } else if (COOLING_ONSCREEN && !(COOLING_CHECK) && !(FAN_CHECK)) {
-    //   //Here plase code to print in MENU such as "FAN is not on !"
+    Serial.println("Btn2 clicked");
 
-    // } else if (COOLING_ONSCREEN && COOLING_CHECK) {
-    //   FULL_OFF_COOLING;
-    //   STOP_ON;
-    // }
     break;
 
   default:

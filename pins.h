@@ -10,7 +10,7 @@
 #define LED_PIN3 17
 
 #define CLK 4                      
-#define DT  0                      
+#define DT  12                      
 #define SW  2                       
 
 #define REL1 26

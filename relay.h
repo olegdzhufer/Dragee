@@ -82,7 +82,9 @@ public:
         changeFlag = false;
         toggle();
 
-        menu.curr = screen;
+        if(this->screen != NULL){
+          menu.curr = this->screen;
+        }
         CHECK_UPDATE_MENU = true;
       }
       
@@ -104,14 +106,13 @@ public:
   }
 };
 
-Relay relayHeat(HEAT_PIN, LOW);
-Relay relayCool(COOL_PIN, LOW);
-Relay relayFan(FAN_PIN, LOW);
+Relay relayHeat(HEAT_PIN, LOW, Heat);
+Relay relayCool(COOL_PIN, LOW, Cooling);
+Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()
 {
   Serial.println(__FILE__);
-
 
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);

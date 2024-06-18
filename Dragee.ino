@@ -58,11 +58,12 @@ void thingSpeakSend(float temperature)
 
 void setup()
 {
+
   setupSystem();
   initWiFi();
   setupTime();
   startSPIFFS();   
-
+  initSection();
   relaySetup();      
 
   initDaysArray(); // Initialise the array for storage and set some values
@@ -73,7 +74,7 @@ void setup()
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   btnsSetup();
-  // initSection();
+
 
 }
 

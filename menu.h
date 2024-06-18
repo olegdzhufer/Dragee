@@ -61,6 +61,9 @@ STATUS_t initSection() {
     } else {
       return FAILURE;
     }
+
+
+    
     return STATUS_OK;
   // }
   // return FAILURE;
