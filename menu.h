@@ -9,7 +9,7 @@
 #include "settings.h"
 #include "charList.h"
 
-
+uint8_t timeStoper = 0;
 
 
 
@@ -72,7 +72,9 @@ STATUS_t initSection() {
 
 bool lcdLoop() {
   if (CHECK_UPDATE_MENU) {
+    Serial.println(__func__);
     if(menu.curr){
+      timeStoper = millis();
  
      Serial.println(menu.curr->name);
       menu.printScreen(&menu);

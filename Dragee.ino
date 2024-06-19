@@ -65,7 +65,8 @@ void setup()
 
   btnsSetup();
 
-
+  menu.curr = STOP;
+  menu.printScreen(&menu);
 }
 
 void loop()

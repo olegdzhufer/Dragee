@@ -67,6 +67,10 @@ public:
     digitalWrite(pin, state);
   }
 
+  bool workStatus(){
+    return this->state;
+  }
+
   void tick()
   {
 
@@ -83,10 +87,11 @@ public:
         changeFlag = false;
         toggle();
 
-        if(this->screen != NULL){
+        if(this->screen != NULL && this->workStatus()){
           menu.curr = this->screen;
+          CHECK_UPDATE_MENU = true;
         }
-        CHECK_UPDATE_MENU = true;
+        
       }
       
     }

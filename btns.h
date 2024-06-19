@@ -78,7 +78,9 @@ public:
         // FAN_OFF;
         menu.curr = STOP;
         relay->toggleFlag();
+        this->LedOff();
         fan = false;
+        CHECK_UPDATE_MENU = true;
         Serial.println("RELEASE");
         break;
       default:
@@ -122,8 +124,8 @@ public:
       {
         relay->toggleFlag();
       }
-      menu.printScreen(&menu);
       callCallback();
+      CHECK_UPDATE_MENU = true;
       break;
     default:
       Serial.println("other action");
