@@ -15,15 +15,17 @@ class ButtonSwitch : public VirtButton
 public:
   void (*callbackOnPress)() = NULL;
 
-  ButtonSwitch() {}
+  ButtonSwitch() {Serial.println(__func__);}
 
   ButtonSwitch(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
+    Serial.println(__func__);
     init(btnPin, ledPin, btnMode, btnLevel, ledInitState, workEn);
   }
 
   void init(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
+    Serial.println(__func__);
     this->btnPin = btnPin;
     this->workEn = workEn;
     EB_mode(btnPin, btnMode);
@@ -34,6 +36,7 @@ public:
 
   bool read()
   {
+    Serial.println(__func__);
     return EB_read(btnPin) ^ bf.read(EB_INV);
   }
 
@@ -42,7 +45,8 @@ public:
     bool tick = VirtButton::tick(EB_read(btnPin));
     if (tick && this->workEn)
     {
-      Serial.print("check");
+      Serial.println(__func__);
+      // Serial.print("check");
       pressedBtn();
 
       return true;
@@ -56,6 +60,7 @@ public:
   {
     if (tick()&& this->workEn)
     {
+      Serial.println(__func__);
       switch (VirtButton::action())
       {
 
@@ -65,9 +70,7 @@ public:
         toggleLed();
         if (relay != NULL)
         {
-          Serial.print("SWICH tick");
           relay->toggleFlag();
-          
         }
         callCallback();
 
@@ -76,6 +79,7 @@ public:
 
       case EB_RELEASE:
         // FAN_OFF;
+        Serial.println(__func__);
         menu.curr = STOP;
         relay->toggleFlag();
         this->LedOff();
@@ -91,11 +95,13 @@ public:
 
   bool tickRaw()
   {
+    Serial.println(__func__);
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
+    Serial.println(__func__);
     Serial.print("Led");
     this->ledPin = ledPin;
     this->ledState = ledState;
@@ -105,6 +111,7 @@ public:
 
   void toggleLed()
   {
+    Serial.println(__func__);
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
   }
@@ -112,13 +119,14 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    Serial.println("Action \n");
+    // Serial.println("Action \n");
+    Serial.println(__func__);
 
     switch (btnState)
     {
 
     case EB_CLICK:
-      Serial.println("click");
+      // Serial.println("click");
       toggleLed();
       if (relay != NULL)
       {
@@ -134,11 +142,13 @@ public:
 
   void attachCallback(void (*callback)())
   {
+    Serial.println(__func__);
     this->callbackOnPress = callback;
   }
 
   void callCallback()
   {
+    Serial.println(__func__);
     if (callbackOnPress != NULL)
     {
       callbackOnPress();
@@ -147,6 +157,7 @@ public:
 
   bool attachRelay(Relay *relay)
   {
+    Serial.println(__func__);
     if (relay == NULL)
     {
       return false;
@@ -156,23 +167,28 @@ public:
   }
 
   void LedOff(){
+    Serial.println(__func__);
     ledState = LOW;
     digitalWrite(ledPin, ledState);
   }
   void LedOn(){
+    Serial.println(__func__);
     ledState = HIGH;
     digitalWrite(ledPin, ledState);
   }
 
   void OffMode(){
+    Serial.println(__func__);
     this->LedOff();
     this->relay->relayOff();
   }
 
   void EnWork(){
+    Serial.println(__func__);
     this->workEn = true;
   }
   void DeWork(){
+    Serial.println(__func__);
     this->workEn = false;
     OffMode();
   }
@@ -308,9 +324,11 @@ void btnsSetup()
 void btnsLoop()
 {
   if(fan){
+    Serial.println(__func__);
     btn1.EnWork();
     btn2.EnWork();
   }else{
+    Serial.println(__func__);
     btn1.DeWork();
     btn2.DeWork();
   }

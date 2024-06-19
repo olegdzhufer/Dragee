@@ -9,8 +9,12 @@
 #include "settings.h"
 #include "charList.h"
 
-uint8_t timeStoper = 0;
+uint8_t LCD_FLAG = 0x00;
 
+#define FLAGL       LCD_FLAG
+
+#define UPDATE_LCD  FLAGL = 0xFF;
+#define UPD_SUCC    FLAGL = 0x00
 
 
 Menu menu;
@@ -70,16 +74,10 @@ STATUS_t initSection() {
   // return FAILURE;
 }
 
-bool lcdLoop() {
-  if (CHECK_UPDATE_MENU) {
-    Serial.println(__func__);
-    if(menu.curr){
-      timeStoper = millis();
- 
-     Serial.println(menu.curr->name);
-      menu.printScreen(&menu);
-    }
-    CHECK_UPDATE_MENU = false;
+bool LoopLCD() {
+  if(FLAGL && &menu && menu.lcd && menu.curr){
+    menu.printScreen(&menu);
+    UPD_SUCC;
   }
 }
 

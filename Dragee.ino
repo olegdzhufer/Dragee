@@ -55,7 +55,6 @@ void setup()
   startSPIFFS();   
   initSection();
   relaySetup();      
-
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
   startServerHost();
@@ -66,7 +65,8 @@ void setup()
   btnsSetup();
 
   menu.curr = STOP;
-  menu.printScreen(&menu);
+
+  
 }
 
 void loop()
@@ -97,7 +97,7 @@ void loop()
     // thingSpeakSend(Temperature);
   }
 
-  //lcdLoop();
+  //LoopLCD();
 }
 
 

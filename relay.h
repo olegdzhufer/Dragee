@@ -20,10 +20,12 @@ public:
 
   Relay()
   {
+    Serial.println(__func__);
   }
 
   Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
+    Serial.println(__func__);
     this->pin = pin;
     this->state = initState;
 
@@ -38,6 +40,7 @@ public:
 
   bool attachScreen(Screen* screen)
   {
+    Serial.println(__func__);
     if(screen != NULL)
     {
       this->screen = screen;
@@ -48,26 +51,31 @@ public:
 
   void setMain(bool value)
   {
+    Serial.println(__func__);
     isMain = value;
   }
 
   void setAllowed(bool value)
   {
+    Serial.println(__func__);
     allowed = value;
   }
 
   void toggleFlag()
   {
+    Serial.println(__func__);
     changeFlag = !changeFlag;
   }
 
   void toggle()
   {
+    Serial.println(__func__);
     state = !state;
     digitalWrite(pin, state);
   }
 
   bool workStatus(){
+    Serial.println(__func__);
     return this->state;
   }
 
@@ -76,6 +84,7 @@ public:
 
     if (allowed || isMain)
     {
+      Serial.println(__func__);
 
       if (isMain)
       {
