@@ -15,11 +15,11 @@
 #include "serverHost.h"
 #include "timerThermo.h"
 #include "webPages.h"
-#include "debug_helper.h"
 
 #include "menu.h"
-// #include "btns.h"
-// #include "relay.h" 
+#include "btns.h"
+#include "relay.h" 
+#include "Enc.h"
 
 
 void thingSpeakSend(float temperature)
