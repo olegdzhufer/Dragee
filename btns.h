@@ -84,7 +84,7 @@ public:
         relay->toggleFlag();
         this->LedOff();
         fan = false;
-        CHECK_UPDATE_MENU = true;
+        FLAG_LCD = true;
         Serial.println("RELEASE");
         break;
       default:
@@ -133,7 +133,7 @@ public:
         relay->toggleFlag();
       }
       callCallback();
-      CHECK_UPDATE_MENU = true;
+      FLAG_LCD = true;
       break;
     default:
       Serial.println("other action");

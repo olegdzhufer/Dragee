@@ -67,6 +67,8 @@ float        Hysteresis     = 0.2;               // Heating Hysteresis default v
 
 bool CHECK_UPDATE_MENU = false;
 
+bool FLAG_LCD = false;
+
 //################ VARIABLES ################
 const char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
 const char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network

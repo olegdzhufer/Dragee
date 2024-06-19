@@ -9,12 +9,7 @@
 #include "settings.h"
 #include "charList.h"
 
-uint8_t LCD_FLAG = 0x00;
-
-#define FLAGL       LCD_FLAG
-
-#define UPDATE_LCD  FLAGL = 0xFF;
-#define UPD_SUCC    FLAGL = 0x00
+uint8_t timeRecover = 0;
 
 
 Menu menu;
@@ -74,11 +69,14 @@ STATUS_t initSection() {
   // return FAILURE;
 }
 
-bool LoopLCD() {
-  if(FLAGL && &menu && menu.lcd && menu.curr){
-    menu.printScreen(&menu);
-    UPD_SUCC;
-  }
+void lcdLoop(){
+
+    if(FLAG_LCD){
+      timeRecover = millis();
+      menu.printScreen(&menu);
+      FLAG_LCD = false;
+    }
 }
+
 
 #endif

@@ -98,7 +98,7 @@ public:
 
         if(this->screen != NULL && this->workStatus()){
           menu.curr = this->screen;
-          CHECK_UPDATE_MENU = true;
+          FLAG_LCD = true;
         }
         
       }
