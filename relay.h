@@ -20,12 +20,16 @@ public:
 
   Relay()
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   }
 
   Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     this->pin = pin;
     this->state = initState;
 
@@ -40,7 +44,9 @@ public:
 
   bool attachScreen(Screen* screen)
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     if(screen != NULL)
     {
       this->screen = screen;
@@ -51,31 +57,41 @@ public:
 
   void setMain(bool value)
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     isMain = value;
   }
 
   void setAllowed(bool value)
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     allowed = value;
   }
 
   void toggleFlag()
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     changeFlag = !changeFlag;
   }
 
   void toggle()
   {
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     state = !state;
     digitalWrite(pin, state);
   }
 
   bool workStatus(){
-    Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     return this->state;
   }
 
@@ -84,7 +100,9 @@ public:
 
     if (allowed || isMain)
     {
+    #ifdef DEBUG_FUNC
       Serial.println(__func__);
+    #endif
 
       if (isMain)
       {
@@ -115,10 +133,16 @@ public:
   }
 
   void relayOff(){
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     state = LOW;
     digitalWrite(pin, state);
   }
   void relayOn(){
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
     state = HIGH;
     digitalWrite(pin, state);
   }
@@ -136,7 +160,9 @@ Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   Serial.println(__FILE__);
 
   relayHeat.attachScreen(Heat);

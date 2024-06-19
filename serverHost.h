@@ -14,7 +14,9 @@
  * @param DeviceName New device name
  */
 void setupDeviceName(const char *DeviceName) {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   if (MDNS.begin(DeviceName)) {
     Serial.println("mDNS responder started");
     Serial.print("Device name: ");
@@ -27,7 +29,9 @@ void setupDeviceName(const char *DeviceName) {
 
 
 void saveSettings() {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   Serial.println("Getting ready to Save settings...");
   File dataFile = SPIFFS.open("/" + DataFile, "w");
   if (dataFile) {  // Save settings
@@ -53,7 +57,9 @@ void saveSettings() {
 }
 
 void serverHandlersSetup() {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
   // request->send(SPIFFS, "/index.html", String(), false);
   // });
@@ -149,7 +155,9 @@ void serverHandlersSetup() {
 }
 
 void startServerHost() {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   setupDeviceName(serverName);
   serverHandlersSetup();
   server.begin();

@@ -1,6 +1,9 @@
 #ifndef settings_h
 #define settings_h
 
+// #define DEBUG
+// #define DEBUG_FUNC
+
 #include <Arduino.h>
 #include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
 

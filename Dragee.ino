@@ -22,9 +22,15 @@
 #include "Enc.h"
 
 
+
 void thingSpeakSend(float temperature)
 {
-  Serial.println(__func__);
+
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+
+  
   if(WiFi.status() == WL_CONNECTED) {
       WiFiClient client; 
       HTTPClient http;
@@ -37,12 +43,18 @@ void thingSpeakSend(float temperature)
 
       int httpResponseCode = http.POST(httpRequestData);
 
-     
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
+      #ifdef DEBUG
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+      #endif
+
+      
       http.end();
     }else {
-      Serial.println("WiFi Disconnected");
+      #ifdef DEBUG
+        Serial.println("WiFi Disconnected");
+      #endif
+      
     }
 }
 
@@ -94,7 +106,6 @@ void loop()
     Temperature = readSensor();
     // thingSpeakSend(Temperature);
   }
-
   lcdLoop();
 }
 
@@ -102,7 +113,10 @@ void loop()
 
 void AssignSensorReadingsToArray()
 {
-  Serial.println(__func__);
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  
   SensorReading[1][0] = 1;
   SensorReading[1][1] = Temperature;
   SensorReading[1][2] = RelayState;
@@ -111,7 +125,9 @@ void AssignSensorReadingsToArray()
 
 void AddReadingToSensorData(byte RxdFromID, float Temperature)
 { 
-  Serial.println(__func__);
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
   byte ptr, p;
   ptr = SensorReadingPointer[RxdFromID];
   sensordata[RxdFromID][ptr].Temp = Temperature;
@@ -136,8 +152,13 @@ void setupSystem()
   Serial.begin(115200); // Initialise serial communications
   Serial.setDebugOutput(true);
   delay(200);
-  Serial.println(__FILE__);
-  Serial.println("Starting...");
+
+  #ifdef DEBUG
+    Serial.println(__FILE__);
+    Serial.println("Starting...");
+  #endif
+
+  
 }
 
 

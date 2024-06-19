@@ -20,7 +20,9 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
 
 
 STATUS_t initSection() {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   menu = *(initMenu());
 
   // if (&menu) {//always not null
@@ -72,6 +74,9 @@ STATUS_t initSection() {
 void lcdLoop(){
 
     if(FLAG_LCD){
+      #ifdef DEBUG_FUNC
+        Serial.println(__func__);
+      #endif
       timeRecover = millis();
       menu.printScreen(&menu);
       FLAG_LCD = false;
