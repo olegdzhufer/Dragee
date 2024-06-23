@@ -1,4 +1,3 @@
-#include "coreMenu/MenuLib.h"
 #ifndef MENU_SETUP_H
 
 #define MENU_SETUP_H
@@ -6,6 +5,7 @@
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include "coreMenu/MenuLib.h"
 #include "settings.h"
 #include "charList.h"
 #include "countTimer.h"
