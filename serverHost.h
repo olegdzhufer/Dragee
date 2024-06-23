@@ -2,43 +2,39 @@
 #define serverHost_h
 
 #include <Arduino.h>
+#include "ESPAsyncWebServer.h"
 #include "settings.h"
 #include "timerThermo.h"
 #include "webPages.h"
+#include "btns.h"
 
 /**
  * @brief The name that will identify your device on the network
  * @todo move to wifi configuration file
  * @param DeviceName New device name
  */
-void setupDeviceName(const char *DeviceName)
-{
-  if (MDNS.begin(DeviceName))
-  {
+void setupDeviceName(const char *DeviceName) {
+  Serial.println(__func__);
+  if (MDNS.begin(DeviceName)) {
     Serial.println("mDNS responder started");
     Serial.print("Device name: ");
     Serial.println(DeviceName);
-    MDNS.addService("n8i-mlp", "tcp", 23); // Add service
-  }
-  else
-  {
+    MDNS.addService("n8i-mlp", "tcp", 23);  // Add service
+  } else {
     Serial.println("Error setting up MDNS responder");
   }
 }
 
 
-void saveSettings()
-{
+void saveSettings() {
+  Serial.println(__func__);
   Serial.println("Getting ready to Save settings...");
   File dataFile = SPIFFS.open("/" + DataFile, "w");
-  if (dataFile)
-  { // Save settings
+  if (dataFile) {  // Save settings
     Serial.println("Saving settings...");
-    for (byte dow = 0; dow < 7; dow++)
-    {
+    for (byte dow = 0; dow < 7; dow++) {
       Serial.println("Day of week = " + String(dow));
-      for (byte p = 0; p < NumOfEvents; p++)
-      {
+      for (byte p = 0; p < NumOfEvents; p++) {
         dataFile.println(Timer[dow].Temp[p]);
         dataFile.println(Timer[dow].Start[p]);
         dataFile.println(Timer[dow].Stop[p]);
@@ -56,24 +52,23 @@ void saveSettings()
   }
 }
 
-void serverHandlersSetup()
-{
+void serverHandlersSetup() {
+  Serial.println(__func__);
   // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    // request->send(SPIFFS, "/index.html", String(), false);
+  // request->send(SPIFFS, "/index.html", String(), false);
   // });
 
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              request->redirect("/homepage");
-            });
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->redirect("/homepage");
+  });
   // Set handler for '/homepage'
-  server.on("/homepage", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/homepage", HTTP_GET, [](AsyncWebServerRequest *request) {
     homepage();
-    request->send(200, "text/html", webpage); });
+    request->send(200, "text/html", webpage);
+  });
 
-  server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){ //todo
+  server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request) {  //todo
     // sensors.requestTemperatures();
     // float temperature = sensors.getTempCByIndex(0);
     float temperature = random(20, 30);
@@ -82,83 +77,83 @@ void serverHandlersSetup()
   });
 
   // Set handler for '/graphs'
-  server.on("/graphs", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/graphs", HTTP_GET, [](AsyncWebServerRequest *request) {
     graphs();
-    request->send(200, "text/html", webpage); });
+    request->send(200, "text/html", webpage);
+  });
   // Set handler for '/timer'
-  server.on("/timer", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/timer", HTTP_GET, [](AsyncWebServerRequest *request) {
     timerSet();
-    request->send(200, "text/html", webpage); });
+    request->send(200, "text/html", webpage);
+  });
   // Set handler for '/setup'
-  server.on("/setup", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/setup", HTTP_GET, [](AsyncWebServerRequest *request) {
     Setup();
-    request->send(200, "text/html", webpage); });
+    request->send(200, "text/html", webpage);
+  });
   // Set handler for '/help'
-  server.on("/help", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/help", HTTP_GET, [](AsyncWebServerRequest *request) {
     Help();
-    request->send(200, "text/html", webpage); });
+    request->send(200, "text/html", webpage);
+  });
   // Set handler for '/handletimer' inputs
-  server.on("/handletimer", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              for (byte dow = 0; dow < 7; dow++)
-              {
-                for (byte p = 0; p < NumOfEvents; p++)
-                {
-                  Timer[dow].Temp[p] = request->arg(String(dow) + "." + String(p) + ".Temp");
-                  Timer[dow].Start[p] = request->arg(String(dow) + "." + String(p) + ".Start");
-                  Timer[dow].Stop[p] = request->arg(String(dow) + "." + String(p) + ".Stop");
-                }
-              }
-              saveSettings();
-              request->redirect("/homepage"); // Go back to home page
-            });
+  server.on("/handletimer", HTTP_GET, [](AsyncWebServerRequest *request) {
+    for (byte dow = 0; dow < 7; dow++) {
+      for (byte p = 0; p < NumOfEvents; p++) {
+        Timer[dow].Temp[p] = request->arg(String(dow) + "." + String(p) + ".Temp");
+        Timer[dow].Start[p] = request->arg(String(dow) + "." + String(p) + ".Start");
+        Timer[dow].Stop[p] = request->arg(String(dow) + "." + String(p) + ".Stop");
+      }
+    }
+    saveSettings();
+    request->redirect("/homepage");  // Go back to home page
+  });
   // Set handler for '/handlesetup' inputs
-  server.on("/handlesetup", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              if (request->hasArg("hysteresis"))
-              {
-                String numArg = request->arg("hysteresis");
-                Hysteresis = numArg.toFloat();
-              }
-              if (request->hasArg("frosttemp"))
-              {
-                String numArg = request->arg("frosttemp");
-                FrostTemp = numArg.toFloat();
-              }
-              if (request->hasArg("earlystart"))
-              {
-                String numArg = request->arg("earlystart");
-                EarlyStart = numArg.toInt();
-              }
-              if (request->hasArg("manualoverride"))
-              {
-                String stringArg = request->arg("manualoverride");
-                if (stringArg == "ON")
-                  ManualOverride = true;
-                else
-                  ManualOverride = false;
-              }
-              if (request->hasArg("manualoverridetemp"))
-              {
-                String numArg = request->arg("manualoverridetemp");
-                ManOverrideTemp = numArg.toFloat();
-              }
-              saveSettings();
-              request->redirect("/homepage"); // Go back to home page
-            });
+  server.on("/handlesetup", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasArg("hysteresis")) {
+      String numArg = request->arg("hysteresis");
+      Hysteresis = numArg.toFloat();
+    }
+    if (request->hasArg("frosttemp")) {
+      String numArg = request->arg("frosttemp");
+      FrostTemp = numArg.toFloat();
+    }
+    if (request->hasArg("earlystart")) {
+      String numArg = request->arg("earlystart");
+      EarlyStart = numArg.toInt();
+    }
+    if (request->hasArg("manualoverride")) {
+      String stringArg = request->arg("manualoverride");
+      if (stringArg == "ON")
+        ManualOverride = true;
+      else
+        ManualOverride = false;
+    }
+    if (request->hasArg("manualoverridetemp")) {
+      String numArg = request->arg("manualoverridetemp");
+      ManOverrideTemp = numArg.toFloat();
+    }
+    saveSettings();
+    request->redirect("/homepage");  // Go back to home page
+  });
+
+
+  server.on("/changemode", HTTP_GET, [](AsyncWebServerRequest *request) {
+    changeMode();
+    request->send(200, "text/html", webpage);
+  });
+  
+  server.on("/heat_set", HTTP_GET, heatControl);
+  server.on("/cold_set", HTTP_GET, coldControl);
+  server.on("/fan_set", HTTP_GET, fanControl);
 }
 
-
-
-void startServerHost()
-{
-  setupDeviceName(serverName); 
+void startServerHost() {
+  Serial.println(__func__);
+  setupDeviceName(serverName);
   serverHandlersSetup();
   server.begin();
 }
+
 
 #endif

@@ -8,6 +8,7 @@
 
 String ConvertUnixTime(int unix_time)
 {
+  Serial.println(__func__);
   time_t tm = unix_time;
   struct tm *now_tm = localtime(&tm);
   char output[40];
@@ -17,6 +18,7 @@ String ConvertUnixTime(int unix_time)
 
 void UpdateTargetTemperature()
 {
+  Serial.println(__func__);
   String TimeNow;
   TimeNow = ConvertUnixTime(UnixTime);
   for (byte dow = 0; dow < 7; dow++)
@@ -37,6 +39,7 @@ void UpdateTargetTemperature()
 
 void actuateHeating(bool demand)
 {
+  Serial.println(__func__);
   pinMode(RelayPIN, OUTPUT);
   pinMode(LEDPIN, OUTPUT);
   if (demand)
@@ -72,6 +75,7 @@ void actuateHeating(bool demand)
 
 void ControlHeating()
 {
+  Serial.println(__func__);
   if (Temperature < (TargetTemp - Hysteresis))
   {                     // Check if room temeperature is below set-point and hysteresis offset
     actuateHeating(ON); // Switch Relay/Heating ON if so
@@ -89,6 +93,7 @@ void ControlHeating()
 
 void CheckAndSetFrostTemperature()
 {
+  Serial.println(__func__);
   if (TimerState == "OFF" && ManualOverride == OFF)
   { // Only check for frost protection when heating is off
     if (Temperature < (FrostTemp - Hysteresis))
@@ -105,6 +110,7 @@ void CheckAndSetFrostTemperature()
 
 boolean UpdateLocalTime()
 {
+  Serial.println(__func__);
   struct tm timeinfo;
   time_t now;
   char time_output[30];
@@ -128,6 +134,7 @@ boolean UpdateLocalTime()
 
 void initDaysArray()
 {
+  Serial.println(__func__);
   Timer[0].DoW = "Sun";
   Timer[1].DoW = "Mon";
   Timer[2].DoW = "Tue";
@@ -140,6 +147,7 @@ void initDaysArray()
 
 void CheckTimerEvent()
 {
+  Serial.println(__func__);
   String TimeNow;
   UpdateTargetTemperature();
   TimeNow = ConvertUnixTime(UnixTime); // Get the current time e.g. 15:35
@@ -176,6 +184,7 @@ void CheckTimerEvent()
 
 boolean setupTime()
 {
+  Serial.println(__func__);
   configTime(0, 0, "time.nist.gov"); // (gmtOffset_sec, daylightOffset_sec, ntpServer)
   setenv("TZ", timezone, 1);         // setenv()adds "TZ" variable to the environment, only used if set to 1, 0 means no change
   tzset();

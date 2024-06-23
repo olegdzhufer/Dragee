@@ -2,13 +2,15 @@
 #define settings_h
 
 #include <Arduino.h>
-#include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
+#include <DS18B20Events.h>
+#include <MenuLib.h>
+//#include <OneWire.h> is already included in DS18B20Events.h
 
 
 #include "pins.h"
 #include "secrets.h"
 #include "mDef.h"
-#include "flags.h"
+// #include "flags.h"
 
 String version = "2.0";      // Programme version, see change log at end
 
@@ -22,8 +24,8 @@ const char* ntpServer = "pool.ntp.org";
 const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
 // "CET-1CEST,M3.5.0,M10.5.0/3";
 
-#define THINGSPEAK_PORT 80 // Thingspeak port
-#define WENPAGE_PORT 81 
+//#define THINGSPEAK_PORT 80 // Thingspeak port
+#define WENPAGE_PORT 80 
 
 #define SensorReadings  144            // maximum number of sensor readings, typically 144/day at 6-per-hour
 #define NumOfSensors    2              // number of sensors (+1), set by the graphing section
@@ -65,6 +67,9 @@ int          SensorReadingPointer[NumOfSensors]; // Used for sensor data storage
 float        Hysteresis     = 0.2;               // Heating Hysteresis default value
 
 
+bool CHECK_UPDATE_MENU = false;
+
+bool FLAG_LCD = false;
 
 //################ VARIABLES ################
 const char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
@@ -103,5 +108,13 @@ int    UnixTime             = 0;          // Time now (when updated) of the curr
 AsyncWebServer server(WENPAGE_PORT);
 
 uint32_t lastConnectionTime =0;
+
+//_____________________________________________________
+
+Menu menu;
+Screen *mainS;
+Screen *Heat, *Cooling, *FAN, *STOP;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS ,*footerLine;
+
 
 #endif

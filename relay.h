@@ -1,46 +1,146 @@
 #ifndef RELAY_H
 #define RELAY_H
 
+#include <Arduino.h>
+#include "settings.h"
+#include "menu.h"
+#include "countTimer.h"
 
-void relay_setup()
-{
-  digitalWrite(REL1, RelayState1);
-  pinMode(REL1, OUTPUT);
 
-  digitalWrite(REL2, RelayState2);
-  pinMode(REL2, OUTPUT);
 
-  digitalWrite(REL3, RelayState3);
-  pinMode(REL3, OUTPUT);
-}
+class Relay {
+private:
+  uint8_t pin;
+  uint8_t state = false;
+  uint8_t changeFlag = false;
 
-void relay_handler1(){
-  if(changeRelayState1){
-    RelayState1 =! RelayState1;
-    digitalWrite(REL1, RelayState1);
-    changeRelayState1 = false;
+public:
+  bool allowed = true;
+  bool isMain = false;
+  bool isHeatOrCool = false;
+
+  Screen* screen = NULL;
+
+  Relay() {
+    Serial.println(__func__);
   }
-}
 
-void relay_handler2(){
-  if(changeRelayState2){
-    RelayState2 != RelayState2;
-    digitalWrite(REL2, RelayState2);
-    changeRelayState2 = false;
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL, bool   isHeatOrCool = false) {
+    Serial.println(__func__);
+    this->pin = pin;
+    this->state = initState;
+    this->isHeatOrCool = isHeatOrCool;
+
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, state);
+
+    if (screen != NULL) {
+      attachScreen(screen);
+    }
   }
-}
 
-void relay_handler3(){
-  if(changeRelayState3){
-    RelayState3 != RelayState3;
-    digitalWrite(REL3, RelayState3);
-    changeRelayState3 = false;
+  bool attachScreen(Screen* screen) {
+    Serial.println(__func__);
+    if (screen != NULL) {
+      this->screen = screen;
+      return true;
+    }
+    return false;
   }
+
+  void setMain(bool value) {
+    Serial.println(__func__);
+    isMain = value;
+  }
+
+  void setAllowed(bool value) {
+    Serial.println(__func__);
+    allowed = value;
+  }
+
+  void toggleFlag() {
+    Serial.println(__func__);
+    changeFlag = !changeFlag;
+  }
+
+  void toggle() {
+    Serial.println(__func__);
+    state = !state;
+    digitalWrite(pin, state);
+    if (isHeatOrCool && state == true) {
+      startTimer();
+    } else if (isHeatOrCool && state == false) {
+      stopTimer();
+    }
+  }
+
+  bool workStatus() {
+    Serial.println(__func__);
+    return this->state;
+  }
+
+  void tick() {
+
+    if (allowed || isMain) {
+      Serial.println(__func__);
+
+      if (isMain) {
+        allowed = state;
+      }
+
+      if (changeFlag) {
+        changeFlag = false;
+        toggle();
+
+        if (this->screen != NULL && this->workStatus()) {
+          menu.curr = this->screen;
+          FLAG_LCD = true;
+        }
+      }
+
+    } else {
+      if (state == HIGH) {
+        state = LOW;
+        digitalWrite(pin, state);
+      }
+    }
+  }
+
+  void relayOff() {
+    state = LOW;
+    digitalWrite(pin, state);
+  }
+  void relayOn() {
+    state = HIGH;
+    digitalWrite(pin, state);
+  }
+
+  ~Relay() {
+
+    this->screen = NULL;
+  }
+};
+
+Relay relayHeat(HEAT_PIN, LOW, Heat, true);
+Relay relayCool(COOL_PIN, LOW, Cooling, true);
+Relay relayFan(FAN_PIN, LOW, FAN);
+
+void relaySetup() {
+  Serial.println(__func__);
+  Serial.println(__FILE__);
+
+  relayHeat.attachScreen(Heat);
+  relayCool.attachScreen(Cooling);
+  relayFan.attachScreen(FAN);
+
+  relayFan.setMain(true);
 }
 
-void relay_loop(){
-  relay_handler1();
-  relay_handler2();
-  relay_handler3();
+void relayTick() {
+  relayHeat.tick();
+  relayCool.tick();
+  relayFan.tick();
 }
+
+
 #endif
