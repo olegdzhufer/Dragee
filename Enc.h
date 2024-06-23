@@ -6,64 +6,71 @@
 
 #include "settings.h"
 #include "pins.h"
+#include "menu.h"
 
-class EncoderWork {
-public:
-    EncoderWork() : enc(nullptr), temp(nullptr), callBackFuncClick(nullptr), callBackFuncRight(nullptr), callBackFuncLeft(nullptr) {}
+EncButton en(CLK, DT, SW);
+bool updateTemp = false;
 
-    void setCallBackClick(void (*callBack)()) {
-        this->callBackFuncClick = callBack;
-    }
-    void setCallBackRight(void (*callBack)()) {
-        this->callBackFuncRight = callBack;
-    }
-    void setCallBackLeft(void (*callBack)()) {
-        this->callBackFuncLeft = callBack;
-    }
 
-    bool autoEnc(uint8_t clk, uint8_t dt, uint8_t sw) {
-        enc = new EncButton(clk, dt, sw);
-        return (enc != nullptr);
-    }
+uint8_t enc_pre;
+void encoder_setup(){
+  en.setEncType(EB_STEP4_LOW);
+  en.setBtnLevel(HIGH);
+}
 
-    void setEnc(EncButton* enc){
-      if(enc){
-        this->enc = enc;
+int getResult(){
+  return enc_pre; 
+}
+
+bool flagEnc = false;
+
+
+void read_encoder(){
+
+  int currtime;
+  if(!currtime)currtime = 0;
+  if( millis() > currtime + 10){
+    currtime += millis();
+    
+    en.tick();
+
+    if(en.leftH()){
+      if(menu.curr == Heat && TargetTemp > 0){
+        updateTemp = true;
+        TargetTemp -= 1;
+        Serial.println(TargetTemp);
+      }
+    }
+    else if(en.rightH()){
+      if(menu.curr == Heat && TargetTemp < 60){
+        updateTemp = true;
+        TargetTemp += 1;
+        Serial.println(TargetTemp);
       }
     }
 
-    void changeTemp(float* temp) {
-        this->temp = temp;
+    else if (en.left()) {
+        enc_pre = 0x03;
+        Serial.println("3");
     }
-
-    void tick() {
-        if (enc) {
-          enc->tick();
-          uint8_t Ho = enc->action();
-          if(Ho){
-            Serial.println(Ho);
-          }
-      }
+    else if(en.right()){
+        enc_pre = 0x04;
+        Serial.println("4");
     }
+     else if (en.press())  
+    {
+        enc_pre = 0x05;
+        Serial.println("5");
+    }
+  }
 
-private:
-    EncButton* enc;
-    float* temp;
-    void (*callBackFuncClick)();
-    void (*callBackFuncRight)();
-    void (*callBackFuncLeft)();
-};
 
-EncoderWork en;
-
-EncButton ent (CLK, DT, SW);
-
-void EncoderSetup() {
-    en.setEnc(&ent);
-
+  if(updateTemp){
+    updateTemp = false;
+    TempSetH->val->setfloat(TempSetH->val, TargetTemp);
+    FLAG_LCD = true;
+  }
 }
 
-void EncoderLoop(){
-  en.tick();
-}
+
 #endif

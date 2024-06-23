@@ -75,6 +75,7 @@ void setup()
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   btnsSetup();
+  encoder_setup();
   
   
 }
@@ -83,6 +84,7 @@ void loop()
 { 
   btnsLoop(); 
   relayTick();
+  read_encoder();
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {

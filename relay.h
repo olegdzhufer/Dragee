@@ -11,6 +11,9 @@ private:
   uint8_t pin;
   uint8_t state = false;
   uint8_t changeFlag = false;
+  Line* CurrLine = NULL;
+  float* tempR = NULL;
+  bool statusTemp = false;
 
 public:
   bool allowed = true;
@@ -40,6 +43,24 @@ public:
     {
       attachScreen(screen);
     }
+  }
+
+  void setLine(Line* line, float* temp){
+    this->CurrLine = line;
+    this->tempR = temp;
+  }
+
+  void getLine(){
+    if(this->CurrLine && this->tempR){
+      temp = this->tempR;
+      currLine = this->CurrLine;
+      this->statusTemp = true;
+    }
+  }
+  void setNull(){
+    temp = NULL;
+    currLine = NULL;
+    this->statusTemp = false;
   }
 
   bool attachScreen(Screen* screen)
@@ -118,6 +139,11 @@ public:
           menu.curr = this->screen;
           FLAG_LCD = true;
         }
+        if(this->statusTemp){
+          this->getLine();
+        }else{
+          this->setNull();
+        }
         
       }
       
@@ -136,6 +162,8 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+    temp = NULL;
+    currLine = NULL;
     state = LOW;
     digitalWrite(pin, state);
   }
@@ -143,9 +171,11 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     state = HIGH;
     digitalWrite(pin, state);
   }
+
 
   ~Relay()
   {
@@ -168,6 +198,8 @@ void relaySetup()
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);
   relayFan.attachScreen(FAN);
+
+  relayHeat.setLine(TempSetC, &TargetTemp);
 
   relayFan.setMain(true);
 }

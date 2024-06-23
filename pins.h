@@ -5,13 +5,16 @@
 #define BTN2_PIN 33
 #define BTN3_PIN 25
 
-#define LED_PIN1 18
-#define LED_PIN2 5
-#define LED_PIN3 17
+// #define LED_PIN1 18
+// #define LED_PIN2 5
+// #define LED_PIN3 17
+#define LED_PIN1 2
+#define LED_PIN2 2
+#define LED_PIN3 2
 
-#define CLK 4                      
-#define DT  12                      
-#define SW  2                       
+#define CLK 18                     
+#define DT  5                      
+#define SW  17                       
 
 #define REL1 26
 #define REL2 27

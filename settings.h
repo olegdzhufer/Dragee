@@ -5,7 +5,9 @@
 // #define DEBUG_FUNC
 
 #include <Arduino.h>
-#include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
+#include <DS18B20Events.h>
+#include <MenuLib.h>
+          //#include <OneWire.h> is already included in DS18B20Events.h
 
 
 #include "pins.h"
@@ -109,5 +111,8 @@ int    UnixTime             = 0;          // Time now (when updated) of the curr
 AsyncWebServer server(WENPAGE_PORT);
 
 uint32_t lastConnectionTime =0;
+
+float* temp = NULL;
+Line* currLine;
 
 #endif
