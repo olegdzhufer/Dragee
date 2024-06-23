@@ -17,6 +17,7 @@ private:
 public:
   bool allowed = true;
   bool isMain = false;
+  bool isHeatOrCool = false;
 
   Screen* screen = NULL;
 
@@ -24,10 +25,11 @@ public:
     Serial.println(__func__);
   }
 
-  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL) {
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL, bool   isHeatOrCool = false) {
     Serial.println(__func__);
     this->pin = pin;
     this->state = initState;
+    this->isHeatOrCool = isHeatOrCool;
 
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state);
@@ -65,9 +67,9 @@ public:
     Serial.println(__func__);
     state = !state;
     digitalWrite(pin, state);
-    if((this == &relayHeat || this == &relayCool) && state == true){
+    if (isHeatOrCool && state == true) {
       startTimer();
-    }else if ((this == &relayHeat || this == &relayCool) && state == false){
+    } else if (isHeatOrCool && state == false) {
       stopTimer();
     }
   }
@@ -119,8 +121,8 @@ public:
   }
 };
 
-Relay relayHeat(HEAT_PIN, LOW, Heat);
-Relay relayCool(COOL_PIN, LOW, Cooling);
+Relay relayHeat(HEAT_PIN, LOW, Heat, true);
+Relay relayCool(COOL_PIN, LOW, Cooling, true);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup() {
