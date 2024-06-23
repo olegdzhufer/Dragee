@@ -8,6 +8,7 @@
 
 void startSPIFFS()
 {
+  Serial.println(__func__);
   Serial.println("Starting SPIFFS");
   bool SPIFFS_Status;
   SPIFFS_Status = SPIFFS.begin();
@@ -32,6 +33,7 @@ void startSPIFFS()
 
 void recoverSettings()
 {
+  Serial.println(__func__);
   String Entry;
   Serial.println("Reading settings...");
   File dataFile = SPIFFS.open("/" + DataFile, "r");

@@ -3,19 +3,24 @@
 
 #define BTN1_PIN 32
 #define BTN2_PIN 33
-#define BTN3_PIN 18
+#define BTN3_PIN 25
 
-#define LED_PIN1 9
-#define LED_PIN2 9
-#define LED_PIN3 9
+#define LED_PIN1 18
+#define LED_PIN2 5
+#define LED_PIN3 17
 
-#define CLK 25                      
-#define DT  26                      
-#define SW  27                       
+#define CLK 4                      
+#define DT  12                      
+#define SW  2                       
 
-#define REL1 15
-#define REL2 2
-#define REL3 4 
+#define REL1 26
+#define REL2 27
+#define REL3 14 
+
+#define HEAT_PIN REL1
+#define COOL_PIN REL2
+#define FAN_PIN REL3
+
 
 // #define V33 12
 

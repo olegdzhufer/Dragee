@@ -1,7 +1,7 @@
 #pragma once
 
-#define SECRET_SSID "AsusLyra"		
-#define SECRET_PASS "123456qwerty"	
+#define SECRET_SSID "Shoko-cli_A"		
+#define SECRET_PASS "Shock2009"	
 
 #define SECRET_AP_SSID "DrageeIoT"
 #define SECRET_AP_PASS "1234556789"
