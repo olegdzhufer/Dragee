@@ -1,4 +1,4 @@
-#include "esp32-hal-gpio.h"
+#include "HardwareSerial.h"
 #ifndef CNTUPTMR
 #define CNTUPTMR
 
@@ -12,12 +12,16 @@ char* convectorStrToChar(String text);
 
 void onInterval() {
   String currentTime = countimer.getCurrentTime();
+  Serial.print(currentTime);
+  Serial.print('\n');
   char* textChar = convectorStrToChar(currentTime);
-  if(footerLine){
-      footerLine->val->setChar(footerLine->val, textChar);
+  Serial.print(textChar);
+  Serial.print('\n');
+
+  if (footerLine) {
+    footerLine->val->setChar(footerLine->val, textChar);
     FLAG_LCD = true;
   }
-
 }
 void startTimer() {
   countimer.start();
@@ -47,15 +51,15 @@ void timer_loop() {
   countimer.run();
 }
 
-char* convectorStrToChar(String text){
+char* convectorStrToChar(String text) {
   uint8_t lenText = text.length();
 
-  char* res = (char*) malloc(lenText*sizeof(char)+1);
+  char* res = (char*)malloc(lenText * sizeof(char) + 1);
 
-  for (uint8_t iter = 0; iter < lenText; iter++){
+  for (uint8_t iter = 0; iter < lenText; iter++) {
     res[iter] = text[iter];
   }
-  res[lenText] = '\n';
+  res[lenText] = '\0';
 
   return res;
 }
