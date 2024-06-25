@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include "settings.h"
 #include "menu.h"
+#include "countTimer.h"
+
 
 class Relay
 {
@@ -18,6 +20,8 @@ private:
 public:
   bool allowed = true;
   bool isMain = false;
+  bool isHeatOrCool = false;
+
 
   Screen *screen = NULL;
 
@@ -28,13 +32,14 @@ public:
     #endif
   }
 
-  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL, bool isHeatOrCool = false)
   {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
     this->pin = pin;
     this->state = initState;
+    this->isHeatOrCool = isHeatOrCool;
 
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state);
@@ -107,6 +112,11 @@ public:
     #endif
     state = !state;
     digitalWrite(pin, state);
+    if (isHeatOrCool && state == true) {
+      startTimer();
+    } else if (isHeatOrCool && state == false) {
+      stopTimer();
+    }
   }
 
   bool workStatus(){
@@ -184,8 +194,8 @@ public:
   }
 };
 
-Relay relayHeat(HEAT_PIN, LOW, Heat);
-Relay relayCool(COOL_PIN, LOW, Cooling);
+Relay relayHeat(HEAT_PIN, LOW, Heat, true);
+Relay relayCool(COOL_PIN, LOW, Cooling, true);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()

@@ -61,6 +61,8 @@ void thingSpeakSend(float temperature)
     }
 }
 
+
+
 void setup()
 {
 
@@ -69,6 +71,7 @@ void setup()
   setupTime();
   startSPIFFS();   
   initSection();
+  timer_setup();
   relaySetup();      
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
@@ -112,6 +115,8 @@ void loop()
     // thingSpeakSend(Temperature);
   }
   lcdLoop();
+  timer_loop();
+ 
 }
 
 
