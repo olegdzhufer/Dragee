@@ -199,7 +199,7 @@ void relaySetup()
   relayCool.attachScreen(Cooling);
   relayFan.attachScreen(FAN);
 
-  relayHeat.setLine(TempSetC, &TargetTemp);
+  relayHeat.setLine(TempSetH, &TargetTemp);
 
   relayFan.setMain(true);
 }

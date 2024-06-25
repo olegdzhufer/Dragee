@@ -16,7 +16,7 @@ Menu menu;
 
 Screen* mainS;
 Screen *Heat, *Cooling, *FAN, *STOP;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLine;
 
 
 STATUS_t initSection() {
