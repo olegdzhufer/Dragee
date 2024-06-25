@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "settings.h"
 
+
 const String legendColour = "#5d2212";  // Only use HTML colour names
 const String titleColour = "#5a1500";
 const String backgrndColour = "#ac8a7f";
@@ -11,6 +12,9 @@ const String backgrndColour = "#ac8a7f";
 // const String data2Colour    = "orange";
 
 String WiFiSignal() {
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   float Signal = WiFi.RSSI();
   Signal = 90 / 40.0 * Signal + 212.5;  // From Signal = 100% @ -50dBm and Signal = 10% @ -90dBm and y = mx + c
   if (Signal > 100)

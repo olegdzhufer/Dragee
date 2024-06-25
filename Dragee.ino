@@ -1,13 +1,14 @@
 
 #include <Arduino.h>
-#include <WiFi.h>              
-#include <ESPmDNS.h>           
-#include <SPIFFS.h>           
-#include <ESPAsyncWebServer.h> // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
-#include <AsyncTCP.h>          // https://github.com/me-no-dev/AsyncTCP
-#include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
-// #include <ThingSpeak.h>               
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <SPIFFS.h>
+#include <ESPAsyncWebServer.h>  // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
+#include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
+#include <DS18B20Events.h>      //#include <OneWire.h> is already included in DS18B20Events.h
+// #include <ThingSpeak.h>
 #include <HTTPClient.h>
+#include <MenuLib.h>
 
 #include "mDef.h"
 #include "settings.h"
@@ -16,45 +17,52 @@
 #include "serverHost.h"
 #include "timerThermo.h"
 #include "webPages.h"
-#include "countUpTimer.h"
+
+#include "menu.h"
+#include "countTimer.h"
+
 #include "btns.h"
-#include "relay.h" 
+#include "relay.h"
+#include "Enc.h"
+
 
 
 void thingSpeakSend(float temperature)
 {
+
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+
+  
   if(WiFi.status() == WL_CONNECTED) {
       WiFiClient client; 
       HTTPClient http;
 
-      // String url = "http://" + String(serverLinkApi) + "/update?api_key=" + apiKey + "&field1=" + String(temperature);
-      // http.begin(url);
       String url = "http://" + String(serverLinkApi) + "/update";
       http.begin(client, url);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
       String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);           
-      // int httpCode = http.GET();
-      // if(httpCode > 0) {
-        // String payload = http.getString();
-        // Serial.println(payload);
-      // }
+
 
       int httpResponseCode = http.POST(httpRequestData);
-       /*
-      // If you need an HTTP request with a content type: application/json, use the following:
-      http.addHeader("Content-Type", "application/json");
-      // JSON data to send with HTTP POST
-      String httpRequestData = "{\"api_key\":\"" + apiKey + "\",\"field1\":\"" + String(random(40)) + "\"}";           
-      // Send HTTP POST request
-      int httpResponseCode = http.POST(httpRequestData);*/
-     
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
+
+      #ifdef DEBUG
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+      #endif
+
+      
       http.end();
     }else {
-      Serial.println("WiFi Disconnected");
+      #ifdef DEBUG
+        Serial.println("WiFi Disconnected");
+      #endif
+      
     }
 }
+
+
 
 void setup()
 {
@@ -65,6 +73,7 @@ void setup()
   startSPIFFS();   
   timer_setup();
   initSection();
+  timer_setup();
   relaySetup();      
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
@@ -74,6 +83,7 @@ void setup()
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   btnsSetup();
+  encoder_setup();
 }
 
 void loop()
@@ -81,6 +91,7 @@ void loop()
   timer_loop();
   btnsLoop(); 
   relayTick();
+  read_encoder();
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {
@@ -102,16 +113,21 @@ void loop()
   if (millis() - lastConnectionTime > 10000) {
     lastConnectionTime = millis();
     Temperature = readSensor();
-    thingSpeakSend(Temperature);
+    // thingSpeakSend(Temperature);
   }
-
-   lcdLoop();
+  lcdLoop();
+  timer_loop();
+ 
 }
 
 
 
 void AssignSensorReadingsToArray()
 {
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  
   SensorReading[1][0] = 1;
   SensorReading[1][1] = Temperature;
   SensorReading[1][2] = RelayState;
@@ -120,6 +136,9 @@ void AssignSensorReadingsToArray()
 
 void AddReadingToSensorData(byte RxdFromID, float Temperature)
 { 
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
   byte ptr, p;
   ptr = SensorReadingPointer[RxdFromID];
   sensordata[RxdFromID][ptr].Temp = Temperature;
@@ -144,8 +163,13 @@ void setupSystem()
   Serial.begin(115200); // Initialise serial communications
   Serial.setDebugOutput(true);
   delay(200);
-  Serial.println(__FILE__);
-  Serial.println("Starting...");
+
+  #ifdef DEBUG
+    Serial.println(__FILE__);
+    Serial.println("Starting...");
+  #endif
+
+  
 }
 
 

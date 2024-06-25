@@ -7,15 +7,19 @@
 #include <MenuLib.h>
 #include "settings.h"
 #include "charList.h"
+
 #include "countUpTimer.h"
 
 Menu menu;
 
 Screen* mainS;
 Screen *Heat, *Cooling, *FAN, *STOP;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLine;
 
 STATUS_t initSection() {
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   menu = *(initMenu());
 
   // if (&menu) {//always not null
@@ -58,17 +62,27 @@ STATUS_t initSection() {
     } else {
       return FAILURE;
     }
+
+  footerLine = initLine( "Timer: ", "Timer", NULL);
+  footerLine->val->setChar(footerLine->val, "");
+  FAN->footer = footerLine;
     
     return STATUS_OK;
   // }
   // return FAILURE;
 }
 
-bool lcdLoop() {
-  if (CHECK_UPDATE_MENU) {
-    menu.printScreen(&menu);
-    CHECK_UPDATE_MENU = false;
-  }
+void lcdLoop(){
+
+    if(FLAG_LCD){
+      #ifdef DEBUG_FUNC
+        Serial.println(__func__);
+      #endif
+      timeRecover = millis();
+      menu.printScreen(&menu);
+      FLAG_LCD = false;
+    }
 }
+
 
 #endif

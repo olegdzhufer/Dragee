@@ -8,6 +8,9 @@
 
 float readSensorComplete()
 {
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
 #if(VIRT_SENSOR == 0)
   sensor.requestTemperatures();
   uint32_t timeout = millis();
@@ -32,6 +35,9 @@ float readSensorComplete()
 
 float readSensor()
 {
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
 #if(VIRT_SENSOR == 0)
   sensor.requestTemperatures();
   float temperature = sensor.getTempCByIndex(0);
@@ -44,6 +50,10 @@ float readSensor()
 
 void startSensor()
 {
+
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
 #if(VIRT_SENSOR == 0)
 
   sensor.begin();

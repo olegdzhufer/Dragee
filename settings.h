@@ -1,8 +1,13 @@
 #ifndef settings_h
 #define settings_h
 
+// #define DEBUG
+// #define DEBUG_FUNC
+
 #include <Arduino.h>
-#include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
+#include <DS18B20Events.h>
+#include <MenuLib.h>
+          //#include <OneWire.h> is already included in DS18B20Events.h
 
 
 #include "pins.h"
@@ -65,7 +70,9 @@ int          SensorReadingPointer[NumOfSensors]; // Used for sensor data storage
 float        Hysteresis     = 0.2;               // Heating Hysteresis default value
 
 
-uint8_t CHECK_UPDATE_MENU = 0;
+bool CHECK_UPDATE_MENU = false;
+
+bool FLAG_LCD = false;
 
 //################ VARIABLES ################
 const char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
@@ -104,5 +111,8 @@ int    UnixTime             = 0;          // Time now (when updated) of the curr
 AsyncWebServer server(WENPAGE_PORT);
 
 uint32_t lastConnectionTime =0;
+
+float* temp = NULL;
+Line* currLine;
 
 #endif
