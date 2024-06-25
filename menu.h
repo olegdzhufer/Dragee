@@ -64,6 +64,10 @@ STATUS_t initSection() {
       return FAILURE;
     }
 
+  footerLine = initLine( "Timer: ", "Timer", NULL);
+  footerLine->val->setChar(footerLine->val, "");
+  FAN->footer = footerLine;
+
 
     
     return STATUS_OK;

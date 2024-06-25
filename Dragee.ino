@@ -90,7 +90,7 @@ void loop()
 { 
   btnsLoop(); 
   relayTick();
-  encoder_loop();
+  read_encoder();
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {
