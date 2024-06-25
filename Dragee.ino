@@ -1,3 +1,4 @@
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -17,9 +18,9 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
-
 #include "menu.h"
 #include "countTimer.h"
+
 #include "btns.h"
 #include "relay.h"
 #include "Enc.h"
@@ -70,6 +71,7 @@ void setup()
   initWiFi();
   setupTime();
   startSPIFFS();   
+  timer_setup();
   initSection();
   timer_setup();
   relaySetup();      
@@ -82,12 +84,11 @@ void setup()
 
   btnsSetup();
   encoder_setup();
-  
-  
 }
 
 void loop()
 { 
+  timer_loop();
   btnsLoop(); 
   relayTick();
   read_encoder();
