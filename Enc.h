@@ -5,20 +5,72 @@
 #include <EncButton.h>
 
 #include "settings.h"
+#include "pins.h"
+#include "menu.h"
+
+EncButton en(CLK, DT, SW);
+bool updateTemp = false;
 
 
-class EncoderWork {
+uint8_t enc_pre;
+void encoder_setup(){
+  en.setEncType(EB_STEP4_LOW);
+  en.setBtnLevel(HIGH);
+}
 
-  EncoderWork() {}
+int getResult(){
+  return enc_pre; 
+}
 
-private:
-  EncButton* enc;
-  void (*callBackFuncClick)() = NULL;
-  void (*callBackFuncRight)() = NULL;
-  void (*callBackFuncLeft)() = NULL;
+bool flagEnc = false;
 
-  //  public:
-  //    set
-};
+
+void read_encoder(){
+
+  int currtime;
+  if(!currtime)currtime = 0;
+  if( millis() > currtime + 10){
+    currtime += millis();
+    
+    en.tick();
+
+    if(en.leftH()){
+      if(menu.curr == Heat && TargetTemp > 0){
+        updateTemp = true;
+        TargetTemp -= 1;
+        Serial.println(TargetTemp);
+      }
+    }
+    else if(en.rightH()){
+      if(menu.curr == Heat && TargetTemp < 60){
+        updateTemp = true;
+        TargetTemp += 1;
+        Serial.println(TargetTemp);
+      }
+    }
+
+    else if (en.left()) {
+        enc_pre = 0x03;
+        Serial.println("3");
+    }
+    else if(en.right()){
+        enc_pre = 0x04;
+        Serial.println("4");
+    }
+     else if (en.press())  
+    {
+        enc_pre = 0x05;
+        Serial.println("5");
+    }
+  }
+
+
+  if(updateTemp){
+    updateTemp = false;
+    TempSetH->val->setfloat(TempSetH->val, TargetTemp);
+    FLAG_LCD = true;
+  }
+}
+
 
 #endif

@@ -1,10 +1,13 @@
 #ifndef settings_h
 #define settings_h
 
+// #define DEBUG
+// #define DEBUG_FUNC
+
 #include <Arduino.h>
 #include <DS18B20Events.h>
 #include <MenuLib.h>
-//#include <OneWire.h> is already included in DS18B20Events.h
+          //#include <OneWire.h> is already included in DS18B20Events.h
 
 
 #include "pins.h"
@@ -109,12 +112,7 @@ AsyncWebServer server(WENPAGE_PORT);
 
 uint32_t lastConnectionTime =0;
 
-//_____________________________________________________
-
-Menu menu;
-Screen *mainS;
-Screen *Heat, *Cooling, *FAN, *STOP;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS ,*footerLine;
-
+float* temp = NULL;
+Line* currLine;
 
 #endif

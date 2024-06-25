@@ -25,65 +25,87 @@
 #include "Enc.h"
 
 
-void thingSpeakSend(float temperature) {
-  Serial.println(__func__);
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    HTTPClient http;
 
-    String url = "http://" + String(serverLinkApi) + "/update";
-    http.begin(client, url);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);
+void thingSpeakSend(float temperature)
+{
+
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+
+  
+  if(WiFi.status() == WL_CONNECTED) {
+      WiFiClient client; 
+      HTTPClient http;
+
+      String url = "http://" + String(serverLinkApi) + "/update";
+      http.begin(client, url);
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);           
 
 
-    int httpResponseCode = http.POST(httpRequestData);
+      int httpResponseCode = http.POST(httpRequestData);
 
+      #ifdef DEBUG
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+      #endif
 
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    http.end();
-  } else {
-    Serial.println("WiFi Disconnected");
-  }
+      
+      http.end();
+    }else {
+      #ifdef DEBUG
+        Serial.println("WiFi Disconnected");
+      #endif
+      
+    }
 }
 
-void setup() {
+
+
+void setup()
+{
 
   setupSystem();
   initWiFi();
-  startSPIFFS();
-  initSection();
   setupTime();
-  relaySetup();
+  startSPIFFS();   
+  initSection();
   timer_setup();
-  initDaysArray();    // Initialise the array for storage and set some values
+  relaySetup();      
+  initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
   startServerHost();
   startSensor();
   actuateHeating(OFF);
-  lastTimerSwitchCheck = millis() + timerCheckDuration;
+  lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   btnsSetup();
+  encoder_setup();
+  
+  
 }
 
-void loop() {
-  btnsLoop();
+void loop()
+{ 
+  btnsLoop(); 
   relayTick();
+  read_encoder();
 
-  if ((millis() - lastTimerSwitchCheck) > timerCheckDuration) {
-    lastTimerSwitchCheck = millis();  // Reset time
-    Temperature = readSensorComplete();
+  if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
+  {
+    lastTimerSwitchCheck = millis(); // Reset time
+    Temperature = readSensorComplete();                   
 
     //httpRequest(Temperature);
-
-    UpdateLocalTime();  // Updates Time UnixTime to 'now'
-    CheckTimerEvent();  // Check for schedules actuated
+    
+    UpdateLocalTime();               // Updates Time UnixTime to 'now'
+    CheckTimerEvent();               // Check for schedules actuated
   }
 
-  if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))  //1000
+  if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
   {
-    LastReadingCheck = millis();  // Update reading record every ~n-mins e.g. 60,000uS = 1-min
+    LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
     AssignSensorReadingsToArray();
   }
 
@@ -92,30 +114,39 @@ void loop() {
     Temperature = readSensor();
     // thingSpeakSend(Temperature);
   }
-
   lcdLoop();
   timer_loop();
+ 
 }
 
 
 
-void AssignSensorReadingsToArray() {
-  Serial.println(__func__);
+void AssignSensorReadingsToArray()
+{
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  
   SensorReading[1][0] = 1;
   SensorReading[1][1] = Temperature;
   SensorReading[1][2] = RelayState;
-  AddReadingToSensorData(1, Temperature);
+  AddReadingToSensorData(1, Temperature); 
 }
 
-void AddReadingToSensorData(byte RxdFromID, float Temperature) {
-  Serial.println(__func__);
+void AddReadingToSensorData(byte RxdFromID, float Temperature)
+{ 
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
   byte ptr, p;
   ptr = SensorReadingPointer[RxdFromID];
   sensordata[RxdFromID][ptr].Temp = Temperature;
   ptr++;
-  if (ptr >= SensorReadings) {
+  if (ptr >= SensorReadings)
+  {
     p = 0;
-    do {
+    do
+    {
       sensordata[RxdFromID][p].Temp = sensordata[RxdFromID][p + 1].Temp;
       p++;
     } while (p < SensorReadings);
@@ -126,10 +157,20 @@ void AddReadingToSensorData(byte RxdFromID, float Temperature) {
 }
 
 
-void setupSystem() {
-  Serial.begin(115200);  // Initialise serial communications
+void setupSystem()
+{
+  Serial.begin(115200); // Initialise serial communications
   Serial.setDebugOutput(true);
   delay(200);
-  Serial.println(__FILE__);
-  Serial.println("Starting...");
+
+  #ifdef DEBUG
+    Serial.println(__FILE__);
+    Serial.println("Starting...");
+  #endif
+
+  
 }
+
+
+
+
