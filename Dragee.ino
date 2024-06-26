@@ -20,9 +20,14 @@
 
 #include "menu.h"
 #include "countTimer.h"
+
 #include "btns.h"
 #include "relay.h"
-#include "Enc.h"
+
+#ifdef ENC_S
+    #include "Enc.h"
+#endif
+
 
 
 
@@ -72,7 +77,11 @@ void setup()
   startSPIFFS();   
   initSection();
   timer_setup();
-  relaySetup();      
+
+  #ifdef RELAY_S
+    relaySetup();  
+  #endif  
+
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
   startServerHost();
@@ -80,17 +89,34 @@ void setup()
   actuateHeating(OFF);
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
-  btnsSetup();
-  encoder_setup();
+  #ifdef BTN_S
+    btnsSetup();
+  #endif
+  
+
+
+  #ifdef ENC_S
+    encoder_setup();
+  #endif
+
+  
   
   
 }
 
 void loop()
 { 
-  btnsLoop(); 
-  relayTick();
+  #ifdef BTN_S
+    btnsLoop(); 
+  #endif
+  
+  #ifdef RELAY_S
+    relayTick();
+  #endif
+
+  #ifdef ENC_S
   read_encoder();
+  #endif
 
   if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
   {

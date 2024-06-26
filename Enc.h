@@ -8,8 +8,13 @@
 #include "pins.h"
 #include "menu.h"
 
-EncButton en(CLK, DT, SW);
+
+
+#ifdef ENC_S
+  EncButton en(CLK, DT, SW);
+  
 bool updateTemp = false;
+
 
 
 uint8_t enc_pre;
@@ -71,6 +76,9 @@ void read_encoder(){
     FLAG_LCD = true;
   }
 }
+
+#endif
+
 
 
 #endif

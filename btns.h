@@ -8,6 +8,7 @@
 #include "relay.h"
 
 
+
 bool fan = false;
 
 class ButtonSwitch : public VirtButton
@@ -85,7 +86,7 @@ public:
         // FAN_ON;
         fan = true;
         toggleLed();
-        if (relay != NULL)
+        if (this->relay != NULL)
         {
           relay->toggleFlag();
         }
@@ -102,7 +103,10 @@ public:
           Serial.println(__func__);
         #endif
         menu.curr = STOP;
-        relay->toggleFlag();
+        if(this->relay != NULL){
+          relay->toggleFlag();
+        }
+
         this->LedOff();
         fan = false;
         FLAG_LCD = true;
@@ -232,20 +236,27 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->LedOff();
-    this->relay->relayOff();
+
+    if(this->relay != NULL){
+      this->relay->relayOff();
+    }
   }
 
   void EnWork(){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->workEn = true;
   }
   void DeWork(){
+
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->workEn = false;
     OffMode();
   }
@@ -258,51 +269,54 @@ private:
 
   Relay *relay = NULL;
 };
+#ifdef BTN_S
 
 ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW);
 ButtonSwitch btn2(BTN2_PIN, LED_PIN2, INPUT_PULLUP, LOW);
 ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
-void callbackSwitch()
+void btnsSetup()
 {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  Serial.println(__FILE__);
+
+  btnSwitch.EnWork();
+
+
+  #ifdef RELAY_S
+    btn1.attachRelay(&relayHeat);
+    btn2.attachRelay(&relayCool);
+    btnSwitch.attachRelay(&relayFan);
+  #endif
 }
 
-void callbackBtn1()
+void btnsLoop()
 {
+  if(fan){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  switch (btn1.action())
-  {
-
-  case EB_CLICK:
-    btn2.OffMode();
-    break;
-
-  default:
-    break;
+    btn1.EnWork();
+    btn2.EnWork();
+  }else{
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+    btn1.DeWork();
+    btn2.DeWork();
   }
-}
 
-void callbackBtn2()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  switch (btn2.action())
-  {
-  
-  case EB_CLICK:
-    btn1.OffMode();
-    break;
+  btn1.tick();
+  btn2.tick();
+  btnSwitch.tickSwitch();
 
-  default:
-    break;
-  }
 }
+#endif
+
+
+#ifdef WEB_S
 
 void heatControl(AsyncWebServerRequest *request)
 {
@@ -376,42 +390,7 @@ void fanControl(AsyncWebServerRequest *request)
   }
 }
 
-void btnsSetup()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  Serial.println(__FILE__);
-  btn1.attachCallback(callbackBtn1);
-  btn2.attachCallback(callbackBtn2);
-  btnSwitch.EnWork();
+#endif
 
-
-  btn1.attachRelay(&relayHeat);
-  btn2.attachRelay(&relayCool);
-  btnSwitch.attachRelay(&relayFan);
-}
-
-void btnsLoop()
-{
-  if(fan){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.EnWork();
-    btn2.EnWork();
-  }else{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.DeWork();
-    btn2.DeWork();
-  }
-
-  btn1.tick();
-  btn2.tick();
-  btnSwitch.tickSwitch();
-
-}
 
 #endif

@@ -7,6 +7,7 @@
 #include "countTimer.h"
 
 
+
 class Relay
 {
 private:
@@ -110,6 +111,7 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     state = !state;
     digitalWrite(pin, state);
     if (isHeatOrCool && state == true) {
@@ -193,6 +195,7 @@ public:
     this->screen = NULL;
   }
 };
+#ifdef RELAY_S
 
 Relay relayHeat(HEAT_PIN, LOW, Heat, true);
 Relay relayCool(COOL_PIN, LOW, Cooling, true);
@@ -220,6 +223,8 @@ void relayTick()
   relayCool.tick();
   relayFan.tick();
 }
+
+#endif
 
 
 #endif

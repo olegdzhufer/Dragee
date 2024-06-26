@@ -1,15 +1,29 @@
 #ifndef settings_h
 #define settings_h
 
+
+//#########################_WORK_PARAM_#################
+// Debug mod
+
 // #define DEBUG
 // #define DEBUG_FUNC
+
+//Section
+
+#define ENC_S
+#define BTN_S
+//#define RELAY_S
+#define TIMER_S
+#define WEB_S
+#define FILE_S
+#define MENU_S
+#define TEMP_S
+
+//######################################################
 
 #include <Arduino.h>
 #include <DS18B20Events.h>
 #include <MenuLib.h>
-          //#include <OneWire.h> is already included in DS18B20Events.h
-
-
 #include "pins.h"
 #include "secrets.h"
 #include "mDef.h"
