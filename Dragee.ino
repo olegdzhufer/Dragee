@@ -72,9 +72,11 @@ void setup()
 {
 
   setupSystem();
+
   #ifdef WIFI_S
     initWiFi();
   #endif
+
   setupTime();
   startSPIFFS();
 
@@ -96,7 +98,11 @@ void setup()
   #ifdef WEB_S
     startServerHost();
   #endif
-  startSensor();
+
+  #ifdef TEMP_S
+    startSensor();
+  #endif
+
   actuateHeating(OFF);
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
@@ -110,9 +116,6 @@ void setup()
     encoder_setup();
   #endif
 
-  
-  
-  
 }
 
 void loop()
@@ -120,7 +123,7 @@ void loop()
   #ifdef BTN_S
     btnsLoop(); 
   #endif
-  
+
   #ifdef RELAY_S
     relayTick();
   #endif
@@ -129,35 +132,39 @@ void loop()
   read_encoder();
   #endif
 
-  if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
-  {
-    lastTimerSwitchCheck = millis(); // Reset time
-    Temperature = readSensorComplete();                   
-
-    //httpRequest(Temperature);
-    
-    UpdateLocalTime();               // Updates Time UnixTime to 'now'
-    CheckTimerEvent();               // Check for schedules actuated
-  }
-
-  if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
-  {
-    LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
-    AssignSensorReadingsToArray();
-  }
-
-  if (millis() - lastConnectionTime > 10000) {
-    lastConnectionTime = millis();
-    Temperature = readSensor();
-    // thingSpeakSend(Temperature);
-  }
-
   #ifdef MENU_S
     lcdLoop();
   #endif
 
   #ifdef TIMER_S
     timer_loop();
+  #endif
+
+
+
+  #ifdef TEMP_S
+    if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
+    {
+      lastTimerSwitchCheck = millis(); // Reset time
+      Temperature = readSensorComplete();                   
+
+      //httpRequest(Temperature);
+      
+      UpdateLocalTime();               // Updates Time UnixTime to 'now'
+      CheckTimerEvent();               // Check for schedules actuated
+    }
+
+    if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
+    {
+      LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
+      AssignSensorReadingsToArray();
+    }
+
+    if (millis() - lastConnectionTime > 10000) {
+      lastConnectionTime = millis();
+      Temperature = readSensor();
+      // thingSpeakSend(Temperature);
+    }
   #endif
 }
 

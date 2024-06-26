@@ -14,9 +14,9 @@
 #define BTN_S
 #define RELAY_S
 #define TIMER_S
-//#define WIFI_S
+#define WIFI_S
 #define MENU_S
-#define TEMP_S
+//#define TEMP_S
 
 #define FILE_S
 
