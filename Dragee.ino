@@ -4,8 +4,7 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>  // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
 #include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
-#include <DS18B20Events.h>      //#include <OneWire.h> is already included in DS18B20Events.h
-// #include <ThingSpeak.h>
+#include <DS18B20Events.h>
 #include <HTTPClient.h>
 #include <MenuLib.h>
 
@@ -19,6 +18,7 @@
 
 
 #include "menu.h"
+
 #include "countTimer.h"
 
 #include "btns.h"
@@ -72,7 +72,9 @@ void setup()
 {
 
   setupSystem();
-  initWiFi();
+  #ifdef WIFI_S
+    initWiFi();
+  #endif
   setupTime();
   startSPIFFS();   
   initSection();
@@ -86,7 +88,9 @@ void setup()
 
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
-  startServerHost();
+  #ifdef WIFI_S && WEB_S
+    startServerHost();
+  #endif
   startSensor();
   actuateHeating(OFF);
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
@@ -143,7 +147,7 @@ void loop()
     // thingSpeakSend(Temperature);
   }
   lcdLoop();
-  
+
   #ifdef TIMER_S
     timer_loop();
   #endif

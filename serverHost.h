@@ -8,6 +8,9 @@
 #include "webPages.h"
 #include "btns.h"
 
+
+#ifdef WIFI_S && WEB_S
+
 /**
  * @brief The name that will identify your device on the network
  * @todo move to wifi configuration file
@@ -149,7 +152,7 @@ void serverHandlersSetup() {
     request->send(200, "text/html", webpage);
   });
   
-  
+
   server.on("/heat_set", HTTP_GET, heatControl);
   server.on("/cold_set", HTTP_GET, coldControl);
   server.on("/fan_set", HTTP_GET, fanControl);
@@ -164,5 +167,6 @@ void startServerHost() {
   server.begin();
 }
 
+#endif
 
 #endif
