@@ -76,8 +76,12 @@ void setup()
     initWiFi();
   #endif
   setupTime();
-  startSPIFFS();   
-  initSection();
+  startSPIFFS();
+
+  #ifdef MENU_S
+    initSection();
+  #endif
+
   #ifdef TIMER_S
     timer_setup();
   #endif
@@ -88,7 +92,8 @@ void setup()
 
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
-  #ifdef WIFI_S && WEB_S
+
+  #ifdef WEB_S
     startServerHost();
   #endif
   startSensor();
@@ -146,7 +151,10 @@ void loop()
     Temperature = readSensor();
     // thingSpeakSend(Temperature);
   }
-  lcdLoop();
+
+  #ifdef MENU_S
+    lcdLoop();
+  #endif
 
   #ifdef TIMER_S
     timer_loop();

@@ -15,11 +15,14 @@
 #define RELAY_S
 #define TIMER_S
 //#define WIFI_S
-#define WEB_S
 #define MENU_S
 #define TEMP_S
 
 #define FILE_S
+
+#ifdef WIFI_S
+  #define WEB_S
+#endif
 
 
 //######################################################
