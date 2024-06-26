@@ -6,6 +6,8 @@
 #include <Countimer.h>
 #include "menu.h"
 
+#ifdef TIMER_S
+
 Countimer countimer;
 
 char* convectorStrToChar(String text);
@@ -63,5 +65,6 @@ char* convectorStrToChar(String text) {
 
   return res;
 }
+#endif
 
 #endif

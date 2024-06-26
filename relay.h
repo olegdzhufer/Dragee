@@ -114,11 +114,13 @@ public:
 
     state = !state;
     digitalWrite(pin, state);
-    if (isHeatOrCool && state == true) {
-      startTimer();
-    } else if (isHeatOrCool && state == false) {
-      stopTimer();
-    }
+    #ifdef TIMER_S
+      if (isHeatOrCool && state == true) {
+        startTimer();
+      } else if (isHeatOrCool && state == false) {
+        stopTimer();
+      }
+    #endif
   }
 
   bool workStatus(){

@@ -13,7 +13,7 @@
 #define ENC_S
 #define BTN_S
 #define RELAY_S
-#define TIMER_S
+//#define TIMER_S
 #define WEB_S
 #define FILE_S
 #define MENU_S

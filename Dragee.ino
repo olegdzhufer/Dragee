@@ -76,7 +76,9 @@ void setup()
   setupTime();
   startSPIFFS();   
   initSection();
-  timer_setup();
+  #ifdef TIMER_S
+    timer_setup();
+  #endif
 
   #ifdef RELAY_S
     relaySetup();  
@@ -141,8 +143,10 @@ void loop()
     // thingSpeakSend(Temperature);
   }
   lcdLoop();
-  timer_loop();
- 
+  
+  #ifdef TIMER_S
+    timer_loop();
+  #endif
 }
 
 
