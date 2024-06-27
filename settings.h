@@ -16,7 +16,7 @@
 #define TIMER_S
 #define WIFI_S
 #define MENU_S
-//#define TEMP_S
+#define TEMP_S
 
 #define FILE_S
 
@@ -109,7 +109,7 @@ String sitetitle            = "Dragee Machine IoT";
 String Year                 = "2024";     // For the footer line
 float  Temperature          = 0.0;          // Variable for the current temperature
 float  TargetTemp           = 25;         // Default thermostat value for set temperature
-int    FrostTemp            = 5;          // Default thermostat value for frost protection temperature
+float  FrostTemp            = 0;          // Default thermostat value for frost protection temperature
 float  ManOverrideTemp      = 21;         // Manual override temperature
 float  MaxTemperature       = 28;         // Maximum temperature detection, switches off thermostat when reached
 

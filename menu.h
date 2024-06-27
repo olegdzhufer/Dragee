@@ -10,6 +10,7 @@
 #include "charList.h"
 
 uint8_t timeRecover = 0;
+bool flag_temp = false;
 
 
 Menu menu;
@@ -20,72 +21,83 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLi
 
   #ifdef MENU_S
 
+    void initScreen(){
+      menu.lcd->clear();
+      menu.lcd->setCursor(0, 0);
+      menu.lcd->printf(initFirstLine);
+      
+      delay(600);
+      menu.lcd->setCursor(0, 1);
+      menu.lcd->printf(initSecondLine);
+      
+      
+      delay(600);
+      menu.lcd->setCursor(0, 2);
+      menu.lcd->printf(initThirdLine);
+      
+      delay(500);
+    }
+
     STATUS_t initSection() {
         #ifdef DEBUG_FUNC
           Serial.println(__func__);
         #endif
       menu = *(initMenu());
 
-      // if (&menu) {//always not null
+      Heat = menu.addScreen_ptr(&menu, (char*)HeatName);
+      Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);
+      FAN = menu.addScreen_ptr(&menu, (char*)Fan);
+      STOP = menu.addScreen_ptr(&menu, (char*)Stop);
 
-        Heat = menu.addScreen_ptr(&menu, (char*)HeatName);
-        Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);
-        FAN = menu.addScreen_ptr(&menu, (char*)Fan);
-        STOP = menu.addScreen_ptr(&menu, (char*)Stop);
-
-        if (Heat) {
-          TempSetH = Heat->newLine_ptr(Heat, (char*)TSet, (char*)TempSet, NULL);
-          TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-          TempCurH = Heat->newLine_ptr(Heat, (char*)TCur, (char*)TempCurr, NULL);
-          TempCurH->val->setfloat(TempCurH->val, Temperature);
-        } else {
-          return FAILURE;
-        }
+      if (Heat) {
+        TempSetH = Heat->newLine_ptr(Heat, (char*)TSet, (char*)TempSet, NULL);
+        TempSetH->val->setfloat(TempSetH->val, TargetTemp);
+        TempCurH = Heat->newLine_ptr(Heat, (char*)TCur, (char*)TempCurr, NULL);
+        TempCurH->val->setfloat(TempCurH->val, Temperature);
+      } else {
+        return FAILURE;
+      }
 
 
-        if (Cooling) {
-          TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempCurr, NULL);
-          TempSetC->val->setfloat(TempSetC->val, TargetTemp);
-          TempCurC = Cooling->newLine_ptr(Cooling, (char*)TCur, (char*)TempCurr, NULL);
-          TempCurC->val->setfloat(TempCurC->val, Temperature);
-        } else {
-          return FAILURE;
-        }
+      if (Cooling) {
+        TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempCurr, NULL);
+        TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+        TempCurC = Cooling->newLine_ptr(Cooling, (char*)TCur, (char*)TempCurr, NULL);
+        TempCurC->val->setfloat(TempCurC->val, Temperature);
+      } else {
+        return FAILURE;
+      }
 
-        if (FAN) {
-          TempCurF = FAN->newLine_ptr(FAN, (char*)TCur, (char*)TempCurr, NULL);
-          TempCurF->val->setfloat(TempCurF->val, Temperature);
-        } else {
-          return FAILURE;
-        }
+      if (FAN) {
+        TempCurF = FAN->newLine_ptr(FAN, (char*)TCur, (char*)TempCurr, NULL);
+        TempCurF->val->setfloat(TempCurF->val, Temperature);
+      } else {
+        return FAILURE;
+      }
 
-        if (STOP) {
-          TempCurS = STOP->newLine_ptr(STOP, (char*)Stop, (char*)Empty, NULL);
-        } else {
-          return FAILURE;
-        }
+      if (STOP) {
+        TempCurS = STOP->newLine_ptr(STOP, (char*)Stop, (char*)Empty, NULL);
+      }else {
+        return FAILURE;
+      }
 
-      footerLine = initLine( "Timer: ", "Timer", NULL);
+      footerLine = initLine( "Timer", " ", NULL);
       footerLine->val->setChar(footerLine->val, "");
-      FAN->footer = footerLine;
-
-
-        
+      initScreen();
+      menu.lcd->clear();
         return STATUS_OK;
-      // }
-      // return FAILURE;
+
     }
 
     void lcdLoop(){
-
-        if(FLAG_LCD){
-          #ifdef DEBUG_FUNC
-            Serial.println(__func__);
-          #endif
-          timeRecover = millis();
-          menu.printScreen(&menu);
-          FLAG_LCD = false;
-        }
+      if(FLAG_LCD){
+        #ifdef DEBUG_FUNC
+          Serial.println(__func__);
+        #endif
+        timeRecover = millis();
+        menu.printScreen(&menu);
+        FLAG_LCD = false;
+      }
     }
   #endif
 

@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "settings.h"
 #include "relay.h"
+#include "Pid.h"
 
 
 
@@ -275,6 +276,45 @@ ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW);
 ButtonSwitch btn2(BTN2_PIN, LED_PIN2, INPUT_PULLUP, LOW);
 ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
+
+void callbackBtn1()
+{
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+  switch (btn1.action())
+  {
+
+  case EB_CLICK:
+    btn2.OffMode();
+    TempSetC->val->setfloat(TempSetC->val, FrostTemp); 
+    menu.lineUpdate(&menu, TempCurC);
+    break;
+
+  default:
+    break;
+  }
+}
+
+void callbackBtn2()
+{
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+  switch (btn2.action())
+  {
+  
+  case EB_CLICK:
+    btn1.OffMode();
+
+    
+    break;
+
+  default:
+    break;
+  }
+}
+
 void btnsSetup()
 {
   #ifdef DEBUG_FUNC
@@ -283,6 +323,9 @@ void btnsSetup()
   Serial.println(__FILE__);
 
   btnSwitch.EnWork();
+  
+  btn1.attachCallback(callbackBtn1);
+  btn2.attachCallback(callbackBtn2);
 
 
   #ifdef RELAY_S
@@ -306,6 +349,19 @@ void btnsLoop()
     #endif
     btn1.DeWork();
     btn2.DeWork();
+    FrostTemp = 0;
+    TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+
+  }
+
+
+  if(menu.curr == Cooling && menu.curr->footer && FrostTemp != 5){
+      FrostTemp = 5;
+      TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+      menu.lineUpdate(&menu, TempCurC);
+    }else if (menu.curr == Cooling && FrostTemp == 5){
+      FrostTemp = 0;
+
   }
 
   btn1.tick();

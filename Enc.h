@@ -73,7 +73,7 @@ void read_encoder(){
   if(updateTemp){
     updateTemp = false;
     TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-    FLAG_LCD = true;
+    menu.lineUpdate(&menu, TempSetH);
   }
 }
 

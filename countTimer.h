@@ -14,15 +14,13 @@ char* convectorStrToChar(String text);
 
 void onInterval() {
   String currentTime = countimer.getCurrentTime();
-  Serial.print(currentTime);
-  Serial.print('\n');
   char* textChar = convectorStrToChar(currentTime);
-  Serial.print(textChar);
-  Serial.print('\n');
+  Serial.println(textChar);
+
 
   if (footerLine) {
     footerLine->val->setChar(footerLine->val, textChar);
-    FLAG_LCD = true;
+    menu.footerUpdate(&menu, footerLine->val);
   }
 }
 void startTimer() {
@@ -33,6 +31,7 @@ void startTimer() {
 void stopTimer() {
   countimer.stop();
   menu.curr->footer = NULL;
+  
 }
 
 void handleTimer(bool state) {

@@ -2,11 +2,12 @@
 #define tempSensor_h
 
 #include <Arduino.h>
+#include "menu.h"
 #include "settings.h"
 
   #ifdef TEMP_S
 
-    #define VIRT_SENSOR 0
+    #define VIRT_SENSOR 1
 
     float readSensorComplete()
     {
@@ -31,6 +32,20 @@
     #endif
 
       Serial.println(temperature);
+
+      if(menu.curr == Heat){
+        TempCurH->val->setfloat(TempCurH->val, temperature);
+        menu.lineUpdate(&menu, TempCurH);
+      }else if(menu.curr == Cooling){
+        TempCurC->val->setfloat(TempCurC->val, temperature);
+        menu.lineUpdate(&menu, TempCurC);
+      }else if( menu.curr == FAN){
+        TempCurF->val->setfloat(TempCurF->val, temperature);
+        menu.lineUpdate(&menu, TempCurF);
+      }
+      
+
+
       return temperature;
     }
 
@@ -69,6 +84,16 @@
       for (int r = 0; r < SensorReadings; r++)
       {
         sensordata[1][r].Temp = Temperature;
+      }
+      if(menu.curr == Heat){
+        TempCurH->val->setfloat(TempCurH->val, Temperature);
+        menu.lineUpdate(&menu, TempCurH);
+      }else if(menu.curr == Cooling){
+        TempCurC->val->setfloat(TempCurC->val, Temperature);
+        FLAG_LCD = true;
+      }else if( menu.curr == FAN){
+        TempCurF->val->setfloat(TempCurF->val, Temperature);
+        FLAG_LCD = true;
       }
       //actuateHeating(OFF);
       // readSensorComplete();

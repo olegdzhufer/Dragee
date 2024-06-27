@@ -111,11 +111,17 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-
+    Serial.println(this->screen->name);
     state = !state;
+    if(state){
+      FrostTemp = 5;
+    }else{
+      FrostTemp = 0;
+    }
     digitalWrite(pin, state);
     #ifdef TIMER_S
       if (isHeatOrCool && state == true) {
+        menu.curr = this->screen;
         startTimer();
       } else if (isHeatOrCool && state == false) {
         stopTimer();
