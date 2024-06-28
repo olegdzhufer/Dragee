@@ -169,6 +169,8 @@ void loop()
       // thingSpeakSend(Temperature);
     }
   #endif
+
+  loopPID();
 }
 
 

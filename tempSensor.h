@@ -7,7 +7,7 @@
 
   #ifdef TEMP_S
 
-    #define VIRT_SENSOR 1
+    #define VIRT_SENSOR 0
 
     float readSensorComplete()
     {

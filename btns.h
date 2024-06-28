@@ -289,6 +289,8 @@ void callbackBtn1()
     btn2.OffMode();
     TempSetC->val->setfloat(TempSetC->val, FrostTemp); 
     menu.lineUpdate(&menu, TempCurC);
+
+
     break;
 
   default:
@@ -343,26 +345,19 @@ void btnsLoop()
     #endif
     btn1.EnWork();
     btn2.EnWork();
+
   }else{
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
     btn1.DeWork();
     btn2.DeWork();
-    FrostTemp = 0;
-    TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+    Heat->footer = NULL;
+    Cooling->footer = NULL;
+    stopTimer();
 
   }
 
-
-  if(menu.curr == Cooling && menu.curr->footer && FrostTemp != 5){
-      FrostTemp = 5;
-      TempSetC->val->setfloat(TempSetC->val, FrostTemp);
-      menu.lineUpdate(&menu, TempCurC);
-    }else if (menu.curr == Cooling && FrostTemp == 5){
-      FrostTemp = 0;
-
-  }
 
   btn1.tick();
   btn2.tick();

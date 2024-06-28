@@ -9,15 +9,15 @@ class simpPid{
     bool work = false;
     float* target;
     float temp;
-    Relay* relay;
+    uint8_t pin;
     
 
   public:
     simpPid(){}
 
-    simpPid(float* target, Relay* relay){
+    simpPid(float* target, uint8_t pin){
       this->target = target;
-      this->relay = relay;
+      this->pin = pin;
     }
     void PidActivate(){
       this->work = true;
@@ -31,17 +31,18 @@ class simpPid{
     }
 
     void tickPIDUp(){
-      if((this->target && *(this->target) - 1,5 >= temp || this->temp >= 58 ) && (this->relay && this->work) ){
-        this->relay->relayOff();
-      }else if(this->work && this->relay){
-        this->relay->relayOn();
+      if((this->target && *(this->target) - 1.5 <= temp || this->temp >= 58 ) && this->work ){
+        digitalWrite(this->pin, LOW);
+      }else if(this->work){
+        digitalWrite(this->pin, HIGH);
       }
     }
+    
     void tickPIDDown(){
-      if((this->target && *(this->target) <= temp || this->temp <= 1 ) && (this->relay && this->work) ){
-        this->relay->relayOff();
-      }else if(this->work && this->relay){
-        this->relay->relayOn();
+      if((this->target && *(this->target) <= temp || this->temp <= 1 ) && this->work ){
+        digitalWrite(this->pin, HIGH);
+      }else if(this->work){
+        digitalWrite(this->pin, LOW);
       }
     }
 
@@ -50,18 +51,50 @@ class simpPid{
       this->target = target;
     }
 
+    void offPid(){
+      this->work = false;
+      digitalWrite(this->pin, LOW);
+    }
+
+    void switchPidMode(){
+      this->work = !work;
+    }
+
 };
 
-simpPid heatPid(&TargetTemp, &relayHeat);
-simpPid coolPid(&FrostTemp, &relayCool);
+simpPid heatPid(&TargetTemp, HEAT_PIN);
+simpPid coolPid(&FrostTemp,  COOL_PIN);
 
 void setupPID(){
 
 }
 
 void loopPID(){
-  heatPid.tickPIDUp();
+
+
+
+
+  if(Heat->footer != NULL){
+    heatPid.PidActivate();
+    heatPid.tempNow(Temperature);
+    heatPid.tickPIDUp();
+  }
+  else{
+    heatPid.PidDeactivate();
+    relayHeat.relayOff();
+  }
+
+
+  if(Cooling->footer != NULL){
+    coolPid.PidActivate();
+  coolPid.tempNow(Temperature);
   coolPid.tickPIDDown();
+  }
+  else{
+    coolPid.PidDeactivate();
+    relayCool.relayOff();
+  }
+  
 }
 
 

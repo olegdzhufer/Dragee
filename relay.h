@@ -6,7 +6,8 @@
 #include "menu.h"
 #include "countTimer.h"
 
-
+bool heatPidSt = false;
+bool coolPidSt = false;
 
 class Relay
 {
@@ -22,6 +23,7 @@ public:
   bool allowed = true;
   bool isMain = false;
   bool isHeatOrCool = false;
+  bool* pidState ;
 
 
   Screen *screen = NULL;
@@ -54,6 +56,10 @@ public:
   void setLine(Line* line, float* temp){
     this->CurrLine = line;
     this->tempR = temp;
+  }
+
+  void setPidBool(bool* flag){
+    this->pidState = flag;
   }
 
   void getLine(){
@@ -104,6 +110,8 @@ public:
       Serial.println(__func__);
     #endif
     changeFlag = !changeFlag;
+
+
   }
 
   void toggle()
@@ -127,6 +135,9 @@ public:
         stopTimer();
       }
     #endif
+    if(this->pidState){
+      *(this->pidState) = !*(this->pidState);
+    }
   }
 
   bool workStatus(){
@@ -185,13 +196,18 @@ public:
     temp = NULL;
     currLine = NULL;
     state = LOW;
+    if(this->pidState){
+      *(this->pidState) = false;
+    }
     digitalWrite(pin, state);
   }
   void relayOn(){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-
+    if(this->pidState){
+      *(this->pidState) = true;
+    }
     state = HIGH;
     digitalWrite(pin, state);
   }
@@ -218,6 +234,10 @@ void relaySetup()
 
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);
+
+  relayHeat.setPidBool(&heatPidSt);
+  relayCool.setPidBool(&coolPidSt);
+
   relayFan.attachScreen(FAN);
 
   relayHeat.setLine(TempSetH, &TargetTemp);

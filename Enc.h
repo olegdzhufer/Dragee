@@ -42,15 +42,24 @@ void read_encoder(){
     if(en.leftH()){
       if(menu.curr == Heat && TargetTemp > 0){
         updateTemp = true;
-        TargetTemp -= 1;
-        Serial.println(TargetTemp);
+        TargetTemp -= 0.5;
+      }else if(menu.curr == Cooling && FrostTemp > 0){
+        updateTemp = true;
+        FrostTemp -= 0.5;
+        TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+        menu.lineUpdate(&menu, TempSetC);
       }
     }
     else if(en.rightH()){
       if(menu.curr == Heat && TargetTemp < 60){
         updateTemp = true;
-        TargetTemp += 1;
+        TargetTemp += 0.5;
         Serial.println(TargetTemp);
+      }else if(menu.curr == Cooling && FrostTemp > 0){
+        updateTemp = true;
+        FrostTemp += 0.5;
+        TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+        menu.lineUpdate(&menu, TempSetC);
       }
     }
 
