@@ -9,8 +9,6 @@
 #include "settings.h"
 #include "charList.h"
 
-uint8_t timeRecover = 0;
-bool flag_temp = false;
 
 
 Menu menu;
@@ -94,7 +92,6 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLi
         #ifdef DEBUG_FUNC
           Serial.println(__func__);
         #endif
-        timeRecover = millis();
         menu.printScreen(&menu);
         FLAG_LCD = false;
       }
