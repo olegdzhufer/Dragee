@@ -12,9 +12,8 @@
 
 Menu menu;
 
-Screen* mainS;
-Screen *Heat, *Cooling, *FAN, *STOP;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHeat, *footerCool;
+Screen *Heat, *Cooling, *FAN, *STOP, *Setting, *PIDScreen;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHeat, *footerCool, *PIDLine;
 
   #ifdef MENU_S
 
@@ -77,6 +76,8 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHe
       }else {
         return FAILURE;
       }
+
+
 
       footerHeat =  initLine("HeatFooter", " ", NULL);
       footerCool =  initLine("CoolFooter", " ", NULL);

@@ -42,6 +42,8 @@ void read_encoder(){
       if(menu.curr == Heat && TargetTemp > 30){
         updateTemp = true;
         TargetTemp -= 0.5;
+        TempSetH->val->setfloat(TempSetH->val, FrostTemp);
+        menu.lineUpdate(&menu, TempSetH);
       }else if(menu.curr == Cooling && FrostTemp > 0){
         updateTemp = true;
         FrostTemp -= 0.5;
@@ -54,6 +56,8 @@ void read_encoder(){
         updateTemp = true;
         TargetTemp += 0.5;
         Serial.println(TargetTemp);
+        TempSetH->val->setfloat(TempSetH->val, FrostTemp);
+        menu.lineUpdate(&menu, TempSetH);
       }else if(menu.curr == Cooling && FrostTemp < 30){
         updateTemp = true;
         FrostTemp += 0.5;
@@ -72,17 +76,12 @@ void read_encoder(){
     }
      else if (en.press())  
     {
-        enc_pre = 0x05;
-        Serial.println("5");
+
     }
   }
 
 
-  if(updateTemp){
-    updateTemp = false;
-    TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-    menu.lineUpdate(&menu, TempSetH);
-  }
+
 }
 
 #endif
