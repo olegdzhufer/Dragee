@@ -38,6 +38,7 @@ class simpPid{
       this->temp = temp;
     }
 
+
     void tickPIDUp(){
       if(this->work){
         this->timeCounter();
@@ -52,8 +53,6 @@ class simpPid{
           this->onTime = 0;
           this->timerBufSec = 0;
         }
-
-        if(this->onTime + (this->dt*1000))
 
       }
     }
@@ -108,7 +107,7 @@ class simpPid{
           if(val <= 0){
             this->onTime = 0;
           }else{
-            val = ((val - (val % 1.27)) / 1.27) * 10;
+            val = ((val - fmod(val, 1.27)) / 1.27) * 10;
             this->onTime = (this->dt * val);
           }
 

@@ -13,6 +13,7 @@
 
 bool fan = false;
 
+
 class ButtonSwitch : public VirtButton
 {
 public:
@@ -194,6 +195,7 @@ public:
     switch (btnState){
 
     case EB_CLICK:
+      this->state = !(this->state);
       toggleLed();
       if (relay != NULL){
         relay->toggleFlag();
@@ -270,6 +272,8 @@ public:
     if(this->relay != NULL){
       this->relay->relayOff();
     }
+
+    this->state = false;
   }
 
   void EnWork(){
@@ -287,6 +291,11 @@ public:
 
     this->workEn = false;
     OffMode();
+    this->state = false;
+  }
+
+  bool getState(){
+    return this->state;
   }
 
 private:
@@ -295,6 +304,7 @@ private:
   uint8_t ledState;
   bool workEn = false;
   TimerCount* timer = NULL;
+  bool state = false;
 
 
   Relay *relay = NULL;
@@ -360,6 +370,8 @@ void btnsSetup()
 
   btn1.addTimer(&timerHeat);
   btn2.addTimer(&timerCool);
+
+  
 }
 
 void btnsLoop()
@@ -370,6 +382,10 @@ void btnsLoop()
     #endif
     btn1.EnWork();
     btn2.EnWork();
+    if(!(btn2.getState() || btn1.getState()) && menu.curr != FAN){
+      menu.curr = FAN;
+      FLAG_LCD = true;
+    }
 
   }else{
     #ifdef DEBUG_FUNC

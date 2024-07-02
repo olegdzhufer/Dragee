@@ -42,7 +42,7 @@ void read_encoder(){
       if(menu.curr == Heat && TargetTemp > 30){
         updateTemp = true;
         TargetTemp -= 0.5;
-        TempSetH->val->setfloat(TempSetH->val, FrostTemp);
+        TempSetH->val->setfloat(TempSetH->val, TargetTemp);
         menu.lineUpdate(&menu, TempSetH);
       }else if(menu.curr == Cooling && FrostTemp > 0){
         updateTemp = true;
@@ -56,7 +56,7 @@ void read_encoder(){
         updateTemp = true;
         TargetTemp += 0.5;
         Serial.println(TargetTemp);
-        TempSetH->val->setfloat(TempSetH->val, FrostTemp);
+        TempSetH->val->setfloat(TempSetH->val, TargetTemp);
         menu.lineUpdate(&menu, TempSetH);
       }else if(menu.curr == Cooling && FrostTemp < 30){
         updateTemp = true;
