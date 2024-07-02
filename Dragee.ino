@@ -1,4 +1,3 @@
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -17,10 +16,10 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
+
 #include "menu.h"
 
 #include "countTimer.h"
-
 #include "relay.h"
 #include "Pid.h"
 
@@ -82,7 +81,6 @@ void setup()
   #endif
 
   setupTime();
-
   startSPIFFS();
 
   #ifdef MENU_S
@@ -96,6 +94,7 @@ void setup()
   #ifdef RELAY_S
     relaySetup();  
   #endif  
+
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
 
@@ -121,6 +120,9 @@ void setup()
   #endif
 
 
+  timerCool.onTimer();
+  timerHeat.onTimer();
+
 }
 
 void loop()
@@ -134,7 +136,6 @@ void loop()
   #endif
 
   #ifdef ENC_S
-
   read_encoder();
   #endif
 

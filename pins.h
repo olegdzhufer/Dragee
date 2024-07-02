@@ -5,9 +5,6 @@
 #define BTN2_PIN 33
 #define BTN3_PIN 25
 
-// #define LED_PIN1 18
-// #define LED_PIN2 5
-// #define LED_PIN3 17
 #define LED_PIN1 19
 #define LED_PIN2 4
 #define LED_PIN3 2

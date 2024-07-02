@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <EncButton.h>
 #include "menu.h"
+#include "countTimer.h"
 #include "settings.h"
 #include "relay.h"
 #include "Pid.h"
@@ -44,11 +45,35 @@ public:
     setLed(ledPin, ledInitState);
   }
 
+  void addTimer(TimerCount* timer){
+    if(timer){
+      this->timer = timer;
+    }
+  }
+
+  bool swichTimer(){
+    if(this->timer){
+      return this->timer->swichTimerMode();
+    }
+    return false;
+  }
+  void offTimer(){
+    if(this->timer){
+      this->timer->offTimer();
+    }
+  }
+  void onTimer(){
+    if(this->timer){
+      this->timer->onTimer();
+    }
+  }
+
   bool read()
   {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     return EB_read(btnPin) ^ bf.read(EB_INV);
   }
 
@@ -59,6 +84,8 @@ public:
     {
       #ifdef DEBUG_FUNC
         Serial.println(__func__);
+        
+
       #endif
 
     #ifdef DEBUG
@@ -133,6 +160,7 @@ public:
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
+
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
@@ -159,24 +187,22 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    // Serial.println("Action \n");
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
 
-    switch (btnState)
-    {
+    switch (btnState){
 
     case EB_CLICK:
-      // Serial.println("click");
       toggleLed();
-      if (relay != NULL)
-      {
+      if (relay != NULL){
         relay->toggleFlag();
       }
       callCallback();
+      this->swichTimer();
       FLAG_LCD = true;
       break;
+
     default:
       #ifdef DEBUG
         Serial.println("other action");
@@ -239,6 +265,7 @@ public:
     #endif
 
     this->LedOff();
+    this->offTimer();
 
     if(this->relay != NULL){
       this->relay->relayOff();
@@ -267,6 +294,8 @@ private:
   uint8_t ledPin;
   uint8_t ledState;
   bool workEn = false;
+  TimerCount* timer = NULL;
+
 
   Relay *relay = NULL;
 };
@@ -282,15 +311,11 @@ void callbackBtn1()
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  switch (btn1.action())
-  {
+  switch (btn1.action()){
 
   case EB_CLICK:
     btn2.OffMode();
-    TempSetC->val->setfloat(TempSetC->val, FrostTemp); 
-    menu.lineUpdate(&menu, TempCurC);
-
-
+    
     break;
 
   default:
@@ -303,13 +328,10 @@ void callbackBtn2()
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  switch (btn2.action())
-  {
-  
+  switch (btn2.action()){
+
   case EB_CLICK:
     btn1.OffMode();
-
-    
     break;
 
   default:
@@ -335,6 +357,9 @@ void btnsSetup()
     btn2.attachRelay(&relayCool);
     btnSwitch.attachRelay(&relayFan);
   #endif
+
+  btn1.addTimer(&timerHeat);
+  btn2.addTimer(&timerCool);
 }
 
 void btnsLoop()
@@ -352,9 +377,7 @@ void btnsLoop()
     #endif
     btn1.DeWork();
     btn2.DeWork();
-    Heat->footer = NULL;
-    Cooling->footer = NULL;
-    stopTimer();
+
 
   }
 

@@ -5,7 +5,6 @@
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <MenuLib.h>
 #include "settings.h"
 #include "charList.h"
 
@@ -15,7 +14,7 @@ Menu menu;
 
 Screen* mainS;
 Screen *Heat, *Cooling, *FAN, *STOP;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLine;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHeat, *footerCool;
 
   #ifdef MENU_S
 
@@ -58,7 +57,7 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLi
 
 
       if (Cooling) {
-        TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempCurr, NULL);
+        TempSetC = Cooling->newLine_ptr(Cooling, (char*)TSet, (char*)TempSet, NULL);
         TempSetC->val->setfloat(TempSetC->val, FrostTemp);
         TempCurC = Cooling->newLine_ptr(Cooling, (char*)TCur, (char*)TempCurr, NULL);
         TempCurC->val->setfloat(TempCurC->val, Temperature);
@@ -79,8 +78,12 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerLi
         return FAILURE;
       }
 
-      footerLine = initLine( "Timer", " ", NULL);
-      footerLine->val->setChar(footerLine->val, "");
+      footerHeat =  initLine("HeatFooter", " ", NULL);
+      footerCool =  initLine("CoolFooter", " ", NULL);
+
+      footerHeat->val->setChar(footerHeat->val, " ");
+      footerCool->val->setChar(footerCool->val, " ");
+
       initScreen();
       menu.lcd->clear();
         return STATUS_OK;
