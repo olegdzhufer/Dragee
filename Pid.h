@@ -60,7 +60,19 @@ class simpPid{
     
     void tickPIDDown(){
       if(this->work){
-        
+        this->timeCounter();
+        if(this->onTime && this->timerBufSec){
+          this->timerBufSec = millis();
+        }
+
+        if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
+          digitalWrite(this->pin, LOW);
+        }else{
+          digitalWrite(this->pin, HIGH);
+          this->onTime = 0;
+          this->timerBufSec = 0;
+        }
+
       }
     }
 
