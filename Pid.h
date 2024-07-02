@@ -12,6 +12,7 @@ class simpPid{
     uint8_t pin;
     uint8_t onTime = 0;
     uint32_t timerBuffer;
+    uint32_t timerBufSec;
 
 
     float integral = 0 , prevEr = 0;
@@ -39,6 +40,20 @@ class simpPid{
 
     void tickPIDUp(){
       if(this->work){
+        this->timeCounter();
+        if(this->onTime && this->timerBufSec){
+          this->timerBufSec = millis();
+        }
+
+        if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
+          digitalWrite(this->pin, HIGH);
+        }else{
+          digitalWrite(this->pin, LOW);
+          this->onTime = 0;
+          this->timerBufSec = 0;
+        }
+
+        if(this->onTime + (this->dt*1000))
 
       }
     }
@@ -81,8 +96,7 @@ class simpPid{
           if(val <= 0){
             this->onTime = 0;
           }else{
-
-            val = ((val - (val % 1.28)) / 1.28) * 10;
+            val = ((val - (val % 1.27)) / 1.27) * 10;
             this->onTime = (this->dt * val);
           }
 
