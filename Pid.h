@@ -16,9 +16,69 @@ class simpPid{
 
 
     float integral = 0 , prevEr = 0;
+    float kp, ki, kd, dt;
 
   public:
-    float kp, ki, kd, dt;
+
+    //#############SETTER##########################
+    void setKp(float kp){
+      this->kp = kp;
+    }
+    void setKi(float ki){
+      this->ki = ki;
+    }
+    void setKd(float kd){
+      this->kd = kd;
+    }
+    void setDt(float dt){
+      this->dt = dt;
+    }
+
+    //#############GETERS##########################
+
+    float getKp(){
+      return this->kp;
+    }
+
+    float getKi(){
+      return this->ki;
+    }
+
+    float getKd(){
+      return this->kd;
+    }
+
+    float getDt(){
+      return this->dt;
+    }
+
+    // ####### ++, -- Func #################################
+    //############# PLUS ########
+    void addToKp(){
+      this->kp ++;
+    }
+    void addToKi(){
+      this->ki ++;
+    }
+    void addToKd(){
+      this->kd ++;
+    }
+    void addToDt(){
+      this->dt ++;
+    }
+    //############# MINUS #######
+    void SubtractFromKp(){
+      this->kp --;
+    }
+    void SubtractFromKi(){
+      this->ki --;
+    }
+    void SubtractFromKd(){
+      this->kd --;
+    }
+    void SubtractFromDt(){
+      this->dt --;
+    }
 
   public:
     simpPid(){}
