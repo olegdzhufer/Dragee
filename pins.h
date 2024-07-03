@@ -21,14 +21,8 @@
 #define COOL_PIN REL2
 #define FAN_PIN REL3
 
-
-// #define V33 12
-
 #define ONE_WIRE_BUS 13
 
-#define RelayPIN        16              // Define the Relay Control pin
-#define LEDPIN          4              // Define the LED Control pin
-#define RelayReverse    false          // Set to true for Relay that requires a signal LOW for ON
 
 
 #define ENC_BTN_PIN CLK

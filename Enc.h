@@ -39,7 +39,7 @@ void read_encoder(){
     en.tick();
 
     if(en.leftH()){
-      if(menu.curr == Heat && TargetTemp > 30){
+      if(menu.curr == Heat && TargetTemp > MinTempHeat){
         updateTemp = true;
         TargetTemp -= 0.5;
         TempSetH->val->setfloat(TempSetH->val, TargetTemp);

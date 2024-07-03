@@ -19,7 +19,6 @@ private:
 public:
   bool allowed = true;
   bool isMain = false;
-  bool* pidState ;
 
 
   Screen *screen = NULL;
@@ -51,10 +50,6 @@ public:
   void setLine(Line* line, float* temp){
     this->CurrLine = line;
     this->tempR = temp;
-  }
-
-  void setPidBool(bool* flag){
-    this->pidState = flag;
   }
 
   void getLine(){
@@ -117,9 +112,7 @@ public:
     Serial.println(this->screen->name);
     state = !state;
     digitalWrite(pin, state);
-    if(this->pidState){
-      *(this->pidState) = !*(this->pidState);
-    }
+
   }
 
   bool workStatus(){
@@ -177,19 +170,13 @@ public:
     #endif
     temp = NULL;
     currLine = NULL;
-    state = LOW;
-    if(this->pidState){
-      *(this->pidState) = false;
-    }
     digitalWrite(pin, state);
   }
   void relayOn(){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-    if(this->pidState){
-      *(this->pidState) = true;
-    }
+
     state = HIGH;
     digitalWrite(pin, state);
   }
