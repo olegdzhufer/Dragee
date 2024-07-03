@@ -141,9 +141,7 @@
     TermSensor tempSensor(&sensor, 250);
 
     void callBackTemp(){
-
       Temperature = tempSensor.getTemp();
-
       if(menu.curr == Heat){
         TempCurH->val->setfloat(TempCurH->val, Temperature);
         menu.lineUpdate(&menu, TempCurH);
