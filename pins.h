@@ -7,7 +7,7 @@
 
 #define LED_PIN1 19
 #define LED_PIN2 4
-#define LED_PIN3 2
+#define LED_PIN3 22 // 2
 
 #define CLK 18                     
 #define DT  5                      
@@ -22,8 +22,7 @@
 #define FAN_PIN REL3
 
 #define ONE_WIRE_BUS 13
-
-
+#define ONE_WIRE_RTC 2
 
 #define ENC_BTN_PIN CLK
 #define ENC_R_PIN DT

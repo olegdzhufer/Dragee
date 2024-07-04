@@ -45,6 +45,7 @@ const char* serverIPApi = "184.106.153.149";
 // NTP server to request epoch time
 const char* ntpServer = "pool.ntp.org";
 const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
+
 // "CET-1CEST,M3.5.0,M10.5.0/3";
 
 //#define THINGSPEAK_PORT 80 // Thingspeak port
@@ -129,6 +130,7 @@ uint32_t    LastReadingCheck     = 0;          // Counter for last reading saved
 float  LastTemperature      = 0;          // Last temperature used for rogue reading detection
 int    UnixTime             = 0;          // Time now (when updated) of the current time
 
+char* timeNow; 
 
 AsyncWebServer server(WENPAGE_PORT);
 
