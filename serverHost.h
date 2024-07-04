@@ -1,15 +1,18 @@
-#include "ESPAsyncWebServer.h"
+
 #ifndef serverHost_h
 #define serverHost_h
 
-#include <Arduino.h>
-#include "settings.h"
-#include "timerThermo.h"
-#include "webPages.h"
-#include "btns.h"
 
 
 #ifdef WEB_S
+
+
+  #include "ESPAsyncWebServer.h"
+  #include <Arduino.h>
+  #include "settings.h"
+  #include "timerThermo.h"
+  #include "webPages.h"
+  #include "btns.h"
 
   /**
   * @brief The name that will identify your device on the network

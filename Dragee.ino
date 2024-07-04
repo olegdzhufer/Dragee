@@ -19,6 +19,8 @@
 
 #include "menu.h"
 
+
+#include "RTC.h"
 #include "countTimer.h"
 #include "relay.h"
 #include "Pid.h"
@@ -27,9 +29,11 @@
 
 
 
+
 #ifdef ENC_S
   #include "Enc.h"
 #endif
+
 
 
 
@@ -150,28 +154,30 @@ void loop()
 
 
   #ifdef TEMP_S
-    if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
-    {
-      lastTimerSwitchCheck = millis(); // Reset time
-      Temperature = readSensorComplete();                   
+    // if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
+    // {
+    //   lastTimerSwitchCheck = millis(); // Reset time
+    //   // Temperature = readSensorComplete();                   
 
-      //httpRequest(Temperature);
+    //   //httpRequest(Temperature);
       
-      UpdateLocalTime();               // Updates Time UnixTime to 'now'
-      CheckTimerEvent();               // Check for schedules actuated
-    }
+    //   UpdateLocalTime();               // Updates Time UnixTime to 'now'
+    //   CheckTimerEvent();               // Check for schedules actuated
+    // }
 
-    if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
-    {
-      LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
-      AssignSensorReadingsToArray();
-    }
+    // if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
+    // {
+    //   LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
+    //   AssignSensorReadingsToArray();
+    // }
 
-    if (millis() - lastConnectionTime > 10000) {
-      lastConnectionTime = millis();
-      Temperature = readSensor();
-      // thingSpeakSend(Temperature);
-    }
+    // if (millis() - lastConnectionTime > 10000) {
+    //   lastConnectionTime = millis();
+    //   Temperature = readSensor();
+    //   // thingSpeakSend(Temperature);
+    // }
+
+    sensorTempLoop();
   #endif
 
   loopPID();
