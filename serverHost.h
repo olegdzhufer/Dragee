@@ -6,8 +6,6 @@
 
 #ifdef WEB_S
 
-
-  #include "ESPAsyncWebServer.h"
   #include <Arduino.h>
   #include "settings.h"
   #include "timerThermo.h"

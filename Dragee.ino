@@ -4,9 +4,7 @@
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>  // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
 #include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
-#include <DS18B20Events.h>
 #include <HTTPClient.h>
-#include <MenuLib.h>
 
 #include "mDef.h"
 #include "settings.h"

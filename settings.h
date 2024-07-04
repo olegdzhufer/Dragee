@@ -114,7 +114,11 @@ float  FrostTemp            = 0;          // Default thermostat value for frost 
 float  ManOverrideTemp      = 21;         // Manual override temperature
 float  MaxTemperature       = 28;         // Maximum temperature detection, switches off thermostat when reached
 
-float MinTempHeat = 30;
+#define MIN_TEMP_HEAT  30
+#define MIN_TEMP_COOL  0
+
+#define MAX_TEMP_HEAT  60
+#define MAX_TEMP_COOL  30
 
 bool   ManualOverride       = true;      // Manual override
 int    EarlyStart           = 0;          // Default thermostat value for early start of heating

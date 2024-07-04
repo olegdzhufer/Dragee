@@ -1,7 +1,6 @@
 #ifndef BTNS_DEF_H
 #define BTNS_DEF_H
 
-#include <Arduino.h>
 #include <EncButton.h>
 #include "menu.h"
 #include "countTimer.h"
