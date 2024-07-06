@@ -176,8 +176,6 @@ void CheckTimerEvent()
   CheckAndSetFrostTemperature();
 }
 
-
-
 boolean setupTime()
 {
     #ifdef DEBUG_FUNC
@@ -190,22 +188,6 @@ boolean setupTime()
   bool TimeStatus = UpdateLocalTime();
   return TimeStatus;
 }
-
-
-
-// Variable to save current epoch time
-// unsigned long epochTime; 
-// Function that gets current epoch time
-// unsigned long getTime() {
-  // time_t now;
-  // struct tm timeinfo;
-  // if (!getLocalTime(&timeinfo)) {
-  //  Serial.println("Failed to obtain time");
-    // return(0);
-  // }
-  // time(&now);
-  // return now;
-// }
 
 
 

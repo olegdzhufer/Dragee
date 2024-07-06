@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{sitetitle}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{#if refreshMode}}
+    <meta http-equiv="refresh" content="5">
+    {{/if}}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <style>
+        body {
+            width: 68em;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: Open Sans, sans-serif;
+            font-size: 16px;
+            color: #5a1500;
+            background-color: #e1e1ff;
+            text-align: center;
+        }
+        .centre {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 1.4em;
+        }
+        h3 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 1.2em;
+        }
+        h4 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 0.8em;
+        }
+        .on {
+            color: red;
+        }
+        .off {
+            color: limegreen;
+        }
+        .topnav {
+            overflow: hidden;
+            background-color: #eee4df;
+        }
+        .topnav a {
+            float: left;
+            color: #5d2212;
+            text-align: center;
+            padding: 1em 1.14em;
+            text-decoration: none;
+            font-size: 1.3em;
+        }
+        .topnav a:hover {
+            background: #ac8a7f;
+            color: #fff;
+        }
+        .topnav a.active {
+            background: #5a1500;
+            color: #fff;
+        }
+        table tr, td {
+            padding: 0.2em 0.5em;
+            font-size: 1.0em;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        col:first-child {
+            background: #eee4df;
+        }
+        col:nth-child(2), col:nth-child(8) {
+            background: #CCC;
+        }
+        tr:first-child {
+            background: #eee4df;
+        }
+        .large {
+            font-size: 1.8em;
+            padding: 0;
+            margin: 0;
+        }
+        .medium {
+            font-size: 1.4em;
+        }
+        .ps {
+            font-size: 0.7em;
+        }
+        #outer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        footer {
+            padding: 0.08em;
+            background-color: #ac897c;
+            font-size: 1.1em;
+        }
+        .numberCircle {
+            border-radius: 50%;
+            width: 2.7em;
+            height: 2.7em;
+            border: 0.11em solid #5d2212;
+            padding: 0.2em;
+            color: #5d2212;
+            text-align: center;
+            font-size: 3em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .wifi {
+            padding: 3px;
+            position: relative;
+            top: 1em;
+            left: 0.36em;
+        }
+        .wifi, .wifi:before {
+            display: inline-block;
+            border: 9px double transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+        }
+        .wifi:before {
+            content: '';
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <a href="homepage">Home</a>
+    <a href="graphs">Graph</a>
+    <a href="schedule">Schedule</a>
+    <a href="setup">Setup</a>
+    <a href="help">Help</a>
+    <a href="change_mode">Change Mode</a>
+    <a href="WiFi"></a>
+    <div class="wifi"></div><span id="wifi-signal"></span>
+</div>
+<br>
+
+<h2>Temperature and Relay Status</h2>
+
+<div class="numberCircle">
+    <span class="{{RelayState == 'ON' ? 'on' : 'off'}}">{{Temperature}}&deg;</span>
+</div>
+
+<br><br><br>
+
+<table class="centre">
+    <tr>
+        <td>Temperature</td>
+        <td>Target Temperature</td>
+        <td>Thermostat Status</td>
+        <td>Schedule Status</td>
+        {{#if ManualOverride}}
+        <td>Manual Override</td>
+        {{/if}}
+    </tr>
+    <tr>
+        <td class="large">{{Temperature}}&deg;</td>
+        <td class="large">{{TargetTemp}}&deg;</td>
+        <td class="large">
+            <span class="{{RelayState == 'ON' ? 'on' : 'off'}}">{{RelayState}}</span>
+        </td>
+        <td class="large">
+            <span class="{{TimerState == 'ON' ? 'on' : 'off'}}">{{TimerState}}</span>
+        </td>
+        {{#if ManualOverride}}
+        <td class="large">{{ManualOverride ? 'ON' : 'OFF'}}</td>
+        {{/if}}
+    </tr>
+</table>
+
+<br>
+
+<footer>
+    <p class="medium">Dragee IoT</p>
+</footer>
+<script>
+    function WiFiSignal() {
+        // Example function to get WiFi signal strength
+        return 'Strong';
+    }
+    document.getElementById('wifi-signal').innerText = WiFiSignal();
+</script>
+</body>
+</html>

@@ -48,7 +48,7 @@ const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
 
 // "CET-1CEST,M3.5.0,M10.5.0/3";
 
-//#define THINGSPEAK_PORT 80 // Thingspeak port
+//#define THINGSPEAK_PORT 81
 #define WENPAGE_PORT 80 
 
 #define SensorReadings  144            // maximum number of sensor readings, typically 144/day at 6-per-hour
@@ -99,8 +99,8 @@ bool FLAG_LCD = false;
 char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
 char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
 
-unsigned long myChannelNumber = SECRET_CH_ID;             
-const char *  myWriteAPIKey   = SECRET_WRITE_APIKEY;  
+//unsigned long myChannelNumber = SECRET_CH_ID;             
+//const char *  myWriteAPIKey   = SECRET_WRITE_APIKEY;  
 String apiKey = SECRET_WRITE_APIKEY;
 
 int connections = 0;
