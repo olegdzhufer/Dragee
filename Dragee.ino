@@ -83,7 +83,7 @@ void setup()
 
   setupTime();
 
-  startSPIFFS();
+  startLITLLFS();
 
   #ifdef MENU_S
     initSection();
@@ -97,12 +97,12 @@ void setup()
     relaySetup();  
   #endif  
   initDaysArray(); // Initialise the array for storage and set some values
-  recoverSettings();  // Recover settings from LittleFS
 
   #ifdef WEB_S
     startServerHost();
   #endif
 
+  speak_setup();
   #ifdef TEMP_S
     startSensor();
   #endif
@@ -152,7 +152,8 @@ void loop()
     if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
     {
       lastTimerSwitchCheck = millis(); // Reset time
-      Temperature = readSensorComplete();                   
+      Temperature = readSensorComplete();  
+      int x = ThingSpeak.writeField(myChannelNumber, 1, Temperature, myWriteAPIKey);                 
 
       //httpRequest(Temperature);
       

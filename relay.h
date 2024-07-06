@@ -252,6 +252,39 @@ void relayTick()
   relayFan.tick();
 }
 
+uint8_t getHeatState(){
+  return relayHeat.workStatus() ? 1 : 0;
+}
+
+uint8_t getCoolState(){
+  return relayCool.workStatus() ? 1 : 0;
+}
+
+uint8_t getFanState(){
+  return relayFan.workStatus() ? 1 : 0;
+}
+
+void relayHeatState(AsyncWebServerRequest *request)
+{
+  relayHeat.toggle(); 
+  String stateStr = relayHeat.workStatus() ? "ON" : "OFF";
+  request->send(200, "text/plain", stateStr);
+}
+
+void relayCoolState(AsyncWebServerRequest *request)
+{
+  relayCool.toggle(); 
+  String stateStr = relayCool.workStatus() ? "ON" : "OFF";
+  request->send(200, "text/plain", stateStr);
+}
+
+void relayFanState(AsyncWebServerRequest *request)
+{
+  relayHeat.toggle(); 
+  String stateStr = relayFan.workStatus() ? "ON" : "OFF";
+  request->send(200, "text/plain", stateStr);
+}
+
 #endif
 
 

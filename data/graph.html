@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sensor Readings</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            color: #5a1500;
+            background-color: #e1e1ff;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1;
+            width: 68em;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        .centre {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2, h3 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 1.4em;
+        }
+        td {
+            padding: 0.2em 0.5em;
+            font-size: 1.0em;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .topnav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eee4df;
+            padding: 1em 0;
+        }
+        .topnav a {
+            color: #5d2212;
+            text-align: center;
+            padding: 1em 1.14em;
+            text-decoration: none;
+            font-size: 1.3em;
+        }
+        .topnav a:hover {
+            background: #ac8a7f;
+            color: #fff;
+        }
+        .topnav a.active {
+            background: #5a1500;
+            color: #fff;
+        }
+        #outer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .chart-container {
+            width: 48%;
+            height: 400px;
+            display: inline-block;
+        }
+        .on {
+            color: red;
+        }
+        .off {
+            color: limegreen;
+        }
+        footer {
+            padding: 0.08em;
+            background-color: #ac897c;
+            font-size: 1.1em;
+            margin-top: auto; /* Push footer to the bottom */
+            width: 100%;
+            text-align: center;
+        }
+        .medium {
+            font-size: 1.4em;
+        }
+        .wifi {
+            padding: 3px;
+            position: relative;
+            top: 1em;
+            left: 0.36em;
+        }
+        .wifi,
+        .wifi:before {
+            display: inline-block;
+            border: 9px double transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+        }
+        .wifi:before {
+            content: '';
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <a href="graphs">Graph</a>
+    <a href="schedule">Schedule</a>
+    <a href="setup">Setup</a>
+    <a href="help">Help</a>
+    <a href="change_mode">Change Mode</a>
+    <a href="WiFi" class="wifi-link">
+        <div class="wifi"></div>
+        <span id="wifi-signal"></span>
+    </a>
+</div>
+
+<div class="content">
+    <h2>Sensor Readings</h2>
+
+    <div id="outer">
+        <div class="chart-container">
+            <div id="chart_divTS1"></div>
+        </div>
+        <div class="chart-container">
+            <div id="chart_divTS2"></div>
+        </div>
+    </div>
+
+    <p>Heating status: <span id="heat_state">Unknown</span></p>
+    <p>Cooling status: <span id="cold_state">Unknown</span></p>
+    <p>Fan status: <span id="fan_state">Unknown</span></p>
+</div>
+
+<footer>
+    <p class="medium">Dragee IoT</p>
+</footer>
+
+<script>
+    var relayHeatStates = [];
+    var relayColdStates = [];
+    var relayFanStates = [];
+
+    function getRelayHeatState() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var relayHeatState = this.responseText;
+                document.getElementById("heat_state").innerText = relayHeatState;
+                relayHeatStates.push({ time: new Date(), state: relayHeatState === 'ON' ? 1 : 0 });
+                drawGraphT2();
+            }
+        };
+        xhttp.open("GET", "http://192.168.53.59/relayHeatState", true);
+        xhttp.send();
+    }
+
+    function getRelayColdState() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var relayColdState = this.responseText;
+                document.getElementById("cold_state").innerText = relayColdState;
+                relayColdStates.push({ time: new Date(), state: relayColdState === 'ON' ? 1 : 0 });
+                drawGraphT2();
+            }
+        };
+        xhttp.open("GET", "http://192.168.53.59/relayCoolState", true);
+        xhttp.send();
+    }
+
+    function getRelayFanState() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var relayFanState = this.responseText;
+                document.getElementById("fan_state").innerText = relayFanState;
+                relayFanStates.push({ time: new Date(), state: relayFanState === 'ON' ? 1 : 0 });
+                drawGraphT2();
+            }
+        };
+        xhttp.open("GET", "http://192.168.53.59/relayFanState", true);
+        xhttp.send();
+    }
+
+    setInterval(getRelayHeatState, 5000);
+    setInterval(getRelayColdState, 5000);
+    setInterval(getRelayFanState, 5000);
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawGraphs);
+
+    function drawGraphs() {
+        drawGraphT1();
+        drawGraphT2();
+    }
+
+    function drawGraphT1() {
+        var jsonData = 'https://api.thingspeak.com/channels/2590643/feeds.json?api_key=G178RJPLPZDXMAMG&results=20';
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Time');
+        data.addColumn('number', 'Temperature');
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_divTS1'));
+
+        var options = {
+            title: 'Temperature',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            colors: ['red'],
+            width: '100%',
+            height: 400
+        };
+
+        function fetchData() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var feeds = JSON.parse(this.responseText).feeds;
+                    data.removeRows(0, data.getNumberOfRows());
+                    for (var i = 0; i < feeds.length; i++) {
+                        var entry = feeds[i];
+                        var datetime = new Date(entry.created_at);
+                        var temperature = parseFloat(entry.field1);
+                        data.addRow([datetime, temperature]);
+                    }
+                    chart.draw(data, options);
+                }
+            };
+            xhttp.open("GET", jsonData, true);
+            xhttp.send();
+        }
+
+        fetchData();
+        setInterval(fetchData, 5000);
+    }
+
+    function drawGraphT2() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Time');
+        data.addColumn('number', 'Heat State');
+        data.addColumn('number', 'Cold State');
+        data.addColumn('number', 'Fan State');
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_divTS2'));
+
+        var options = {
+            title: 'Relay States',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            colors: ['red', 'blue', 'green'],
+            width: '100%',
+            height: 400
+        };
+
+        data.removeRows(0, data.getNumberOfRows());
+
+        var maxLength = Math.max(relayHeatStates.length, relayColdStates.length, relayFanStates.length);
+
+        for (var i = 0; i < maxLength; i++) {
+            var datetime = (relayHeatStates[i] && relayHeatStates[i].time) || (relayColdStates[i] && relayColdStates[i].time) || (relayFanStates[i] && relayFanStates[i].time);
+            var heatState = (relayHeatStates[i] && relayHeatStates[i].state) || 0;
+            var coldState = (relayColdStates[i] && relayColdStates[i].state) || 0;
+            var fanState = (relayFanStates[i] && relayFanStates[i].state) || 0;
+            data.addRow([datetime, heatState, coldState, fanState]);
+        }
+
+        chart.draw(data, options);
+    }
+    function WiFiSignal() {
+        // Example function to get WiFi signal strength
+        return 'Strong';
+    }
+    document.getElementById('wifi-signal').innerText = WiFiSignal();
+</script>
+</body>
+</html>
