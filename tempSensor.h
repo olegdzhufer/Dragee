@@ -32,7 +32,7 @@ float readSensorComplete() {
   }
 
   float temperature = sensor.getTempCByIndex(0);
-#else  //VIRT_SENSOR
+#else  // VIRT_SENSOR
   float temperature = random(20, 30);
 #endif
 
@@ -49,12 +49,8 @@ float readSensorComplete() {
     menu.lineUpdate(&menu, TempCurF);
   }
 
-  #ifdef TEMP_S
-
-
   return temperature;
 }
-
 
 float readSensor() {
 #ifdef DEBUG_FUNC
@@ -63,28 +59,23 @@ float readSensor() {
 #if (VIRT_SENSOR == 0)
   sensor.requestTemperatures();
   float temperature = sensor.getTempCByIndex(0);
-#else  //VIRT_SENSOR
+#else  // VIRT_SENSOR
   float temperature = random(20, 30);
 #endif
   Serial.println(temperature);
   return temperature;
-   
-
 }
 
 void startSensor() {
-
 #ifdef DEBUG_FUNC
   Serial.println(__func__);
 #endif
 #if (VIRT_SENSOR == 0)
-
   sensor.begin();
   sensor.setResolution(12);
   sensor.requestTemperatures();
   Temperature = readSensorComplete();
- 
-#else  //VIRT_SENSOR
+#else  // VIRT_SENSOR
   Temperature = readSensor();
 #endif
 
@@ -104,6 +95,6 @@ void startSensor() {
   //actuateHeating(OFF);
   // readSensorComplete();
 }
-#endif
+#endif 
 
-#endif
+#endif 
