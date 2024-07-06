@@ -1,13 +1,10 @@
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>  // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
 #include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
-#include <DS18B20Events.h>
 #include <HTTPClient.h>
-#include <MenuLib.h>
 
 #include "mDef.h"
 #include "settings.h"
@@ -17,10 +14,12 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
+
 #include "menu.h"
 
-#include "countTimer.h"
 
+#include "RTC.h"
+#include "countTimer.h"
 #include "relay.h"
 #include "Pid.h"
 
@@ -28,9 +27,11 @@
 
 
 
+
 #ifdef ENC_S
   #include "Enc.h"
 #endif
+
 
 
 
@@ -96,6 +97,7 @@ void setup()
   #ifdef RELAY_S
     relaySetup();  
   #endif  
+
   initDaysArray(); // Initialise the array for storage and set some values
 
   #ifdef WEB_S
@@ -121,6 +123,9 @@ void setup()
   #endif
 
 
+  timerCool.onTimer();
+  timerHeat.onTimer();
+
 }
 
 void loop()
@@ -134,7 +139,6 @@ void loop()
   #endif
 
   #ifdef ENC_S
-
   read_encoder();
   #endif
 
@@ -155,23 +159,25 @@ void loop()
       Temperature = readSensorComplete();  
       int x = ThingSpeak.writeField(myChannelNumber, 1, Temperature, myWriteAPIKey);                 
 
-      //httpRequest(Temperature);
+    //   //httpRequest(Temperature);
       
-      UpdateLocalTime();               // Updates Time UnixTime to 'now'
-      CheckTimerEvent();               // Check for schedules actuated
-    }
+    //   UpdateLocalTime();               // Updates Time UnixTime to 'now'
+    //   CheckTimerEvent();               // Check for schedules actuated
+    // }
 
-    if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
-    {
-      LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
-      AssignSensorReadingsToArray();
-    }
+    // if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
+    // {
+    //   LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
+    //   AssignSensorReadingsToArray();
+    // }
 
-    if (millis() - lastConnectionTime > 10000) {
-      lastConnectionTime = millis();
-      Temperature = readSensor();
-      // thingSpeakSend(Temperature);
-    }
+    // if (millis() - lastConnectionTime > 10000) {
+    //   lastConnectionTime = millis();
+    //   Temperature = readSensor();
+    //   // thingSpeakSend(Temperature);
+    // }
+
+    sensorTempLoop();
   #endif
 
   loopPID();

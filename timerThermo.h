@@ -46,34 +46,16 @@ void actuateHeating(bool demand)
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  pinMode(RelayPIN, OUTPUT);
-  pinMode(LEDPIN, OUTPUT);
+
   if (demand)
   {
     RelayState = "ON";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    digitalWrite(LEDPIN, LOW);
+
     Serial.println("Thermostat ON");
   }
   else
   {
     RelayState = "OFF";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    digitalWrite(LEDPIN, HIGH);
     Serial.println("Thermostat OFF");
   }
 }

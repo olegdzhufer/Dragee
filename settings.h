@@ -45,6 +45,7 @@ const char* serverIPApi = "184.106.153.149";
 // NTP server to request epoch time
 const char* ntpServer = "pool.ntp.org";
 const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
+
 // "CET-1CEST,M3.5.0,M10.5.0/3";
 
 //#define THINGSPEAK_PORT 81
@@ -95,8 +96,8 @@ bool CHECK_UPDATE_MENU = false;
 bool FLAG_LCD = false;
 
 //################ VARIABLES ################
-const char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
-const char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
+char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
+char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
 
 //unsigned long myChannelNumber = SECRET_CH_ID;             
 //const char *  myWriteAPIKey   = SECRET_WRITE_APIKEY;  
@@ -108,10 +109,16 @@ int connections = 0;
 String sitetitle            = "Dragee Machine IoT";
 String Year                 = "2024";     // For the footer line
 float  Temperature          = 0.0;          // Variable for the current temperature
-float  TargetTemp           = 25;         // Default thermostat value for set temperature
+float  TargetTemp           = 31;         // Default thermostat value for set temperature
 float  FrostTemp            = 0;          // Default thermostat value for frost protection temperature
 float  ManOverrideTemp      = 21;         // Manual override temperature
 float  MaxTemperature       = 28;         // Maximum temperature detection, switches off thermostat when reached
+
+#define MIN_TEMP_HEAT  30
+#define MIN_TEMP_COOL  0
+
+#define MAX_TEMP_HEAT  60
+#define MAX_TEMP_COOL  30
 
 bool   ManualOverride       = true;      // Manual override
 int    EarlyStart           = 0;          // Default thermostat value for early start of heating
@@ -127,6 +134,7 @@ uint32_t    LastReadingCheck     = 0;          // Counter for last reading saved
 float  LastTemperature      = 0;          // Last temperature used for rogue reading detection
 int    UnixTime             = 0;          // Time now (when updated) of the current time
 
+char* timeNow; 
 
 AsyncWebServer server(WENPAGE_PORT);
 

@@ -1,13 +1,10 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include <Arduino.h>
+// #include <Arduino.h>
 #include "settings.h"
 #include "menu.h"
 #include "countTimer.h"
-
-bool heatPidSt = false;
-bool coolPidSt = false;
 
 class Relay
 {
@@ -22,8 +19,6 @@ private:
 public:
   bool allowed = true;
   bool isMain = false;
-  bool isHeatOrCool = false;
-  bool* pidState ;
 
 
   Screen *screen = NULL;
@@ -35,14 +30,13 @@ public:
     #endif
   }
 
-  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL, bool isHeatOrCool = false)
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
     this->pin = pin;
     this->state = initState;
-    this->isHeatOrCool = isHeatOrCool;
 
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state);
@@ -56,10 +50,6 @@ public:
   void setLine(Line* line, float* temp){
     this->CurrLine = line;
     this->tempR = temp;
-  }
-
-  void setPidBool(bool* flag){
-    this->pidState = flag;
   }
 
   void getLine(){
@@ -121,23 +111,8 @@ public:
     #endif
     Serial.println(this->screen->name);
     state = !state;
-    if(state){
-      FrostTemp = 5;
-    }else{
-      FrostTemp = 0;
-    }
     digitalWrite(pin, state);
-    #ifdef TIMER_S
-      if (isHeatOrCool && state == true) {
-        menu.curr = this->screen;
-        startTimer();
-      } else if (isHeatOrCool && state == false) {
-        stopTimer();
-      }
-    #endif
-    if(this->pidState){
-      *(this->pidState) = !*(this->pidState);
-    }
+
   }
 
   bool workStatus(){
@@ -195,19 +170,13 @@ public:
     #endif
     temp = NULL;
     currLine = NULL;
-    state = LOW;
-    if(this->pidState){
-      *(this->pidState) = false;
-    }
     digitalWrite(pin, state);
   }
   void relayOn(){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-    if(this->pidState){
-      *(this->pidState) = true;
-    }
+
     state = HIGH;
     digitalWrite(pin, state);
   }
@@ -221,8 +190,8 @@ public:
 };
 #ifdef RELAY_S
 
-Relay relayHeat(HEAT_PIN, LOW, Heat, true);
-Relay relayCool(COOL_PIN, LOW, Cooling, true);
+Relay relayHeat(HEAT_PIN, LOW, Heat);
+Relay relayCool(COOL_PIN, LOW, Cooling);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()
@@ -235,8 +204,6 @@ void relaySetup()
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);
 
-  relayHeat.setPidBool(&heatPidSt);
-  relayCool.setPidBool(&coolPidSt);
 
   relayFan.attachScreen(FAN);
 

@@ -49,6 +49,7 @@ float readSensorComplete() {
     menu.lineUpdate(&menu, TempCurF);
   }
 
+  #ifdef TEMP_S
 
 
   return temperature;
