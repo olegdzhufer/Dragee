@@ -1,11 +1,10 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include <Arduino.h>
+// #include <Arduino.h>
 #include "settings.h"
 #include "menu.h"
 #include "countTimer.h"
-
 
 class Relay
 {
@@ -20,7 +19,6 @@ private:
 public:
   bool allowed = true;
   bool isMain = false;
-  bool isHeatOrCool = false;
 
 
   Screen *screen = NULL;
@@ -32,14 +30,13 @@ public:
     #endif
   }
 
-  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL, bool isHeatOrCool = false)
+  Relay(uint8_t pin, uint8_t initState = LOW, Screen* screen = NULL)
   {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
     this->pin = pin;
     this->state = initState;
-    this->isHeatOrCool = isHeatOrCool;
 
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state);
@@ -103,6 +100,8 @@ public:
       Serial.println(__func__);
     #endif
     changeFlag = !changeFlag;
+
+
   }
 
   void toggle()
@@ -110,13 +109,10 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+    Serial.println(this->screen->name);
     state = !state;
     digitalWrite(pin, state);
-    if (isHeatOrCool && state == true) {
-      startTimer();
-    } else if (isHeatOrCool && state == false) {
-      stopTimer();
-    }
+
   }
 
   bool workStatus(){
@@ -174,7 +170,6 @@ public:
     #endif
     temp = NULL;
     currLine = NULL;
-    state = LOW;
     digitalWrite(pin, state);
   }
   void relayOn(){
@@ -193,9 +188,10 @@ public:
     this->screen = NULL;
   }
 };
+#ifdef RELAY_S
 
-Relay relayHeat(HEAT_PIN, LOW, Heat, true);
-Relay relayCool(COOL_PIN, LOW, Cooling, true);
+Relay relayHeat(HEAT_PIN, LOW, Heat);
+Relay relayCool(COOL_PIN, LOW, Cooling);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
 void relaySetup()
@@ -207,6 +203,8 @@ void relaySetup()
 
   relayHeat.attachScreen(Heat);
   relayCool.attachScreen(Cooling);
+
+
   relayFan.attachScreen(FAN);
 
   relayHeat.setLine(TempSetH, &TargetTemp);
@@ -220,6 +218,8 @@ void relayTick()
   relayCool.tick();
   relayFan.tick();
 }
+
+#endif
 
 
 #endif

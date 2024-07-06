@@ -1,14 +1,10 @@
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>  // https://github.com/me-no-dev/ESPAsyncWebServer/tree/63b5303880023f17e1bca517ac593d8a33955e94
 #include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
-#include <DS18B20Events.h>      //#include <OneWire.h> is already included in DS18B20Events.h
-// #include <ThingSpeak.h>
 #include <HTTPClient.h>
-#include <MenuLib.h>
 
 #include "mDef.h"
 #include "settings.h"
@@ -18,12 +14,25 @@
 #include "timerThermo.h"
 #include "webPages.h"
 
+
 #include "menu.h"
+
+
+#include "RTC.h"
 #include "countTimer.h"
+#include "relay.h"
+#include "Pid.h"
 
 #include "btns.h"
-#include "relay.h"
-#include "Enc.h"
+
+
+
+
+#ifdef ENC_S
+  #include "Enc.h"
+#endif
+
+
 
 
 
@@ -68,56 +77,108 @@ void setup()
 {
 
   setupSystem();
-  initWiFi();
+
+  #ifdef WIFI_S
+    initWiFi();
+  #endif
+
   setupTime();
-  startSPIFFS();   
-  timer_setup();
-  initSection();
-  timer_setup();
-  relaySetup();      
+  startSPIFFS();
+
+  #ifdef MENU_S
+    initSection();
+  #endif
+
+  #ifdef TIMER_S
+    timer_setup();
+  #endif
+
+  #ifdef RELAY_S
+    relaySetup();  
+  #endif  
+
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
-  startServerHost();
-  startSensor();
+
+  #ifdef WEB_S
+    startServerHost();
+  #endif
+
+  #ifdef TEMP_S
+    startSensor();
+  #endif
+
   actuateHeating(OFF);
   lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
-  btnsSetup();
-  encoder_setup();
+  #ifdef BTN_S
+    btnsSetup();
+  #endif
+  
+
+
+  #ifdef ENC_S
+    encoder_setup();
+  #endif
+
+
+  timerCool.onTimer();
+  timerHeat.onTimer();
+
 }
 
 void loop()
 { 
-  timer_loop();
-  btnsLoop(); 
-  relayTick();
+  #ifdef BTN_S
+    btnsLoop(); 
+  #endif
+
+  #ifdef RELAY_S
+    relayTick();
+  #endif
+
+  #ifdef ENC_S
   read_encoder();
+  #endif
 
-  if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
-  {
-    lastTimerSwitchCheck = millis(); // Reset time
-    Temperature = readSensorComplete();                   
+  #ifdef MENU_S
+    lcdLoop();
+  #endif
 
-    //httpRequest(Temperature);
-    
-    UpdateLocalTime();               // Updates Time UnixTime to 'now'
-    CheckTimerEvent();               // Check for schedules actuated
-  }
+  #ifdef TIMER_S
+    timer_loop();
+  #endif
 
-  if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
-  {
-    LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
-    AssignSensorReadingsToArray();
-  }
 
-  if (millis() - lastConnectionTime > 10000) {
-    lastConnectionTime = millis();
-    Temperature = readSensor();
-    // thingSpeakSend(Temperature);
-  }
-  lcdLoop();
-  timer_loop();
- 
+
+  #ifdef TEMP_S
+    // if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
+    // {
+    //   lastTimerSwitchCheck = millis(); // Reset time
+    //   // Temperature = readSensorComplete();                   
+
+    //   //httpRequest(Temperature);
+      
+    //   UpdateLocalTime();               // Updates Time UnixTime to 'now'
+    //   CheckTimerEvent();               // Check for schedules actuated
+    // }
+
+    // if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
+    // {
+    //   LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
+    //   AssignSensorReadingsToArray();
+    // }
+
+    // if (millis() - lastConnectionTime > 10000) {
+    //   lastConnectionTime = millis();
+    //   Temperature = readSensor();
+    //   // thingSpeakSend(Temperature);
+    // }
+
+    sensorTempLoop();
+  #endif
+
+  loopPID();
 }
 
 

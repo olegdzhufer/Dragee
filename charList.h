@@ -16,6 +16,7 @@ const char* CoolingName PROGMEM = "COOLING";
 const char* Fan PROGMEM = "FAN";
 const char* Stop PROGMEM = "STOP";
 
+
 const char* TCur PROGMEM = "TCur";
 const char* TempCurr PROGMEM = "TempCurr:";
 const char* TSet PROGMEM = "TSet";

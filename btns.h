@@ -1,14 +1,17 @@
 #ifndef BTNS_DEF_H
 #define BTNS_DEF_H
 
-#include <Arduino.h>
 #include <EncButton.h>
 #include "menu.h"
+#include "countTimer.h"
 #include "settings.h"
 #include "relay.h"
+#include "Pid.h"
+
 
 
 bool fan = false;
+
 
 class ButtonSwitch : public VirtButton
 {
@@ -42,11 +45,35 @@ public:
     setLed(ledPin, ledInitState);
   }
 
+  void addTimer(TimerCount* timer){
+    if(timer){
+      this->timer = timer;
+    }
+  }
+
+  bool swichTimer(){
+    if(this->timer){
+      return this->timer->swichTimerMode();
+    }
+    return false;
+  }
+  void offTimer(){
+    if(this->timer){
+      this->timer->offTimer();
+    }
+  }
+  void onTimer(){
+    if(this->timer){
+      this->timer->onTimer();
+    }
+  }
+
   bool read()
   {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     return EB_read(btnPin) ^ bf.read(EB_INV);
   }
 
@@ -57,6 +84,8 @@ public:
     {
       #ifdef DEBUG_FUNC
         Serial.println(__func__);
+        
+
       #endif
 
     #ifdef DEBUG
@@ -85,7 +114,7 @@ public:
         // FAN_ON;
         fan = true;
         toggleLed();
-        if (relay != NULL)
+        if (this->relay != NULL)
         {
           relay->toggleFlag();
         }
@@ -102,7 +131,10 @@ public:
           Serial.println(__func__);
         #endif
         menu.curr = STOP;
-        relay->toggleFlag();
+        if(this->relay != NULL){
+          relay->toggleFlag();
+        }
+
         this->LedOff();
         fan = false;
         FLAG_LCD = true;
@@ -128,6 +160,7 @@ public:
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
+
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
@@ -154,24 +187,23 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    // Serial.println("Action \n");
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
 
-    switch (btnState)
-    {
+    switch (btnState){
 
     case EB_CLICK:
-      // Serial.println("click");
+      this->state = !(this->state);
       toggleLed();
-      if (relay != NULL)
-      {
+      if (relay != NULL){
         relay->toggleFlag();
       }
       callCallback();
+      this->swichTimer();
       FLAG_LCD = true;
       break;
+
     default:
       #ifdef DEBUG
         Serial.println("other action");
@@ -232,22 +264,37 @@ public:
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->LedOff();
-    this->relay->relayOff();
+    this->offTimer();
+
+    if(this->relay != NULL){
+      this->relay->relayOff();
+    }
+
+    this->state = false;
   }
 
   void EnWork(){
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->workEn = true;
   }
   void DeWork(){
+
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
+
     this->workEn = false;
     OffMode();
+    this->state = false;
+  }
+
+  bool getState(){
+    return this->state;
   }
 
 private:
@@ -255,31 +302,29 @@ private:
   uint8_t ledPin;
   uint8_t ledState;
   bool workEn = false;
+  TimerCount* timer = NULL;
+  bool state = false;
+
 
   Relay *relay = NULL;
 };
+#ifdef BTN_S
 
 ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW);
 ButtonSwitch btn2(BTN2_PIN, LED_PIN2, INPUT_PULLUP, LOW);
 ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
-void callbackSwitch()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-}
 
 void callbackBtn1()
 {
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  switch (btn1.action())
-  {
+  switch (btn1.action()){
 
   case EB_CLICK:
     btn2.OffMode();
+    
     break;
 
   default:
@@ -292,9 +337,8 @@ void callbackBtn2()
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  switch (btn2.action())
-  {
-  
+  switch (btn2.action()){
+
   case EB_CLICK:
     btn1.OffMode();
     break;
@@ -303,6 +347,65 @@ void callbackBtn2()
     break;
   }
 }
+
+void btnsSetup()
+{
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  Serial.println(__FILE__);
+
+  btnSwitch.EnWork();
+  
+  btn1.attachCallback(callbackBtn1);
+  btn2.attachCallback(callbackBtn2);
+
+
+  #ifdef RELAY_S
+    btn1.attachRelay(&relayHeat);
+    btn2.attachRelay(&relayCool);
+    btnSwitch.attachRelay(&relayFan);
+  #endif
+
+  btn1.addTimer(&timerHeat);
+  btn2.addTimer(&timerCool);
+
+  
+}
+
+void btnsLoop()
+{
+  if(fan){
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+    btn1.EnWork();
+    btn2.EnWork();
+    if(!(btn2.getState() || btn1.getState()) && menu.curr != FAN){
+      menu.curr = FAN;
+      FLAG_LCD = true;
+    }
+
+  }else{
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+    btn1.DeWork();
+    btn2.DeWork();
+
+
+  }
+
+
+  btn1.tick();
+  btn2.tick();
+  btnSwitch.tickSwitch();
+
+}
+#endif
+
+
+#ifdef WEB_S
 
 void heatControl(AsyncWebServerRequest *request)
 {
@@ -376,42 +479,7 @@ void fanControl(AsyncWebServerRequest *request)
   }
 }
 
-void btnsSetup()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  Serial.println(__FILE__);
-  btn1.attachCallback(callbackBtn1);
-  btn2.attachCallback(callbackBtn2);
-  btnSwitch.EnWork();
+#endif
 
-
-  btn1.attachRelay(&relayHeat);
-  btn2.attachRelay(&relayCool);
-  btnSwitch.attachRelay(&relayFan);
-}
-
-void btnsLoop()
-{
-  if(fan){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.EnWork();
-    btn2.EnWork();
-  }else{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.DeWork();
-    btn2.DeWork();
-  }
-
-  btn1.tick();
-  btn2.tick();
-  btnSwitch.tickSwitch();
-
-}
 
 #endif

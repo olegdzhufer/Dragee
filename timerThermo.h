@@ -36,7 +36,7 @@ void UpdateTargetTemperature()
     }
   }
   if (ManualOverride == ON)
-    TargetTemp = ManOverrideTemp;
+    // TargetTemp = ManOverrideTemp;
   Serial.println("Target Temperature = " + String(TargetTemp, 1) + "°");
 }
 
@@ -46,34 +46,16 @@ void actuateHeating(bool demand)
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
-  pinMode(RelayPIN, OUTPUT);
-  pinMode(LEDPIN, OUTPUT);
+
   if (demand)
   {
     RelayState = "ON";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    digitalWrite(LEDPIN, LOW);
+
     Serial.println("Thermostat ON");
   }
   else
   {
     RelayState = "OFF";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    digitalWrite(LEDPIN, HIGH);
     Serial.println("Thermostat OFF");
   }
 }
@@ -172,8 +154,8 @@ void CheckTimerEvent()
   }
   if (ManualOverride == ON)
   {                               // If manual override is enabled then turn the heating on
-    TargetTemp = ManOverrideTemp; // Set the target temperature to the manual overide temperature
-    ControlHeating();             // Control the heating as normal
+    //TargetTemp = ManOverrideTemp; // Set the target temperature to the manual overide temperature
+    //ControlHeating();             // Control the heating as normal
   }
   else
   {
