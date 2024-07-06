@@ -88,6 +88,7 @@ void recoverSettings()
           
         }
       }
+      
       Entry = dataFile.readStringUntil('\n');
       Entry.trim();
       Hysteresis = Entry.toFloat();

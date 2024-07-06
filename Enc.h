@@ -21,13 +21,10 @@
 #endif
 
 
-
-
 #ifdef ENC_S
   EncButton en(CLK, DT, SW);
   
 bool updateTemp = false;
-
 
 
 uint8_t enc_pre;
@@ -42,13 +39,9 @@ int getResult(){
 
 bool flagEnc = false;
 
-
 void read_encoder(){
 
-  int currtime;
-  if(!currtime)currtime = 0;
-  if( millis() > currtime + 10){
-    currtime += millis();
+ 
     
     en.tick();
 
@@ -92,10 +85,7 @@ void read_encoder(){
     {
 
     }
-  }
-
-
-
+  
 }
 
 #endif

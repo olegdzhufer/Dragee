@@ -7,25 +7,17 @@
 
 #define LED_PIN1 19
 #define LED_PIN2 4
-#define LED_PIN3 22 // 2
+#define LED_PIN3 22
 
 #define CLK 18                     
 #define DT  5                      
 #define SW  17                       
 
-#define REL1 26
-#define REL2 27
-#define REL3 14 
-
-#define HEAT_PIN REL1
-#define COOL_PIN REL2
-#define FAN_PIN REL3
+#define HEAT_PIN 26
+#define COOL_PIN 27
+#define FAN_PIN 14
 
 #define ONE_WIRE_BUS 13
 #define ONE_WIRE_RTC 2
-
-#define ENC_BTN_PIN CLK
-#define ENC_R_PIN DT
-#define ENC_L_PIN SW
 
 #endif

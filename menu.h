@@ -2,13 +2,10 @@
 
 #define MENU_SETUP_H
 
-
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include "settings.h"
 #include "charList.h"
-
-
 
 Menu menu;
 
