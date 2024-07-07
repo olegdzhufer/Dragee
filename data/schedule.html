@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>Thermostat Schedule Setup</title>
+    <meta charset='UTF-8'>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 16px;
+            color: #5a1500;
+            background-color: #e1e1ff;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1;
+            width: 68em;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        .centre {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2, h3 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 1.4em;
+        }
+        td {
+            padding: 0.2em 0.5em;
+            font-size: 1.0em;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .topnav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eee4df;
+            padding: 1em 0;
+        }
+        .topnav a {
+            color: #5d2212;
+            text-align: center;
+            padding: 1em;
+            text-decoration: none;
+            font-size: 1.3em;
+        }
+        .topnav a:hover {
+            background: #ac8a7f;
+            color: #fff;
+        }
+        .topnav a.active {
+            background: #5a1500;
+            color: #fff;
+        }
+        footer {
+            padding: 0.08em;
+            background-color: #ac897c;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .wifi {
+            padding: 3px;
+            position: relative;
+            top: 1em;
+            left: 0.36em;
+        }
+        .wifi,
+        .wifi:before {
+            display: inline-block;
+            border: 9px double transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+        }
+        .wifi:before {
+            content: '';
+            width: 0;
+            height: 0;
+        }
+        .medium {
+            font-size: 1.4em;
+        }
+    </style>
+</head>
+<body>
+<div class='topnav'>
+    <a href="graphs">Graph</a>
+    <a href="schedule">Schedule</a>
+    <a href="setup">Setup</a>
+    <a href="help">Help</a>
+    <a href="change_mode">Change Mode</a>
+    <a href="WiFi" class="wifi-link">
+        <div class="wifi"></div>
+        <span id="wifi-signal"></span>
+    </a>
+</div>
+</div>
+<div class="content">
+    <h2>Thermostat Schedule Setup</h2>
+    <h3>Enter required temperatures and time, use Clock symbol for ease of time entry</h3>
+    <form action='/handletimer'>
+        <table class='centre'>
+            <col><col><col><col><col><col><col><col>
+            <tr>
+                <td>Control</td>
+                <td>Timer 0</td>
+                <td>Timer 1</td>
+                <td>Timer 2</td>
+                <td>Timer 3</td>
+                <td>Timer 4</td>
+                <td>Timer 5</td>
+                <td>Timer 6</td>
+            </tr>
+            <tr>
+                <td>Temp</td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='6'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+                <td><input type='text' name='{{@index}}.{{@index}}.Temp' value='' maxlength='5' size='5'></td>
+            </tr>
+            <tr>
+                <td>Start</td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Start' value=''></td>
+            </tr>
+            <tr>
+                <td>Stop</td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+                <td><input type='time' name='{{@index}}.{{@index}}.Stop' value=''></td>
+            </tr>
+            <tr><td></td><td></td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+        </table>
+        <div class='centre'>
+            <br><input type='submit' value='Enter'><br><br>
+        </div>
+    </form>
+</div>
+<footer>
+    <p class='medium'>Dragee IoT</p>
+</footer>
+<script>
+    function WiFiSignal() {
+        // Example function to get WiFi signal strength
+        return 'Strong';
+    }
+    document.getElementById('wifi-signal').innerText = WiFiSignal();
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dragee IoT</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Open Sans, sans-serif;
+            font-size: 16px;
+            color: #5a1500;
+            background-color: #e1e1ff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .topnav {
+            width: 100%;
+            background-color: #eee4df;
+            padding: 1em 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .topnav a {
+            color: #5d2212;
+            text-align: center;
+            padding: 1em;
+            text-decoration: none;
+            font-size: 1.3em;
+        }
+
+        .topnav a:hover {
+            background: #ac8a7f;
+            color: #fff;
+        }
+
+        .topnav a.active {
+            background: #5a1500;
+            color: #fff;
+        }
+
+        .wifi {
+            padding: 3px;
+            position: relative;
+            top: 1em;
+            left: 0.36em;
+        }
+
+        .wifi, .wifi:before {
+            display: inline-block;
+            border: 9px double transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+        }
+
+        .wifi:before {
+            content: '';
+            width: 0;
+            height: 0;
+        }
+
+        .content {
+            flex: 1;
+            width: 68em;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        h2, h3 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 1.4em;
+        }
+
+        h4 {
+            margin-top: 0.3em;
+            margin-bottom: 0.3em;
+            font-size: 0.8em;
+        }
+
+        footer {
+            padding: 0.08em;
+            background-color: #ac897c;
+            font-size: 1.1em;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .numberCircle {
+            border-radius: 50%;
+            width: 2.7em;
+            height: 2.7em;
+            border: 0.11em solid #5d2212;
+            padding: 0.2em;
+            color: #5d2212;
+            text-align: center;
+            font-size: 3em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .medium {
+            font-size: 1.4em;
+        }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <a href="graphs">Graph</a>
+    <a href="schedule">Schedule</a>
+    <a href="setup">Setup</a>
+    <a href="help">Help</a>
+    <a href="change_mode">Change Mode</a>
+    <a href="WiFi"></a>
+    <div class="wifi"></div>
+    <span id="wifi-signal"></span>
+</div>
+<div class="container">
+    <div class="content">
+        <h2>Help</h2>
+        <div style="text-align: left; font-size: 1.1em;">
+            <u><b>Schedule Menu</b></u>
+            <p>Determines the heating temperature for each day of the week and up to 4 heating periods in a day.
+                To set the heating to come on at 06:00 and off at 09:00 with a temperature of 20&deg; enter 20 then the required
+                start/end times.
+                Repeat for each day of the week and heating period within the day for the required heat profile.</p>
+            <u><b>Graph</b></u>
+            <p>Displays the current temperature and the status of the relays responsible for heating, cooling and fan</p>
+            <u><b>Change Mode</b></u>
+            <p>The ability to switch modes: airflow, cooling, heating.</p>
+        </div>
+    </div>
+</div>
+<footer>
+    <p class="medium">Dragee IoT</p>
+</footer>
+<script>
+    function WiFiSignal() {
+        // Example function to get WiFi signal strength
+        return 'Strong';
+    }
+
+    document.getElementById('wifi-signal').innerText = WiFiSignal();
+</script>
+</body>
+</html>

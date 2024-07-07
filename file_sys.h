@@ -3,7 +3,7 @@
 
 
 #include <Arduino.h>
-#include <SPIFFS.h>           
+#include <LittleFS.h>
 #include "settings.h"
 
 void startSPIFFS()
