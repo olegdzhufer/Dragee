@@ -2,15 +2,15 @@
 #define BTNS_DEF_H
 
 #include <EncButton.h>
-#include "menu.h"
-#include "countTimer.h"
-#include "settings.h"
-#include "relay.h"
-#include "Pid.h"
+// #include "menu.h"
+// #include "countTimer.h"
+// #include "settings.h"
+#include "relayModule/Relay.h"
+// #include "Pid.h"
 
 
 
-bool fan = false;
+// bool fan = false;
 
 
 class ButtonSwitch : public VirtButton
@@ -20,6 +20,7 @@ public:
 
   ButtonSwitch() {    
     #ifdef DEBUG_FUNC
+      Serial.print("Constructor of BTN");
       Serial.println(__func__);
     #endif
     }
@@ -27,6 +28,7 @@ public:
   ButtonSwitch(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
     #ifdef DEBUG_FUNC
+      Serial.print("Constructor of BTN");
       Serial.println(__func__);
     #endif
     init(btnPin, ledPin, btnMode, btnLevel, ledInitState, workEn);
@@ -34,15 +36,17 @@ public:
 
   void init(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+   
     this->btnPin = btnPin;
     this->workEn = workEn;
     EB_mode(btnPin, btnMode);
     setBtnLevel(btnLevel);
 
     setLed(ledPin, ledInitState);
+    #ifdef DEBUG_FUNC
+     Serial.print("Init of BTN ended")
+      Serial.println(__func__);
+    #endif
   }
 
   void addTimer(TimerCount* timer){
@@ -104,14 +108,10 @@ public:
   {
     if (tick()&& this->workEn)
     {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
       switch (VirtButton::action())
       {
 
       case EB_HOLD:
-        // FAN_ON;
         fan = true;
         toggleLed();
         if (this->relay != NULL)
@@ -126,7 +126,6 @@ public:
         break;
 
       case EB_RELEASE:
-        // FAN_OFF;
         #ifdef DEBUG_FUNC
           Serial.println(__func__);
         #endif
@@ -299,187 +298,23 @@ public:
 
 private:
   uint8_t btnPin;
+
   uint8_t ledPin;
   uint8_t ledState;
+
   bool workEn = false;
-  TimerCount* timer = NULL;
   bool state = false;
 
-
-  Relay *relay = NULL;
+  // TimerCount* timer = NULL;
+  // Relay *relay = NULL;
 };
-#ifdef BTN_S
+
 
 ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW);
 ButtonSwitch btn2(BTN2_PIN, LED_PIN2, INPUT_PULLUP, LOW);
 ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
 
-void callbackBtn1()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  switch (btn1.action()){
-
-  case EB_CLICK:
-    btn2.OffMode();
-    
-    break;
-
-  default:
-    break;
-  }
-}
-
-void callbackBtn2()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  switch (btn2.action()){
-
-  case EB_CLICK:
-    btn1.OffMode();
-    break;
-
-  default:
-    break;
-  }
-}
-
-void btnsSetup()
-{
-  #ifdef DEBUG_FUNC
-    Serial.println(__func__);
-  #endif
-  Serial.println(__FILE__);
-
-  btnSwitch.EnWork();
-  
-  btn1.attachCallback(callbackBtn1);
-  btn2.attachCallback(callbackBtn2);
-
-
-  #ifdef RELAY_S
-    btn1.attachRelay(&relayHeat);
-    btn2.attachRelay(&relayCool);
-    btnSwitch.attachRelay(&relayFan);
-  #endif
-
-  btn1.addTimer(&timerHeat);
-  btn2.addTimer(&timerCool);
-
-  
-}
-
-void btnsLoop()
-{
-  if(fan){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.EnWork();
-    btn2.EnWork();
-    if(!(btn2.getState() || btn1.getState()) && menu.curr != FAN){
-      menu.curr = FAN;
-      FLAG_LCD = true;
-    }
-
-  }else{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-    btn1.DeWork();
-    btn2.DeWork();
-
-
-  }
-
-
-  btn1.tick();
-  btn2.tick();
-  btnSwitch.tickSwitch();
-
-}
-#endif
-
-
-#ifdef WEB_S
-
-void heatControl(AsyncWebServerRequest *request)
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  String state = "OFF";
-  if (request->hasParam("heat_state"))
-  {
-    String act_state = request->getParam("heat_state")->value();
-    if (act_state == "1")
-    {
-      state = "ON";
-      // HEAT_ON;
-      request->send(200, "text/html", state);
-    }
-    else if (act_state == "0")
-    {
-      state = "OFF";
-      // HEAT_OFF;
-      request->send(200, "text/html", state);
-    }
-  }
-}
-
-void coldControl(AsyncWebServerRequest *request)
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  String state = "OFF";
-  if (request->hasParam("cold_state"))
-  {
-    String act_state = request->getParam("cold_state")->value();
-    if (act_state == "2")
-    {
-      state = "ON";
-      // COOLING_ON;
-      request->send(200, "text/html", state);
-    }
-    else if (act_state == "3")
-    {
-      state = "OFF";
-      // COOLING_OFF;
-      request->send(200, "text/html", state);
-    }
-  }
-}
-
-void fanControl(AsyncWebServerRequest *request)
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  String state = "OFF";
-  if (request->hasParam("fan_state"))
-  {
-    String act_state = request->getParam("fan_state")->value();
-    if (act_state == "4")
-    {
-      state = "ON";
-      // FAN_ON;
-      request->send(200, "text/html", state);
-    }
-    else if (act_state == "5")
-    {
-      state = "OFF";
-      // FAN_OFF;
-      request->send(200, "text/html", state);
-    }
-  }
-}
-
-#endif
 
 
 #endif

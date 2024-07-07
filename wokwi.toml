@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+elf = "build/Dragee.elf"
+firmware = "build/Dragee.bin"
+gdbServerPort=3333

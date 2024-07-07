@@ -6,7 +6,7 @@
 #include <AsyncTCP.h>           // https://github.com/me-no-dev/AsyncTCP
 #include <HTTPClient.h>
 
-#include "mDef.h"
+#include "sts.h"
 #include "settings.h"
 #include "file_sys.h"
 #include "wifi_conf.h"

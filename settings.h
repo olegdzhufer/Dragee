@@ -32,10 +32,8 @@
 #include <MenuLib.h>
 #include "pins.h"
 #include "secrets.h"
-#include "mDef.h"
-// #include "flags.h"
+#include "sts.h"
 
-String version = "2.0";      // Programme version, see change log at end
 
 const char* serverName = "dragee"; //  http://dragee.local/ 
 
@@ -69,22 +67,22 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensor(&oneWire);
 
 
-typedef struct {
-  float Temp = 0;
-} sensordatatype;
+// typedef struct {
+  // float Temp = 0;
+// } sensordatatype;
 
-sensordatatype sensordata[NumOfSensors][SensorReadings];
+// sensordatatype sensordata[NumOfSensors][SensorReadings];
 
-struct settings {
-  String DoW;                // Day of Week for the programmed event
-  String Start[NumOfEvents]; // Start time
-  String Stop[NumOfEvents];  // End time
-  String Temp[NumOfEvents];  // Required temperature during the Start-End times
-};
+// struct settings {
+//   String DoW;                // Day of Week for the programmed event
+//   String Start[NumOfEvents]; // Start time
+//   String Stop[NumOfEvents];  // End time
+//   String Temp[NumOfEvents];  // Required temperature during the Start-End times
+// };
 
-String       Received_Data[9];                  // TxId, RxId, MsgCnt, Temperature, RelayState, Incoming Msg, Msg Rssi, Msg SNR (10-fields are sent to this Rx)
-String       SensorReading[NumOfSensors][6];     // 254 Sensors max. and 6 Parameters per sensor T, H, Relay-state. Maximum LoRa adress range is 255 - 1 for Server so 0 - 253
-String       DataFile = "params.txt";            // Storage file name on flash
+// String       Received_Data[9];                  // TxId, RxId, MsgCnt, Temperature, RelayState, Incoming Msg, Msg Rssi, Msg SNR (10-fields are sent to this Rx)
+// String       SensorReading[NumOfSensors][6];     // 254 Sensors max. and 6 Parameters per sensor T, H, Relay-state. Maximum LoRa adress range is 255 - 1 for Server so 0 - 253
+// String       DataFile = "params.txt";            // Storage file name on flash
 String       Time_str, DoW_str;                  // For Date and Time
 settings     Timer[7];                           // Timer settings, 7-days of the week
 int          SensorReadingPointer[NumOfSensors]; // Used for sensor data storage
