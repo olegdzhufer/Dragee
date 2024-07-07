@@ -89,6 +89,10 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHe
       menu.lcd->clear();
         return STATUS_OK;
 
+      menu.curr = STOP; 
+      FLAG_LCD = true;
+
+
     }
 
     void lcdLoop(){

@@ -9,10 +9,10 @@
 #include "mDef.h"
 #include "settings.h"
 #include "file_sys.h"
-// #include "wifi_conf.h"
-// #include "serverHost.h"
+#include "wifi_conf.h"
+#include "serverHost.h"
 #include "timerThermo.h"
-// #include "webPages.h"
+#include "webPages.h"
 
 
 #include "menu.h"
@@ -39,36 +39,36 @@
 void thingSpeakSend(float temperature)
 {
 
-  //   #ifdef DEBUG_FUNC
-  //     Serial.println(__func__);
-  //   #endif
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
 
   
-  // if(WiFi.status() == WL_CONNECTED) {
-  //     WiFiClient client; 
-  //     HTTPClient http;
+  if(WiFi.status() == WL_CONNECTED) {
+      WiFiClient client; 
+      HTTPClient http;
 
-  //     String url = "http://" + String(serverLinkApi) + "/update";
-  //     http.begin(client, url);
-  //     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  //     String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);           
+      String url = "http://" + String(serverLinkApi) + "/update";
+      http.begin(client, url);
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      String httpRequestData = "api_key=" + apiKey + "&field1=" + String(temperature);           
 
 
-  //     int httpResponseCode = http.POST(httpRequestData);
+      int httpResponseCode = http.POST(httpRequestData);
 
-  //     #ifdef DEBUG
-  //       Serial.print("HTTP Response code: ");
-  //       Serial.println(httpResponseCode);
-  //     #endif
+      #ifdef DEBUG
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+      #endif
 
       
-  //     http.end();
-  //   }else {
-  //     #ifdef DEBUG
-  //       Serial.println("WiFi Disconnected");
-  //     #endif
+      http.end();
+    }else {
+      #ifdef DEBUG
+        Serial.println("WiFi Disconnected");
+      #endif
       
-  //   }
+    }
 }
 
 
@@ -78,12 +78,12 @@ void setup()
 
   setupSystem();
 
-  // #ifdef WIFI_S
-  //   initWiFi();
-  // #endif
+  #ifdef WIFI_S
+    initWiFi();
+  #endif
 
   setupTime();
-  // startSPIFFS();
+  startSPIFFS();
 
   #ifdef MENU_S
     initSection();
@@ -100,16 +100,16 @@ void setup()
   initDaysArray(); // Initialise the array for storage and set some values
   recoverSettings();  // Recover settings from LittleFS
 
-  // #ifdef WEB_S
-  //   startServerHost();
-  // #endif
+  #ifdef WEB_S
+    startServerHost();
+  #endif
 
   #ifdef TEMP_S
     startSensor();
   #endif
 
-  // actuateHeating(OFF);
-  // lastTimerSwitchCheck = millis() + timerCheckDuration; 
+  actuateHeating(OFF);
+  lastTimerSwitchCheck = millis() + timerCheckDuration; 
 
   #ifdef BTN_S
     btnsSetup();
@@ -183,40 +183,40 @@ void loop()
 
 
 
-// void AssignSensorReadingsToArray()
-// {
-//   #ifdef DEBUG_FUNC
-//     Serial.println(__func__);
-//   #endif
+void AssignSensorReadingsToArray()
+{
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
   
-//   SensorReading[1][0] = 1;
-//   SensorReading[1][1] = Temperature;
-//   SensorReading[1][2] = RelayState;
-//   AddReadingToSensorData(1, Temperature); 
-// }
+  SensorReading[1][0] = 1;
+  SensorReading[1][1] = Temperature;
+  SensorReading[1][2] = RelayState;
+  AddReadingToSensorData(1, Temperature); 
+}
 
-// void AddReadingToSensorData(byte RxdFromID, float Temperature)
-// { 
-//   #ifdef DEBUG_FUNC
-//     Serial.println(__func__);
-//   #endif
-//   byte ptr, p;
-//   ptr = SensorReadingPointer[RxdFromID];
-//   sensordata[RxdFromID][ptr].Temp = Temperature;
-//   ptr++;
-//   if (ptr >= SensorReadings)
-//   {
-//     p = 0;
-//     do
-//     {
-//       sensordata[RxdFromID][p].Temp = sensordata[RxdFromID][p + 1].Temp;
-//       p++;
-//     } while (p < SensorReadings);
-//     ptr = SensorReadings - 1;
-//     sensordata[RxdFromID][SensorReadings - 1].Temp = Temperature;
-//   }
-//   SensorReadingPointer[RxdFromID] = ptr;
-// }
+void AddReadingToSensorData(byte RxdFromID, float Temperature)
+{ 
+  #ifdef DEBUG_FUNC
+    Serial.println(__func__);
+  #endif
+  byte ptr, p;
+  ptr = SensorReadingPointer[RxdFromID];
+  sensordata[RxdFromID][ptr].Temp = Temperature;
+  ptr++;
+  if (ptr >= SensorReadings)
+  {
+    p = 0;
+    do
+    {
+      sensordata[RxdFromID][p].Temp = sensordata[RxdFromID][p + 1].Temp;
+      p++;
+    } while (p < SensorReadings);
+    ptr = SensorReadings - 1;
+    sensordata[RxdFromID][SensorReadings - 1].Temp = Temperature;
+  }
+  SensorReadingPointer[RxdFromID] = ptr;
+}
 
 
 void setupSystem()
