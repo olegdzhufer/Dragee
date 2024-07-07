@@ -31,6 +31,7 @@ bool updateTemp = false;
 
 
 uint8_t enc_pre;
+
 void encoder_setup(){
   en.setEncType(EB_STEP4_LOW);
   en.setBtnLevel(HIGH);

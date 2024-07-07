@@ -35,20 +35,20 @@
     //###################### FLAG #############################################
 
     uint8_t TempAvaible(){
-        if(this->flags & 1){
-          this->tempRead();
-          return 0x01;
-        }else{
-          return 0x00;
-        }
-
-        
+      if(this->flags & 1){
+        this->tempRead();
+        return 0x01;
+      }else{
+        return 0x00;
+      }        
     }
 
     //###################### GETERS ###########################################
+
       float getTemp(){
         return this->temp;
       }
+
     //###################### SETTER ###########################################
       void setSensor(DallasTemperature* sensor){
         if(sensor){
@@ -89,11 +89,11 @@
 
 
       void tickSensor(){
-          if(millis() - this->TimerBuffer >= this->period){
-            this->TimerBuffer = millis();
-            this->readData();
-            this->Callback();
-          }
+        if(millis() - this->TimerBuffer >= this->period){
+          this->TimerBuffer = millis();
+          this->readData();
+          this->Callback();
+        }
       }
       //#######################################################################
 
@@ -132,7 +132,6 @@
       }
 
       //#######################################################################
-
 
   };
 
