@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <DS18B20Events.h>          //#include <OneWire.h> is already included in DS18B20Events.h
+
 #include "settings.h"
 #include "tempSensor.h"
 
@@ -40,65 +41,6 @@ void UpdateTargetTemperature()
   Serial.println("Target Temperature = " + String(TargetTemp, 1) + "°");
 }
 
-
-void actuateHeating(bool demand)
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-
-  if (demand)
-  {
-    RelayState = "ON";
-
-    Serial.println("Thermostat ON");
-  }
-  else
-  {
-    RelayState = "OFF";
-    Serial.println("Thermostat OFF");
-  }
-}
-
-
-void ControlHeating()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  if (Temperature < (TargetTemp - Hysteresis))
-  {                     // Check if room temeperature is below set-point and hysteresis offset
-    actuateHeating(ON); // Switch Relay/Heating ON if so
-  }
-  if (Temperature > (TargetTemp + Hysteresis))
-  {                      // Check if room temeperature is above set-point and hysteresis offset
-    actuateHeating(OFF); // Switch Relay/Heating OFF if so
-  }
-  if (Temperature > MaxTemperature)
-  {                      // Check for faults/over-temperature
-    actuateHeating(OFF); // Switch Relay/Heating OFF if temperature is above maximum temperature
-  }
-}
-
-
-void CheckAndSetFrostTemperature()
-{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-  if (TimerState == "OFF" && ManualOverride == OFF)
-  { // Only check for frost protection when heating is off
-    if (Temperature < (FrostTemp - Hysteresis))
-    {                     // Check if temperature is below Frost Protection temperature and hysteresis offset
-      actuateHeating(ON); // Switch Relay/Heating ON if so
-      Serial.println("Frost protection actuated...");
-    }
-    if (Temperature > (FrostTemp + Hysteresis))
-    {                      // Check if temerature is above Frost Protection temperature and hysteresis offset
-      actuateHeating(OFF); // Switch Relay/Heating OFF if so
-    }
-  }
-}
 
 boolean UpdateLocalTime()
 {
@@ -141,9 +83,7 @@ void initDaysArray()
 
 void CheckTimerEvent()
 {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+  
   String TimeNow;
   UpdateTargetTemperature();
   TimeNow = ConvertUnixTime(UnixTime); // Get the current time e.g. 15:35

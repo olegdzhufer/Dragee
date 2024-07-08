@@ -181,15 +181,7 @@ class simpPid{
 simpPid heatPid(&TargetTemp, HEAT_PIN);
 simpPid coolPid(&FrostTemp,  COOL_PIN);
 
-void setupPID(){
-
-}
-
 void loopPID(){
-
-
-
-
   if(Heat->footer != NULL){
     heatPid.PidActivate();
     heatPid.tempNow(Temperature);
@@ -213,19 +205,6 @@ void loopPID(){
   
 }
 
-
-class PIDInterface{
-
-  private:
-    simpPid* pid;
-
-  public:
-    PIDInterface(){
-
-    }
-
-
-};
 
 
 

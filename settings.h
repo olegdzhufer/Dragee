@@ -111,6 +111,5 @@ AsyncWebServer server(WENPAGE_PORT);
 uint32_t lastConnectionTime =0;
 
 float* temp = NULL;
-Line* currLine;
 
 #endif
