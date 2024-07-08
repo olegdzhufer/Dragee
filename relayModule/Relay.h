@@ -155,15 +155,22 @@ public:
 
   static void tickAll()
   {
-    if (first_p)
-    {
-      proc_relay_p = first_p;
-      while (proc_relay_p)
-      {
-        proc_relay_p->tick();
-        proc_relay_p = proc_relay_p->next_p;
-      }
+    if (first_p==NULL){
+      return;
     }
+      proc_relay_p = first_p;
+      if(first_p->getState() == true)
+      {
+        proc_relay_p = first_p;
+        while (proc_relay_p)
+        {
+          proc_relay_p->tick();
+          proc_relay_p = proc_relay_p->next_p;
+        }
+      }else{
+        first_p->tick();
+      }
+  
   }
 
   void setNext(RelayList *next_p)
@@ -178,19 +185,22 @@ public:
 
   void tick()
   {
-    Relay::tick();
-    if (first_p)
+    if ((first_p->getState() == true) || (this == first_p))
     {
-      if (this->next_p != NULL)
-      {
-        proc_relay_p = this->next_p;
-      }
-      else
-      {
-        // proc_relay_p = first_p;
-        proc_relay_p = NULL;
-      }
+      Relay::tick();
     }
+    // if (first_p)
+    // {
+    //   if (this->next_p != NULL)
+    //   {
+    //     proc_relay_p = this->next_p;
+    //   }
+    //   else
+    //   {
+    //     // proc_relay_p = first_p;
+    //     proc_relay_p = NULL;
+    //   }
+    // }
   }
 
 
