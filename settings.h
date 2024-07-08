@@ -1,3 +1,4 @@
+#include <sys/_intsup.h>
 #ifndef settings_h
 #define settings_h
 
@@ -98,6 +99,9 @@ bool FLAG_LCD = false;
 //################ VARIABLES ################
 char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
 char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
+
+char* apssid = SECRET_AP_SSID;
+char* appassword = SECRET_AP_PASS;
 
 unsigned long myChannelNumber = SECRET_CH_ID;             
 const char *  myWriteAPIKey   = SECRET_WRITE_APIKEY;  
