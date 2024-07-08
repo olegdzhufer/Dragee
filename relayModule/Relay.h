@@ -16,7 +16,7 @@ public:
   u8 state = LOW;
   LedSts ledStatus;
   // TimerCount* timer = NULL;
-
+  
 public:
   Relay() {}
 
@@ -130,97 +130,8 @@ public:
     }
   }
 
-  ~Relay()
-  {
-  }
+  ~Relay(){}
 };
 
-class RelayList : public Relay
-{
-public:
-  static RelayList *first_p;
-  static RelayList *proc_relay_p;
-  RelayList *next_p = NULL;
-  RelayList *prev_p = NULL;
-
-  RelayList(u8 pinBtn, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
-  {
-    Relay(pinBtn, pinLed, initState, isNormallyOpen);
-
-    if (first_p == NULL)
-    {
-      first_p = this;
-    }
-  }
-
-  static void tickAll()
-  {
-    if (first_p==NULL){
-      return;
-    }
-      proc_relay_p = first_p;
-      if(first_p->getState() == true)
-      {
-        proc_relay_p = first_p;
-        while (proc_relay_p)
-        {
-          proc_relay_p->tick();
-          proc_relay_p = proc_relay_p->next_p;
-        }
-      }else{
-        first_p->tick();
-      }
-  
-  }
-
-  void setNext(RelayList *next_p)
-  {
-    if (next_p != NULL)
-    {
-      this->next_p = next_p;
-      next_p->prev_p = this;
-    }
-  }
-
-
-  void tick()
-  {
-    if ((first_p->getState() == true) || (this == first_p))
-    {
-      Relay::tick();
-    }
-    // if (first_p)
-    // {
-    //   if (this->next_p != NULL)
-    //   {
-    //     proc_relay_p = this->next_p;
-    //   }
-    //   else
-    //   {
-    //     // proc_relay_p = first_p;
-    //     proc_relay_p = NULL;
-    //   }
-    // }
-  }
-
-
-  ~RelayList()
-  {
-    if (this->prev_p != NULL)
-    {
-      this->prev_p->next_p = this->next_p;
-    }
-
-    if (this->next_p != NULL)
-    {
-      this->next_p->prev_p = this->prev_p;
-    }
-
-    else if (first_p == this)
-    {
-      first_p = this->next_p;
-    }
-  }
-};
 
 #endif

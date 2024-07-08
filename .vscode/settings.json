@@ -1,6 +1,18 @@
 {
     "accessibility.voice.keywordActivation": "inlineChat",
     "files.associations": {
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "new": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp",
+        "algorithm": "cpp",
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "istream": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp"
     }
 }

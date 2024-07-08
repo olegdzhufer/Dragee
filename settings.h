@@ -30,8 +30,7 @@ const char* timezone   = "EET-2EEST,M3.5.0/3,M10.5.0/4";
 #define LCD_ROWS 4
 #define LCD_COLS 20
 
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensor(&oneWire);
+
 
 String       Time_str, DoW_str;                  // For Date and Time
 settings     Timer[7];                           // Timer settings, 7-days of the week

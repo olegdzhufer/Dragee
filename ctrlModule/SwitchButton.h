@@ -20,7 +20,7 @@ private:
 public:
   BTN_PRESS_t type;
   Relay *attached_relay_p = NULL;
-  func_p callbackOnPress = NULL;
+  func_p callbackOnPress = NULL; 
 
 
   SwitchButton() {}
@@ -29,7 +29,7 @@ public:
   SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
   {
     init(btnPin, pressType, btnMode, btnLevel);
-    if (attachRelay != NULL)
+    if (attached_relay_p != NULL)
     {
       attachRelay(attachRelay_p);
     }
@@ -43,6 +43,10 @@ public:
     setBtnLevel(btnLevel);
   }
 
+  uint8_t getPin()
+  {
+    return btnPin;
+  }
 
   bool read()//get button current state immediately
   {
@@ -56,6 +60,12 @@ public:
     if (tick)
     {
       action();
+
+      if (attached_relay_p)
+      {
+        attached_relay_p->tick();
+      }
+      
       return true;
     }
     return false;
@@ -64,6 +74,10 @@ public:
 
   bool tickRaw()
   {
+    if (this->attached_relay_p != NULL)
+        {
+          attached_relay_p->toggleFlag();
+        }
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
@@ -100,9 +114,9 @@ public:
       switch (btnState)
       {
       case EB_CLICK:
-        if (relay != NULL)
+        if (attached_relay_p != NULL)
         {
-          relay->toggleFlag();
+          attached_relay_p->toggleFlag();
         }
         callCallback();
         break;
@@ -147,80 +161,6 @@ public:
 };
 
 
-class BtnList : public SwitchButton
-{
-public:
-  static BtnList *first_p;
-  static BtnList *proc_btn_p;
-  BtnList *next_p = NULL;
-
-  BtnList() {}
-  
-  BtnList(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p = NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
-  {
-    SwitchButton::init(btnPin, pressType, attachRelay_p, btnMode, btnLevel);
-
-    if (first_p == NULL)
-    {
-      first_p = this;
-    }
-  }
-
-
-  void setNext(BtnList *next_p)
-  {
-    if (next_p != NULL)
-    {
-      this->next_p = next_p;
-    }
-  }
-
-  static void tickAll()
-  {
-    if (first_p)
-    {
-      proc_btn_p = first_p;
-      while (proc_btn_p)
-      {
-        proc_btn_p->tick();
-        proc_btn_p = proc_btn_p->next_p;
-      }
-    }
-  }
-
-  void tick()
-  {
-    SwitchButton::tick();
-    if (first_p)
-    {
-      if (this->next_p != NULL)
-      {
-        proc_btn_p = this->next_p;
-      }
-      else
-      {
-        // proc_btn_p = first_p;
-        proc_btn_p = NULL;
-      }
-    }
-  }
-
-  ~BtnList()
-  {
-    if (this->next_p != NULL)
-    {
-      if ( this->next_p->next_p != NULL)
-      {
-        this->next_p = this->next_p->next_p;
-      }
-    }
-    
-    if (first_p == this)
-    {
-      first_p = this->next_p;
-    }
-  }
-};
 
 
 #endif

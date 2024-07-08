@@ -2,11 +2,7 @@
 #define ENC_H
 
 #include <EncButton.h>
-
-// #include "settings.h"
-// #include "pins.h"
-// #include "menu.h"
-#include "mDef.h"
+#include "../mDef.h"
 
 
 void enc_cb() {

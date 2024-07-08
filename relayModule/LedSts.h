@@ -80,7 +80,7 @@ public:
     }
 
 
-    ~LedSts();
+    // ~LedSts();
 
     friend class Relay;
     friend class SwitchButton;

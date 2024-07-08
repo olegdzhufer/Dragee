@@ -3,15 +3,10 @@
 
 #include <Arduino.h>
 #include <ThingSpeak.h>
-
 #include "settings.h"
 
-// unsigned long myChannelNumber = 2590643;
-// const char* myWriteAPIKey = "22BXOEMQ44JEL405";
-
-// void speak_setup() {
-//   ThingSpeak.begin(client);
-// }
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensor(&oneWire);
 
 float readSensorComplete() {
   sensor.requestTemperatures();
