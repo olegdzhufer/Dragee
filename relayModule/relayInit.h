@@ -1,24 +1,14 @@
 #ifndef RELAY_INIT_H
 #define RELAY_INIT_H
 
-#include "mDef.h"
-#include "wokwiRelay.h"
+#include "../mDef.h"
+#include "Relay.h"
 
-RelayList * globalRelayList_p = NULL;
+// RelayList * globalRelayList_p = NULL;
 
 RelayList relayFan(FAN_PIN, LOW);
 RelayList relayHeat(HEAT_PIN, LOW);
 RelayList relayCool(COOL_PIN, LOW);
-
-// def struct BTN_RELAY{
-//   uint8_t id;
-//   String name;
-//   Button* btn_p=NULL;
-//   uint8_t press_flag=0;
-//   uint8_t pin_relay=0;
-//   uint8_t state_relay=0;
-//   BTN_RELAY *next_p=NULL;
-// }BTN_RELAY;
 
 
 void relaySetup()
@@ -31,24 +21,33 @@ void relaySetup()
     relayHeat.setNext(&relayCool);
     // relayCool.setNext(&relayFan);
 
-    globalRelayList_p = &relayFan;
+    // globalRelayList_p = &relayFan;
 }
 
-void relayTick()
-{
+//!  CALL     RelayList::tickAll();  in main loop
 
-    while (globalRelayList_p)
-    {
-        globalRelayList_p->tick(); //if nothing to process next make ptr NULLs
-    }
-    globalRelayList_p = RelayList::first_p;
+// void relayTick()
+// {
+    /************ 1 *******/
+
+    // RelayList::tickAll();
+
+
+    /************ 2 ***********/
+    // while (globalRelayList_p)
+    // {
+    //     globalRelayList_p->tick(); //if nothing to process next make ptr NULLs
+    // }
+    // globalRelayList_p = RelayList::first_p;
+
+
 
     /**
-     * SAME AS
+     * SAME AS     /************ 3 *************
      *  relayHeat.tick();
      * relayCool.tick();
      * relayFan.tick();
      */
-}
+// }
 
 #endif

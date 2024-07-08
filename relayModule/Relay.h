@@ -1,27 +1,26 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include "mDef.h"
-
+#include "../mDef.h"
+#include "LedSts.h"
 
 class Relay
 {
- public:
-  uint8_t pin;
-  String name;
-  uint8_t state = LOW;
-  uint8_t changeFlag = false;
-  bool normallyOpen;
-
-  u8 stsPin;
-
-  
+private:
+  u8 changeFlag = false;
+  u8 pin;
+  bool normallyOpen = false;
 
 public:
-  Relay(){}
+  String name;
+  u8 state = LOW;
+  LedSts ledStatus;
+  // TimerCount* timer = NULL;
 
+public:
+  Relay() {}
 
-  Relay(uint8_t pin, uint8_t initState = LOW, bool isNormallyOpen = false)
+  Relay(u8 pinBtn, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
   {
 #ifdef DEBUG_FUNC
     Serial.println(__func__);
@@ -29,13 +28,13 @@ public:
         Serial.println(pin);
 #endif
 
-    init(pin, initState, isNormallyOpen);
+    init(pinBtn, initState, isNormallyOpen);
+    ledStatus.init(pinLed, initState, isNormallyOpen);
   }
 
-
-  void init(uint8_t pin, uint8_t initState = LOW, bool isNormallyOpen = false)
+  void init(u8 pinBtn, u8 initState = LOW, bool isNormallyOpen = false)
   {
-    this->pin = pin;
+    this->pin = pinBtn;
     this->state = initState;
     this->normallyOpen = isNormallyOpen;
     pinMode(pin, OUTPUT);
@@ -49,50 +48,30 @@ public:
     }
   }
 
-
   void setName(String name)
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     this->name = name;
   }
 
-
   String getName()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     return name;
   }
 
-
   void toggleFlag()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     changeFlag = !changeFlag;
+    // ledStatus.toggle();
   }
-
 
   void toggle()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     state = !state;
     digitalWrite(pin, state);
   }
 
-
   bool getState()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
-
     if (normallyOpen)
     {
       return !state;
@@ -103,33 +82,29 @@ public:
     }
   }
 
-
   void turnOn()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     if (normallyOpen)
     {
       if (state == !true)
+      {
         return;
+      }
       state = !true;
     }
     else
     {
       if (state == true)
+      {
         return;
+      }
       state = true;
     }
     digitalWrite(pin, state);
   }
 
-
   void turnOff()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
     if (normallyOpen)
     {
       if (state == !false)
@@ -145,22 +120,82 @@ public:
     digitalWrite(pin, state);
   }
 
-
   void tick()
   {
     if (changeFlag)
     {
       changeFlag = false;
+      ledStatus.toggle();
       toggle();
     }
   }
 
   ~Relay()
   {
-#ifdef DEBUG_FUNC
-    Serial.println(__func__);
-#endif
+  }
+};
 
+class RelayList : public Relay
+{
+public:
+  static RelayList *first_p;
+  static RelayList *proc_relay_p;
+  RelayList *next_p = NULL;
+  RelayList *prev_p = NULL;
+
+  RelayList(u8 pinBtn, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
+  {
+    Relay(pinBtn, pinLed, initState, isNormallyOpen);
+
+    if (first_p == NULL)
+    {
+      first_p = this;
+    }
+  }
+
+  static void tickAll()
+  {
+    if (first_p)
+    {
+      proc_relay_p = first_p;
+      while (proc_relay_p)
+      {
+        proc_relay_p->tick();
+        proc_relay_p = proc_relay_p->next_p;
+      }
+    }
+  }
+
+  void setNext(RelayList *next_p)
+  {
+    if (next_p != NULL)
+    {
+      this->next_p = next_p;
+      next_p->prev_p = this;
+    }
+  }
+
+
+  void tick()
+  {
+    Relay::tick();
+    if (first_p)
+    {
+      if (this->next_p != NULL)
+      {
+        proc_relay_p = this->next_p;
+      }
+      else
+      {
+        // proc_relay_p = first_p;
+        proc_relay_p = NULL;
+      }
+    }
+  }
+
+
+  ~RelayList()
+  {
     if (this->prev_p != NULL)
     {
       this->prev_p->next_p = this->next_p;
@@ -171,60 +206,11 @@ public:
       this->next_p->prev_p = this->prev_p;
     }
 
+    else if (first_p == this)
+    {
+      first_p = this->next_p;
+    }
   }
 };
-
-
-
-class RelayList: public Relay
-{
-public:
- static RelayList *first_p;
-  static RelayList *proc_relay_p;
-  RelayList *next_p = NULL;
-  RelayList *prev_p = NULL;
-  
-  RelayList(uint8_t pin, uint8_t initState = LOW, bool isNormallyOpen = false)
-  {
-    Relay::init(pin, initState, isNormallyOpen);
-
-    if (first_p == NULL)
-    {
-      first_p = this;
-    }
-
-  }
-
-
-  
-  void setNext(RelayList *next_p)
-  {
-    if (next_p != NULL)
-    {
-       this->next_p = next_p;
-       next_p->prev_p = this;
-    }
-  }
-
-
-  void tick()
-  {
-    Relay::tick();
-    
-    if (first_p)
-    {
-      if (this->next_p != NULL)
-      {
-        proc_relay_p = this->next_p;
-      }
-      else
-      {
-        proc_relay_p = NULL;
-      }
-    }
-  }
-
-};
-
 
 #endif
