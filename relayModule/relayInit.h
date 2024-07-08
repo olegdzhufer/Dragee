@@ -6,9 +6,9 @@
 
 // RelayList * globalRelayList_p = NULL;
 
-RelayList relayFan(FAN_PIN, LOW);
-RelayList relayHeat(HEAT_PIN, LOW);
-RelayList relayCool(COOL_PIN, LOW);
+RelayList relayFan(FAN_PIN, LED_PIN1, LOW);
+RelayList relayHeat(HEAT_PIN, LED_PIN2, LOW);
+RelayList relayCool(COOL_PIN, LED_PIN3, LOW);
 
 
 void relaySetup()
