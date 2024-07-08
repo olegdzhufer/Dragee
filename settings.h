@@ -2,37 +2,14 @@
 #define settings_h
 
 
-//#########################_WORK_PARAM_#################
-// Debug mod
-
-// #define DEBUG
-// #define DEBUG_FUNC
-
-//Section
-
-#define ENC_S
-#define BTN_S
-#define RELAY_S
-#define TIMER_S
-#define WIFI_S
-#define MENU_S
-#define TEMP_S
-
-#define FILE_S
-
-#ifdef WIFI_S
-  #define WEB_S
-#endif
-
-
 //######################################################
 
 #include <Arduino.h>
 #include <DS18B20Events.h>
 #include <MenuLib.h>
-#include "pins.h"
-#include "secrets.h"
-#include "sts.h"
+
+#include "mDef.h"
+#include "wifi/secrets.h"
 
 
 const char* serverName = "dragee"; //  http://dragee.local/ 
@@ -91,19 +68,8 @@ u8  MaxTemperature       = 28;         // Maximum temperature detection, switche
 #define MAX_TEMP_HEAT  60
 #define MAX_TEMP_COOL  30
 
-bool   ManualOverride       = true;      // Manual override
-int    EarlyStart           = 0;          // Default thermostat value for early start of heating
-String RelayState           = "OFF";      // Current setting of the control/thermostat relay
-String TimerState           = "OFF";      // Current setting of the timer
-String Units                = "M";        // or Units = "I" for °F and 12:12pm time format
 
-uint32_t    timerCheckDuration   = 5000;       // Check for timer event every 5-seconds
-uint32_t    lastReadingDuration  = 1;          // Add sensor reading every n-mins
-uint32_t    lastTimerSwitchCheck = 0;          // Counter for last timer check
-uint32_t    LastReadingCheck     = 0;          // Counter for last reading saved check
-float  LastTemperature      = 0;          // Last temperature used for rogue reading detection
 int    UnixTime             = 0;          // Time now (when updated) of the current time
-
 char* timeNow; 
 
 AsyncWebServer server(WENPAGE_PORT);

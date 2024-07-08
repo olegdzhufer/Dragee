@@ -1,7 +1,8 @@
 #ifndef PID_H
 #define PID_H
+
 #include "settings.h"
-#include "relay.h"
+#include "relayModule/Relay.h"
 
 class simpPid{
 
