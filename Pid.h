@@ -1,6 +1,7 @@
 #ifndef PID_H
 #define PID_H
 
+#include "mDef.h"
 #include "settings.h"
 #include "relayModule/Relay.h"
 
