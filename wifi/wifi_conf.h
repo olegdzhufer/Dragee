@@ -10,6 +10,8 @@
 #include <HTTPClient.h>
 
 #include "settings.h"
+char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
+char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
 
 // https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/src/WiFiGeneric.h
 // Set your Static IP address

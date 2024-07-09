@@ -3,6 +3,7 @@
 
 #include "../mDef.h"
 #include "LedSts.h"
+#include "../Timer/CountTimer.h"
 
 class Relay
 {
@@ -15,26 +16,31 @@ public:
   String name;
   u8 state = LOW;
   LedSts ledStatus;
-  // TimerCount* timer = NULL;
-  
+  Countimer timerSec;
+  Countimer timerStart;
+  static Relay* first_p;
+
 public:
   Relay() {}
 
-  Relay(u8 pinBtn, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
+  Relay(u8 pinRel, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
   {
-#ifdef DEBUG_FUNC
+   #ifdef DEBUG_FUNC
     Serial.println(__func__);
-    Serial.printt("pin: ")
+    Serial.print("pin: ")
         Serial.println(pin);
-#endif
+   #endif
 
-    init(pinBtn, initState, isNormallyOpen);
+    init(pinRel, initState, isNormallyOpen);
     ledStatus.init(pinLed, initState, isNormallyOpen);
+    // timerSec.setCounter(0, 0, 2, Countimer::COUNT_UP, NULL); //todo add lcd flag to update every sec
+    timerStart.setCounter(24, 60, 60, Countimer::COUNT_UP, NULL);
+    //timer.setInterval(callBackToTimer , 1000);
   }
 
-  void init(u8 pinBtn, u8 initState = LOW, bool isNormallyOpen = false)
+  void init(u8 pinRel, u8 initState = LOW, bool isNormallyOpen = false)
   {
-    this->pin = pinBtn;
+    this->pin = pinRel;
     this->state = initState;
     this->normallyOpen = isNormallyOpen;
     pinMode(pin, OUTPUT);
@@ -45,6 +51,10 @@ public:
     else
     {
       turnOff();
+    }
+
+    if(first_p == NULL){
+      first_p = this;
     }
   }
 
@@ -60,14 +70,35 @@ public:
 
   void toggleFlag()
   {
-    changeFlag = !changeFlag;
+    if (first_p == NULL)
+    {
+      return;
+    }
+    
+    if((first_p->getState() == true) || (first_p == this)){
+      changeFlag = !changeFlag;
     // ledStatus.toggle();
+    }
   }
 
   void toggle()
   {
-    state = !state;
-    digitalWrite(pin, state);
+    if (first_p == NULL)
+    {
+      return;
+    }
+
+    if((first_p->getState() == true) || (first_p == this))
+    {
+      state = !state;
+      digitalWrite(pin, state);
+      if (getState())
+      {
+        timerStart.start();
+      }else{
+        timerStart.stop();
+      }
+    }
   }
 
   bool getState()
@@ -132,6 +163,7 @@ public:
 
   ~Relay(){}
 };
+
 
 
 #endif

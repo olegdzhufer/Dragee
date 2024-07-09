@@ -6,11 +6,11 @@
 
 #include "mDef.h"
 #include "LinkedList.h"
-#include "relayModule\Relay.h"
-#include "ctrlModule\SwitchButton.h"
+#include "relayModule/Relay.h"
+#include "ctrlModule/SwitchButton.h"
 
 
-
+// IRAM_ATTR set in core defines 
 void ARDUINO_ISR_ATTR isrBtn(void *arg) {
   SwitchButton *sb = static_cast<SwitchButton *>(arg);
   sb->tickRaw();
@@ -69,7 +69,8 @@ void setup() {
   Serial.begin(115200);
 	
 
-  manualCtrlSetup();
+
+  //manualCtrlSetup();
 
 }
 

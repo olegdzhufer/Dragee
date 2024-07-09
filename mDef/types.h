@@ -34,7 +34,10 @@ typedef struct FLAG_PACK
 } flag_pack_t;
 
 typedef void (*func_p)();
+typedef void (*funcVoid_p)(void);
 typedef void (*funcInt_p)(u16);
 typedef void (*funcStr_p)(c8);
+
+typedef void (*obj_func_p)(void *);
 
 #endif
