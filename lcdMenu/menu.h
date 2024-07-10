@@ -7,6 +7,12 @@
 #include "settings.h"
 #include "charList.h"
 
+
+#define LCD_ADDR 0x3F
+#define LCD_ROWS 4
+#define LCD_COLS 20
+
+
 Menu menu;
 
 Screen *Heat, *Cooling, *FAN, *STOP, *Setting, *PIDScreen;

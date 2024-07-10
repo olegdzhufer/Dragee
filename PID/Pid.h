@@ -1,9 +1,17 @@
 #ifndef PID_H
 #define PID_H
 
-#include "mDef.h"
-#include "settings.h"
-#include "relayModule/Relay.h"
+#include "../mDef.h"
+#include "../IODevices/output/Relay.h"
+
+
+#define MIN_TEMP_HEAT  30
+#define MIN_TEMP_COOL  0
+
+#define MAX_TEMP_HEAT  60
+#define MAX_TEMP_COOL  30
+
+float        Hysteresis     = 0.2;               // Heating Hysteresis default value
 
 class simpPid{
 

@@ -22,6 +22,7 @@
     X(SEEK_ERROR    , -15)\
     X(I2C_ERROR     , -16)\
     X(FS_NOT_INITED     , -17)\
+    X(DALLAS_NO_CALLBACK , -127)\
 
 #define X(a, b) a = (b),
 typedef enum {

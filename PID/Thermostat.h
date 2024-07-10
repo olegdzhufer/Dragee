@@ -7,7 +7,7 @@
 #include <Arduino.h>
 
 #include "mDef.h"
-#include "relayModule/Relay.h"
+#include "IODevices/Relay.h"
 #include "sensorModule/VirtTempSensor.h"
 
 class Thermostat 

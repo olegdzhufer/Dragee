@@ -14,6 +14,7 @@
 #define LinkedList_h
 
 #include <stddef.h>
+#include "mDef.h"
 
 template<class T>
 struct ListNode
@@ -128,6 +129,7 @@ LinkedList<T>::LinkedList()
 	lastNodeGot = root;
 	lastIndexGot = 0;
 	isCached = false;
+	DEBUG_PRINT("List created");
 }
 
 // Clear Nodes and free Memory

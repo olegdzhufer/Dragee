@@ -5,83 +5,105 @@
 
 
 #include "mDef.h"
-#include "LinkedList.h"
-#include "relayModule/Relay.h"
-#include "ctrlModule/SwitchButton.h"
+#include "PID/LinkedList.h"
+#include "IODevices/output/Relay.h"
+#include "IODevices/input/SwitchButton.h"
+#include "IODevices/input/Enc.h"
+
+Relay relayFan(FAN_PIN, LED_PIN1);
+  Relay relayHeat(HEAT_PIN, LED_PIN2);
+    Relay relayCool(COOL_PIN, LED_PIN3);
 
 
-// IRAM_ATTR set in core defines 
-void ARDUINO_ISR_ATTR isrBtn(void *arg) {
+SwitchButton btn1(BTN1_PIN, SWITCH_TYPE, &relayFan );
+   SwitchButton btn2(BTN2_PIN, BTN_TYPE,    &relayHeat);
+      SwitchButton btn3(BTN3_PIN, BTN_TYPE,    &relayCool);
+
+  
+LinkedList<Relay*> RelayList = LinkedList<Relay*>();
+ LinkedList<SwitchButton*> ButtonList = LinkedList<SwitchButton*>();
+
+
+void IRAM_ATTR isrBtn(void *arg) {
   SwitchButton *sb = static_cast<SwitchButton *>(arg);
   sb->tickRaw();
 }
 
+void IRAM_ATTR isrBtnRaw() 
+{
+  btn1.tickRaw();
+  btn2.tickRaw();
+  btn3.tickRaw();
+}
 
-
-LinkedList<Relay*> RelayList = LinkedList<Relay*>();
-LinkedList<SwitchButton*> ButtonList = LinkedList<SwitchButton*>();
 
 void manualCtrlSetup()
 {
-    Relay* relayFan = new Relay(FAN_PIN, LED_PIN1);
-    Relay* relayHeat = new Relay(HEAT_PIN, LED_PIN2);
-    Relay* relayCool = new Relay(COOL_PIN, LED_PIN3);
-
-    relayFan->setName("Fan");
-    relayHeat->setName("Heat");
-    relayCool->setName("Cool");
+  relayFan.setName("Fan");
+  relayHeat.setName("Heat");
+  relayCool.setName("Cool");
     
-	RelayList.add(relayFan);
-	RelayList.add(relayHeat);
-	RelayList.add(relayCool);
-
-   Serial.print(RelayList.size());
-
-
-   SwitchButton* btn1 = new SwitchButton(BTN1_PIN, SWITCH_TYPE, relayFan , INPUT, LOW);
-   SwitchButton* btn2 = new SwitchButton(BTN2_PIN, BTN_TYPE,    relayHeat, INPUT, LOW);
-   SwitchButton* btn3 = new SwitchButton(BTN3_PIN, BTN_TYPE,    relayCool, INPUT, LOW);
-
+	RelayList.add(&relayFan);
+	RelayList.add(&relayHeat);
+	RelayList.add(&relayCool);
+  Serial.print(RelayList.size());
   
-  //  digitalPinToInterrupt(p)
-  // attachInterrupt(uint8_t pin, std::function<void ()> intRoutine, int mode)
-  // attachInterrupt(uint8_t pin, void (*)(void), int mode)
-  // attachInterruptArg(uint8_t pin, void (*)(void *), void *arg, int mode)
-  
-  ButtonList.add(btn1);
-	ButtonList.add(btn2);
-	ButtonList.add(btn3);
+  ButtonList.add(&btn1);
+	ButtonList.add(&btn2);
+	ButtonList.add(&btn3);
+
+  // attachInterrupt(digitalPinToInterrupt(btn1.getPin()), isrBtnRaw, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, CHANGE);
+
+   SwitchButton *btn;    
+	 for(int i = 0; i < ButtonList.size(); i++){
+		 btn = ButtonList.get(i);
+     attachInterruptArg(digitalPinToInterrupt(btn->getPin()), isrBtn, &btn, CHANGE);
+	 }
+}
 
 
-   SwitchButton *btn;
-	for(int i = 0; i < ButtonList.size(); i++){
-
+void tickBtnList()
+{
+  SwitchButton *btn;
+	for(int i = 0; i < ButtonList.size(); i++)
+  {
 		btn = ButtonList.get(i);
-    // attachInterruptArg(btn1.PIN, isr, &btn, FALLING);
-    attachInterruptArg(btn->getPin(), isrBtn, btn, CHANGE);
+    if (btn == NULL) {
+      return;
+    }
+    btn->tick();
 	}
 }
 
 
-
+void tickRelayList()
+{
+  Relay *relay;
+	for(int i = 0; i < RelayList.size(); i++)
+  {
+		relay = RelayList.get(i);
+    if (relay == NULL) {
+      return;
+    }
+    relay->tick();
+	}
+}
 
 void setup() {
   Serial.begin(115200);
-	
+	delay(100);
+  Serial.println("Started");
 
-
-  //manualCtrlSetup();
+  encoderSetup();
+  manualCtrlSetup();
 
 }
 
 void loop() 
-{
-
-	
-	
-  
-	while (true); // nothing else to do, loop forever
-
-
-
+{  
+  eb.tick();
+	tickBtnList();
+  tickRelayList();
 }

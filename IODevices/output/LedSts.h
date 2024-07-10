@@ -1,24 +1,26 @@
 #ifndef LED_STS_H
 #define LED_STS_H
 
-#include "../mDef.h"
+#include <Arduino.h>
+#include "../../mDef.h"
 
 class LedSts
 {
 private:
-   u8 pin;
+   uint8_t pin;
    bool normallyOpen = false;
    bool state = LOW;
 
 public:
     LedSts(){}; // default constructor
 
-    LedSts(u8 pin, u8 initState = LOW, bool isNormallyOpen = false)
+    LedSts(uint8_t pin, uint8_t initState = LOW, bool isNormallyOpen = false)
     {
+      DEBUG_PRINT("Creating sts led");
         init(pin, initState, isNormallyOpen);
     }
 
-    void init(u8 pin, u8 initState = LOW, bool isNormallyOpen = false)
+    void init(uint8_t pin, uint8_t initState = LOW, bool isNormallyOpen = false)
     {
         this->pin = pin;
         this->state = initState;
@@ -75,7 +77,9 @@ public:
 
   void toggle()
     {
+      
         state = !state;
+        DEBUG_PRINT("STSled state chenaged to %d", state);
         digitalWrite(pin, state);
     }
 

@@ -1,5 +1,4 @@
 [wokwi]
 version = 1
-elf = "build/Dragee.elf"
-firmware = "build/Dragee.bin"
-gdbServerPort=3333
+elf = "build/esp32.esp32.esp32/Dragee.ino.elf"
+firmware = "build/esp32.esp32.esp32/Dragee.ino.bin"

@@ -1,9 +1,11 @@
-#ifndef ENC_H
-#define ENC_H
+#ifndef ENCBH
+#define ENCB_H
 
+#include <Arduino.h>
 #include <EncButton.h>
-#include "../mDef.h"
+#include "../../mDef.h"
 
+EncButton eb(CLK, DT, SW);
 
 void enc_cb() {
     Serial.print("callback: ");
@@ -64,73 +66,23 @@ void enc_cb() {
 }
 
 
-// #ifdef ENC_S
-  // EncButton en(CLK, DT, SW);
-  
-// bool updateTemp = false;
+void IRAM_ATTR isrEnc()
+{
+    eb.tickRaw();
+}
+
+void encoderSetup(){
+    pinMode(CLK, INPUT);
+    pinMode(SW, INPUT);
+    pinMode(DT, INPUT);
 
 
-// uint8_t enc_pre;
-// void encoder_setup(){
-  // en.setEncType(EB_STEP4_LOW);
-  // en.setBtnLevel(HIGH);
-// }
+    // eb.setEncType(EB_STEP4_LOW);
+    eb.attach(enc_cb);
 
-// int getResult(){
-  // return enc_pre; 
-// }
-
-// bool flagEnc = false;
-
-// void read_encoder(){
-
-//     en.tick();
-
-//     if(en.leftH()){
-//       if(menu.curr == Heat && TargetTemp > MIN_TEMP_HEAT){
-//         updateTemp = true;
-//         TargetTemp -= 0.5;
-//         TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-//         menu.lineUpdate(&menu, TempSetH);
-//       }else if(menu.curr == Cooling && FrostTemp > MIN_TEMP_COOL){
-//         updateTemp = true;
-//         FrostTemp -= 0.5;
-//         TempSetC->val->setfloat(TempSetC->val, FrostTemp);
-//         menu.lineUpdate(&menu, TempSetC);
-//       }
-//     }
-//     else if(en.rightH()){
-//       if(menu.curr == Heat && TargetTemp < MAX_TEMP_HEAT){
-//         updateTemp = true;
-//         TargetTemp += 0.5;
-//         Serial.println(TargetTemp);
-//         TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-//         menu.lineUpdate(&menu, TempSetH);
-//       }else if(menu.curr == Cooling && FrostTemp < MAX_TEMP_COOL){
-//         updateTemp = true;
-//         FrostTemp += 0.5;
-//         TempSetC->val->setfloat(TempSetC->val, FrostTemp);
-//         menu.lineUpdate(&menu, TempSetC);
-//       }
-//     }
-
-//     else if (en.left()) {
-//         enc_pre = 0x03;
-//         Serial.println("3");
-//     }
-//     else if(en.right()){
-//         enc_pre = 0x04;
-//         Serial.println("4");
-//     }
-//      else if (en.press())  
-//     {
-
-//     }
-  
-// }
-
-// #endif
-
-
+    attachInterrupt(digitalPinToInterrupt(CLK), isrEnc, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(SW), isrEnc, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(DT), isrEnc, CHANGE);
+}
 
 #endif

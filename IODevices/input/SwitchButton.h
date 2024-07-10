@@ -2,8 +2,8 @@
 #define BTNS_DEF_H
 
 #include <EncButton.h>
-#include "../mDef.h"
-#include "../relayModule/Relay.h"
+#include "../../mDef.h"
+#include "../output/Relay.h"
 
 typedef enum
 {
@@ -17,18 +17,16 @@ private:
   uint8_t btnPin;
 
 public:
-  BTN_PRESS_t type;
+  BTN_PRESS_t type = BTN_TYPE;
   Relay *attached_relay_p = NULL;
   func_p callbackOnPress = NULL; 
 
-
-  SwitchButton() {}
-
-
   SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
   {
-    init(btnPin, pressType, btnMode, btnLevel);
-    if (attached_relay_p != NULL)
+    DEBUG_PRINT("Creating switchbutton");
+
+    init(btnPin, pressType);//, btnMode, btnLevel);
+    if (attachRelay_p != NULL)
     {
       attachRelay(attachRelay_p);
     }
@@ -86,6 +84,8 @@ public:
     uint16_t btnState = VirtButton::action();
     if (type == SWITCH_TYPE)
     {
+          DEBUG_PRINT("Action for type %d", (int)type);
+
       switch (btnState)
       {
 
@@ -110,11 +110,13 @@ public:
     }
     else if (type == BTN_TYPE)
     {
+       DEBUG_PRINT("Action for type %d", (int)type);
       switch (btnState)
       {
       case EB_CLICK:
         if (attached_relay_p != NULL)
         {
+           DEBUG_PRINT("Btn is clicked");
           attached_relay_p->toggleFlag();
         }
         callCallback();
@@ -142,6 +144,7 @@ public:
   {
     if (callbackOnPress != NULL)
     {
+       DEBUG_PRINT("Call btn callback");
       callbackOnPress();
     }
   }
@@ -153,6 +156,7 @@ public:
     {
       return false;
     }
+     DEBUG_PRINT("Relay attached");
     this->attached_relay_p = relay;
     return true;
   }

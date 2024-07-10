@@ -3,12 +3,14 @@
 
 #include <Arduino.h>
 
+#define DEBUG 1
+
 
 #ifdef DEBUG
 #define D_SerialBegin(...) Serial.begin(__VA_ARGS__);
-#define D_print(...)       Serial.print(__VA_ARGS__)
-#define D_write(...)       Serial.write(__VA_ARGS__)
-#define D_println(...)     D_println(__VA_ARGS__)
+#define D_print(fmt,...)       Serial.println(__VA_ARGS__)
+#define D_write(fmt,...)       Serial.write(__VA_ARGS__)
+#define D_println(fmt,...)     D_println(__VA_ARGS__)
 #else
 #define D_SerialBegin(bauds)
 #define D_print(...)
@@ -16,3 +18,12 @@
 #define D_println(...)
 #endif
 
+
+
+#if defined(DEBUG) && DEBUG > 0
+#define DEBUG_PRINT(fmt, ...) Serial.printf("%s C%d) " fmt "\r\n", \
+							__func__, xPortGetCoreID(), \
+							##__VA_ARGS__); 
+#else
+ #define DEBUG_PRINT(fmt, ...) /* Don't do anything in release builds */
+#endif

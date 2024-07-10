@@ -1,9 +1,9 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include "../mDef.h"
+#include "../../mDef.h"
 #include "LedSts.h"
-#include "../Timer/CountTimer.h"
+
 
 class Relay
 {
@@ -16,26 +16,26 @@ public:
   String name;
   u8 state = LOW;
   LedSts ledStatus;
-  Countimer timerSec;
-  Countimer timerStart;
-  static Relay* first_p;
+
+  uint32_t timerStart=0;
+  uint8_t timerSec=0;
+
+  Relay* first_p=NULL;
+
+  Relay* prev_p=NULL;
+  Relay* next_p=NULL;
+
 
 public:
   Relay() {}
 
-  Relay(u8 pinRel, u8 pinLed, u8 initState = LOW, bool isNormallyOpen = false)
+  Relay(u8 pinRel, u8 pinLed, u8 initState = OFF, bool isNormallyOpen = false)
   {
-   #ifdef DEBUG_FUNC
-    Serial.println(__func__);
-    Serial.print("pin: ")
-        Serial.println(pin);
-   #endif
+    DEBUG_PRINT("Creating relay with");
 
     init(pinRel, initState, isNormallyOpen);
     ledStatus.init(pinLed, initState, isNormallyOpen);
-    // timerSec.setCounter(0, 0, 2, Countimer::COUNT_UP, NULL); //todo add lcd flag to update every sec
-    timerStart.setCounter(24, 60, 60, Countimer::COUNT_UP, NULL);
-    //timer.setInterval(callBackToTimer , 1000);
+    
   }
 
   void init(u8 pinRel, u8 initState = LOW, bool isNormallyOpen = false)
@@ -53,9 +53,9 @@ public:
       turnOff();
     }
 
-    if(first_p == NULL){
-      first_p = this;
-    }
+     if(first_p == NULL){
+       first_p = this;
+     }
   }
 
   void setName(String name)
@@ -70,35 +70,40 @@ public:
 
   void toggleFlag()
   {
-    if (first_p == NULL)
-    {
-      return;
-    }
+    // if (first_p == NULL)
+    // {
+      // return;
+    // }
     
-    if((first_p->getState() == true) || (first_p == this)){
+    // if((first_p->getState() == true) || (first_p == this)){
       changeFlag = !changeFlag;
     // ledStatus.toggle();
-    }
+    // }
   }
 
   void toggle()
   {
-    if (first_p == NULL)
-    {
-      return;
-    }
+    DEBUG_PRINT("Toggle relay state");
+    // if (first_p == NULL)
+    // {
+      // return;
+    // }
 
-    if((first_p->getState() == true) || (first_p == this))
-    {
+    // if((first_p->getState() == true) || (first_p == this))
+    // {
       state = !state;
+      DEBUG_PRINT("Relay state chenaged to %d", state);
       digitalWrite(pin, state);
       if (getState())
       {
-        timerStart.start();
+        timerStart = millis();
+        // timer->start();
       }else{
-        timerStart.stop();
+        // timer->stop();
+        timerSec=0;
+        timerStart = 0;
       }
-    }
+    // }
   }
 
   bool getState()
@@ -147,6 +152,8 @@ public:
       if (state == false)
         return;
       state = false;
+      timerSec=0;
+      timerStart=0;
     }
     digitalWrite(pin, state);
   }
@@ -159,6 +166,15 @@ public:
       ledStatus.toggle();
       toggle();
     }
+    if (timerStart > 0)
+    {
+      if (millis() - timerStart >= 1000){
+        Serial.print("1sec+ ");
+        timerSec++;
+        Serial.println(timerSec);
+      }
+    }
+    
   }
 
   ~Relay(){}

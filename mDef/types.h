@@ -18,6 +18,7 @@ typedef double f64;
 
 // typedef bool b8;
 typedef char c8;
+typedef c8* c8_p;
 
 typedef u8 flag_t;
 
@@ -35,9 +36,9 @@ typedef struct FLAG_PACK
 
 typedef void (*func_p)();
 typedef void (*funcVoid_p)(void);
-typedef void (*funcInt_p)(u16);
-typedef void (*funcStr_p)(c8);
-
+typedef void (*funcUInt_p)(u16);
+typedef void (*funcInt_p)(i16);
+typedef void (*funcStr_p)(c8_p);
 typedef void (*obj_func_p)(void *);
 
 #endif
