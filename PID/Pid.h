@@ -16,10 +16,13 @@ float        Hysteresis     = 0.2;               // Heating Hysteresis default v
 class simpPid{
 
   private:
-    bool work = false;
+    
+    // bool work = false;
     float* target;
-    float temp;
-    uint8_t pin;
+    // float temp;
+    // uint8_t pin;
+
+
     uint8_t onTime = 0;
     uint32_t timerBuffer;
     uint32_t timerBufSec;

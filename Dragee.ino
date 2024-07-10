@@ -20,8 +20,8 @@ SwitchButton btn1(BTN1_PIN, SWITCH_TYPE, &relayFan );
       SwitchButton btn3(BTN3_PIN, BTN_TYPE,    &relayCool);
 
   
-LinkedList<Relay*> RelayList = LinkedList<Relay*>();
- LinkedList<SwitchButton*> ButtonList = LinkedList<SwitchButton*>();
+// LinkedList<Relay*> RelayList = LinkedList<Relay*>();
+//  LinkedList<SwitchButton*> ButtonList = LinkedList<SwitchButton*>();
 
 
 void IRAM_ATTR isrBtn(void *arg) {
@@ -52,15 +52,15 @@ void manualCtrlSetup()
 	ButtonList.add(&btn2);
 	ButtonList.add(&btn3);
 
-  // attachInterrupt(digitalPinToInterrupt(btn1.getPin()), isrBtnRaw, CHANGE);
-  // attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, CHANGE);
-  // attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(btn1.getPin()), isrBtnRaw, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, CHANGE);
 
-   SwitchButton *btn;    
-	 for(int i = 0; i < ButtonList.size(); i++){
-		 btn = ButtonList.get(i);
-     attachInterruptArg(digitalPinToInterrupt(btn->getPin()), isrBtn, &btn, CHANGE);
-	 }
+  //  SwitchButton *btn;    
+	//  for(int i = 0; i < ButtonList.size(); i++){
+		//  btn = ButtonList.get(i);
+    //  attachInterruptArg(digitalPinToInterrupt(btn->getPin()), isrBtn, &btn, CHANGE);
+	//  }
 }
 
 

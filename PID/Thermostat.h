@@ -6,11 +6,11 @@
 
 #include <Arduino.h>
 
-#include "mDef.h"
-#include "IODevices/Relay.h"
-#include "sensorModule/VirtTempSensor.h"
+#include "../../mDef.h"
+#include "Relay.h"
+#include "../input/VirtTempSensor.h"
 
-class Thermostat 
+class Thermostat : public Relay
 {
     /// @brief Holds the state for a Bang-Bang Thermostat with Hysteresis. All values are in degrees Celcius.
     /*
@@ -34,7 +34,6 @@ class Thermostat
     */
 
 private:
-    Relay *attached_relay_p = NULL;
     VirtTempSensor *attached_tempSensor_p = NULL;
 
     float desiredTemperature = 19.0;
@@ -52,13 +51,8 @@ private:
     }
 
 public:
-    Thermostat(Relay *attached_relay_p , VirtTempSensor *attached_tempSensor_p)
+    Thermostat(VirtTempSensor *attached_tempSensor_p)
     {
-        if (attached_relay_p != NULL)
-        {
-            this->attached_relay_p = attached_relay_p;
-        }
-
         if (attached_tempSensor_p != NULL)
         {
             this->attached_tempSensor_p = attached_tempSensor_p;
