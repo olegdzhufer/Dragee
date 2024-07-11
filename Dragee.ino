@@ -15,7 +15,7 @@ Relay relayFan(FAN_PIN, LED_PIN1);
     Relay relayCool(COOL_PIN, LED_PIN3);
 
 
-SwitchButton btn1(BTN1_PIN, SWITCH_TYPE, &relayFan );
+SwitchButton btn1(BTN1_PIN, SWITCH_TYPE, &relayFan);
    SwitchButton btn2(BTN2_PIN, BTN_TYPE,    &relayHeat);
       SwitchButton btn3(BTN3_PIN, BTN_TYPE,    &relayCool);
 
@@ -24,16 +24,21 @@ SwitchButton btn1(BTN1_PIN, SWITCH_TYPE, &relayFan );
 //  LinkedList<SwitchButton*> ButtonList = LinkedList<SwitchButton*>();
 
 
-void IRAM_ATTR isrBtn(void *arg) {
-  SwitchButton *sb = static_cast<SwitchButton *>(arg);
-  sb->tickRaw();
-}
+// void IRAM_ATTR isrBtn(void *arg) {
+//   SwitchButton *sb = static_cast<SwitchButton *>(arg);
+//   sb->tickRaw();
+// }
 
 void IRAM_ATTR isrBtnRaw() 
 {
-  btn1.tickRaw();
-  btn2.tickRaw();
-  btn3.tickRaw();
+  // btn1.tickRaw();
+  // btn2.tickRaw();
+  // btn3.tickRaw();
+  
+  btn1.pressISR();
+  btn2.pressISR();
+  btn3.pressISR();
+
 }
 
 
@@ -43,52 +48,52 @@ void manualCtrlSetup()
   relayHeat.setName("Heat");
   relayCool.setName("Cool");
     
-	RelayList.add(&relayFan);
-	RelayList.add(&relayHeat);
-	RelayList.add(&relayCool);
-  Serial.print(RelayList.size());
-  
-  ButtonList.add(&btn1);
-	ButtonList.add(&btn2);
-	ButtonList.add(&btn3);
+  btn1.setDebTimeout(50);
+  btn2.setDebTimeout(75);
+  btn3.setDebTimeout(100);
 
+  DEBUG_PRINT("Attaching interrupt to: %d\n", btn1.getPin());
   attachInterrupt(digitalPinToInterrupt(btn1.getPin()), isrBtnRaw, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, CHANGE);
 
-  //  SwitchButton *btn;    
-	//  for(int i = 0; i < ButtonList.size(); i++){
-		//  btn = ButtonList.get(i);
-    //  attachInterruptArg(digitalPinToInterrupt(btn->getPin()), isrBtn, &btn, CHANGE);
-	//  }
+    DEBUG_PRINT("Attaching interrupt to: %d\n", btn2.getPin());
+  attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, FALLING);
+
+    DEBUG_PRINT("Attaching interrupt to: %d\n", btn3.getPin());
+  attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, RISING);
+
+
+  
 }
 
 
 void tickBtnList()
 {
-  SwitchButton *btn;
-	for(int i = 0; i < ButtonList.size(); i++)
+  
+
+  if (btn1.tick())
   {
-		btn = ButtonList.get(i);
-    if (btn == NULL) {
-      return;
-    }
-    btn->tick();
-	}
+    DEBUG_PRINT("YES btn 1 has ticked");
+  }
+
+  if (btn2.tick()){
+    DEBUG_PRINT("YES btn 2 has ticked");
+
+  }
+
+  if(btn3.tick()){
+    DEBUG_PRINT("YES btn 3 has ticked");
+
+  }
 }
 
 
 void tickRelayList()
 {
-  Relay *relay;
-	for(int i = 0; i < RelayList.size(); i++)
-  {
-		relay = RelayList.get(i);
-    if (relay == NULL) {
-      return;
-    }
-    relay->tick();
-	}
+  
+  relayFan.tick();
+  relayHeat.tick();
+  relayCool.tick();
+
 }
 
 void setup() {
@@ -96,14 +101,14 @@ void setup() {
 	delay(100);
   Serial.println("Started");
 
-  encoderSetup();
+  // encoderSetup();
   manualCtrlSetup();
 
 }
 
 void loop() 
 {  
-  eb.tick();
+  // eb.tick();
 	tickBtnList();
   tickRelayList();
 }

@@ -76,7 +76,7 @@ public:
     // }
     
     // if((first_p->getState() == true) || (first_p == this)){
-      changeFlag = !changeFlag;
+      changeFlag = true;
     // ledStatus.toggle();
     // }
   }
@@ -84,16 +84,13 @@ public:
   void toggle()
   {
     DEBUG_PRINT("Toggle relay state");
-    // if (first_p == NULL)
-    // {
-      // return;
-    // }
-
-    // if((first_p->getState() == true) || (first_p == this))
-    // {
+    
       state = !state;
-      DEBUG_PRINT("Relay state chenaged to %d", state);
+      DEBUG_PRINT("Relay state changed to %d", state);
       digitalWrite(pin, state);
+
+      DEBUG_PRINT("=ledStatus toggle signal from relay");
+      ledStatus.toggle();
       if (getState())
       {
         timerStart = millis();
@@ -103,7 +100,6 @@ public:
         timerSec=0;
         timerStart = 0;
       }
-    // }
   }
 
   bool getState()
@@ -160,12 +156,14 @@ public:
 
   void tick()
   {
-    if (changeFlag)
+    if (changeFlag==true)
     {
+      DEBUG_PRINT("ChangeFlag==true, turning off");
       changeFlag = false;
-      ledStatus.toggle();
+      
       toggle();
     }
+
     if (timerStart > 0)
     {
       if (millis() - timerStart >= 1000){

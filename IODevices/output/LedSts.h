@@ -39,6 +39,7 @@ public:
 
   void turnOn()
   {
+    DEBUG_PRINT("Turning ON sts led");
     if (normallyOpen)
     {
       if (state == !true){
@@ -59,6 +60,8 @@ public:
 
   void turnOff()
   {
+        DEBUG_PRINT("Turning OFF sts led");
+
     if (normallyOpen)
     {
       if (state == !false)
@@ -77,10 +80,9 @@ public:
 
   void toggle()
     {
-      
         state = !state;
-        DEBUG_PRINT("STSled state chenaged to %d", state);
-        digitalWrite(pin, state);
+        DEBUG_PRINT("STSled state changed to %d", state);
+        digitalWrite(this->pin, state);
     }
 
 

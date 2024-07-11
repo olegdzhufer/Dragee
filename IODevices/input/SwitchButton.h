@@ -1,6 +1,7 @@
 #ifndef BTNS_DEF_H
 #define BTNS_DEF_H
 
+
 #include <EncButton.h>
 #include "../../mDef.h"
 #include "../output/Relay.h"
@@ -19,21 +20,22 @@ private:
 public:
   BTN_PRESS_t type = BTN_TYPE;
   Relay *attached_relay_p = NULL;
-  func_p callbackOnPress = NULL; 
+  func_p callbackOnPress = nullptr;
 
-  SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
+  SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = HIGH)
   {
     DEBUG_PRINT("Creating switchbutton");
 
     init(btnPin, pressType);//, btnMode, btnLevel);
-    if (attachRelay_p != NULL)
+    
+    if (!attachRelay(attachRelay_p))
     {
-      attachRelay(attachRelay_p);
+      DEBUG_PRINT("ERROR: Relay not attached to button!!!");
     }
   }
 
 
-  void init(uint8_t btnPin, BTN_PRESS_t pressType, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
+  void init(uint8_t btnPin, BTN_PRESS_t pressType, uint8_t btnMode = INPUT, uint8_t btnLevel = HIGH)
   {
     this->btnPin = btnPin;
     EB_mode(btnPin, btnMode);
@@ -42,7 +44,7 @@ public:
 
   uint8_t getPin()
   {
-    return btnPin;
+    return this->btnPin;
   }
 
   bool read()//get button current state immediately
@@ -53,15 +55,17 @@ public:
 
   bool tick()
   {
-    bool tick = VirtButton::tick(EB_read(btnPin));
+    bool tick = VirtButton::tick(EB_read(this->btnPin));
     if (tick)
     {
+      DEBUG_PRINT("Button action in tick");
       action();
 
-      if (attached_relay_p)
-      {
-        attached_relay_p->tick();
-      }
+      // if (attached_relay_p)
+      // {
+      //   DEBUG_PRINT("Button attached_relay_p tick");
+      //   attached_relay_p->tick();
+      // }
       
       return true;
     }
@@ -71,11 +75,16 @@ public:
 
   bool tickRaw()
   {
-    if (this->attached_relay_p != NULL)
-        {
-          attached_relay_p->toggleFlag();
-        }
+    // if (this->attached_relay_p != NULL)
+    // {
+    //     attached_relay_p->toggleFlag();
+    // }
     return VirtButton::tickRaw(EB_read(btnPin));
+  }
+
+  void pressISR()
+  {
+    VirtButton::pressISR();
   }
 
 
@@ -84,12 +93,13 @@ public:
     uint16_t btnState = VirtButton::action();
     if (type == SWITCH_TYPE)
     {
-          DEBUG_PRINT("Action for type %d", (int)type);
+      DEBUG_PRINT("Action for type %d", (int)type);
 
       switch (btnState)
       {
 
       case EB_HOLD:
+        DEBUG_PRINT("Call btn action is EB_HOLD");
         if (this->attached_relay_p != NULL)
         {
           attached_relay_p->toggleFlag();
@@ -98,6 +108,8 @@ public:
         break;
 
       case EB_RELEASE:
+        DEBUG_PRINT("Call btn action is EB_RELEASE");
+
         if (this->attached_relay_p != NULL)
         {
           attached_relay_p->toggleFlag();
@@ -114,7 +126,7 @@ public:
       switch (btnState)
       {
       case EB_CLICK:
-        if (attached_relay_p != NULL)
+        if (this->attached_relay_p != NULL)
         {
            DEBUG_PRINT("Btn is clicked");
           attached_relay_p->toggleFlag();
