@@ -25,7 +25,7 @@
         this->period = 1000;
       }
 
-      TermSensor(DallasTemperature* sensor, uint8_t time){
+      TermSensor(DallasTemperature* sensor, uint32_t time){
         if(sensor){
           this->sensor = sensor;
         }
