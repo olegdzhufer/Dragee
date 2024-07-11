@@ -9,9 +9,9 @@
 #define LED_PIN2 4
 #define LED_PIN3 23
 
-#define CLK 34                     
-#define DT  39                     
-#define SW  36                       
+#define CLK 36                     
+#define DT  34                     
+#define SW  39                       
 
 #define REL1 19
 #define REL2 33

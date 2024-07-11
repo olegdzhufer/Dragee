@@ -36,7 +36,7 @@ void encoder_setup(){
   attachInterrupt(digitalPinToInterrupt(ENC_R_PIN), isrEnc, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENC_L_PIN), isrEnc, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENC_BTN_PIN), isrEnc, FALLING);
-  eb.setEncISR(true);
+  en.setEncISR(true);
   
   en.setEncType(EB_STEP4_LOW);
   en.setBtnLevel(HIGH);
