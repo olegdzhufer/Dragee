@@ -12,7 +12,9 @@ const String backgrndColour = "#ac8a7f";
 // const String data2Colour    = "orange";
 
 String WiFiSignal() {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   float Signal = WiFi.RSSI();
   Signal = 90 / 40.0 * Signal + 212.5;  // From Signal = 100% @ -50dBm and Signal = 10% @ -90dBm and y = mx + c
   if (Signal > 100)
@@ -97,7 +99,12 @@ void append_HTML_footer() {
 }
 
 void homepage() {
-  Temperature = readSensorComplete();
+  #ifdef TEMP_S
+    Temperature = readSensorComplete();
+  #else
+    Temperature = 0;
+  #endif
+
   append_HTML_header(Refresh);
   webpage += "<h2>Temperature and Relay status</h2><br>";
   webpage += "<div class='numberCircle'><span class=" + String((RelayState == "ON" ? "'on'>" : "'off'>")) + String(Temperature, 1) + "&deg;</span></div><br><br><br>";

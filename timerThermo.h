@@ -8,7 +8,9 @@
 
 String ConvertUnixTime(int unix_time)
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   time_t tm = unix_time;
   struct tm *now_tm = localtime(&tm);
   char output[40];
@@ -18,7 +20,9 @@ String ConvertUnixTime(int unix_time)
 
 void UpdateTargetTemperature()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   String TimeNow;
   TimeNow = ConvertUnixTime(UnixTime);
   for (byte dow = 0; dow < 7; dow++)
@@ -32,42 +36,26 @@ void UpdateTargetTemperature()
     }
   }
   if (ManualOverride == ON)
-    TargetTemp = ManOverrideTemp;
+    // TargetTemp = ManOverrideTemp;
   Serial.println("Target Temperature = " + String(TargetTemp, 1) + "°");
 }
 
 
 void actuateHeating(bool demand)
 {
-  Serial.println(__func__);
-  pinMode(RelayPIN, OUTPUT);
-  pinMode(LEDPIN, OUTPUT);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
+
   if (demand)
   {
     RelayState = "ON";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    digitalWrite(LEDPIN, LOW);
+
     Serial.println("Thermostat ON");
   }
   else
   {
     RelayState = "OFF";
-    if (RelayReverse)
-    {
-      digitalWrite(RelayPIN, HIGH);
-    }
-    else
-    {
-      digitalWrite(RelayPIN, LOW);
-    }
-    digitalWrite(LEDPIN, HIGH);
     Serial.println("Thermostat OFF");
   }
 }
@@ -75,7 +63,9 @@ void actuateHeating(bool demand)
 
 void ControlHeating()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   if (Temperature < (TargetTemp - Hysteresis))
   {                     // Check if room temeperature is below set-point and hysteresis offset
     actuateHeating(ON); // Switch Relay/Heating ON if so
@@ -93,7 +83,9 @@ void ControlHeating()
 
 void CheckAndSetFrostTemperature()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   if (TimerState == "OFF" && ManualOverride == OFF)
   { // Only check for frost protection when heating is off
     if (Temperature < (FrostTemp - Hysteresis))
@@ -110,7 +102,9 @@ void CheckAndSetFrostTemperature()
 
 boolean UpdateLocalTime()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   struct tm timeinfo;
   time_t now;
   char time_output[30];
@@ -147,7 +141,9 @@ void initDaysArray()
 
 void CheckTimerEvent()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   String TimeNow;
   UpdateTargetTemperature();
   TimeNow = ConvertUnixTime(UnixTime); // Get the current time e.g. 15:35
@@ -158,8 +154,8 @@ void CheckTimerEvent()
   }
   if (ManualOverride == ON)
   {                               // If manual override is enabled then turn the heating on
-    TargetTemp = ManOverrideTemp; // Set the target temperature to the manual overide temperature
-    ControlHeating();             // Control the heating as normal
+    //TargetTemp = ManOverrideTemp; // Set the target temperature to the manual overide temperature
+    //ControlHeating();             // Control the heating as normal
   }
   else
   {
@@ -184,7 +180,9 @@ void CheckTimerEvent()
 
 boolean setupTime()
 {
-  Serial.println(__func__);
+    #ifdef DEBUG_FUNC
+      Serial.println(__func__);
+    #endif
   configTime(0, 0, "time.nist.gov"); // (gmtOffset_sec, daylightOffset_sec, ntpServer)
   setenv("TZ", timezone, 1);         // setenv()adds "TZ" variable to the environment, only used if set to 1, 0 means no change
   tzset();
