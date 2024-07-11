@@ -8,10 +8,7 @@
 #include "relay.h"
 #include "Pid.h"
 
-
-
 bool fan = false;
-
 
 class ButtonSwitch : public VirtButton
 {
@@ -152,9 +149,6 @@ public:
 
   bool tickRaw()
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
@@ -308,11 +302,22 @@ private:
 
   Relay *relay = NULL;
 };
+
+
+
 #ifdef BTN_S
 
-ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW);
+ButtonSwitch btn1(BTN1_PIN, LED_PIN1, INPUT_PULLUP, LOW); //todo external
 ButtonSwitch btn2(BTN2_PIN, LED_PIN2, INPUT_PULLUP, LOW);
 ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
+
+#define ISR_BTN_MODE FALLING 
+
+IRAM_ATTR void isrBtn() {
+  btn1.tickRaw();
+  btn2.tickRaw();
+  btn3.tickRaw();
+}
 
 
 void callbackBtn1()
@@ -355,8 +360,11 @@ void btnsSetup()
   #endif
   Serial.println(__FILE__);
 
-  btnSwitch.EnWork();
+  attachInterrupt(digitalPinToInterrupt(BTN1_PIN), isrBtn, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(BTN2_PIN), isrBtn, ISR_BTN_MODE);
+  attachInterrupt(digitalPinToInterrupt(BTN3_PIN), isrBtn, ISR_BTN_MODE);
   
+  btnSwitch.EnWork();
   btn1.attachCallback(callbackBtn1);
   btn2.attachCallback(callbackBtn2);
 
@@ -385,22 +393,18 @@ void btnsLoop()
       menu.curr = FAN;
       FLAG_LCD = true;
     }
-
+    btn1.tick();
+    btn2.tick();
   }else{
     #ifdef DEBUG_FUNC
       Serial.println(__func__);
     #endif
     btn1.DeWork();
     btn2.DeWork();
-
-
   }
 
-
-  btn1.tick();
-  btn2.tick();
   btnSwitch.tickSwitch();
-
+  
 }
 #endif
 
