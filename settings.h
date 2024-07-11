@@ -31,7 +31,6 @@
 #include <DS18B20Events.h>
 #include <MenuLib.h>
 #include "pins.h"
-#include "secrets.h"
 #include "mDef.h"
 // #include "flags.h"
 
@@ -96,12 +95,7 @@ bool CHECK_UPDATE_MENU = false;
 bool FLAG_LCD = false;
 
 //################ VARIABLES ################
-char* ssid       = SECRET_SSID;             // WiFi SSID     replace with details for your local network
-char* password   = SECRET_PASS;         // WiFi Password replace with details for your local network
 
-unsigned long myChannelNumber = SECRET_CH_ID;             
-const char *  myWriteAPIKey   = SECRET_WRITE_APIKEY;  
-String apiKey = SECRET_WRITE_APIKEY;
 
 int connections = 0;
 
@@ -136,7 +130,6 @@ int    UnixTime             = 0;          // Time now (when updated) of the curr
 
 char* timeNow; 
 
-AsyncWebServer server(WENPAGE_PORT);
 
 uint32_t lastConnectionTime =0;
 
