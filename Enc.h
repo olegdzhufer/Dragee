@@ -46,10 +46,7 @@ bool flagEnc = false;
 
 void read_encoder(){
 
-  int currtime;
-  if(!currtime)currtime = 0;
-  if( millis() > currtime + 10){
-    currtime += millis();
+ 
     
     en.tick();
 
@@ -91,9 +88,9 @@ void read_encoder(){
     }
      else if (en.press())  
     {
-
+      Serial.println("press");
     }
-  }
+  
 
 
 
