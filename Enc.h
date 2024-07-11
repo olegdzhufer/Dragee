@@ -20,19 +20,24 @@
 #define D_println(...)
 #endif
 
-
-
-
 #ifdef ENC_S
-  EncButton en(CLK, DT, SW);
-  
+
+EncButton en(CLK, DT, SW);
+
+IRAM_ATTR void isrEnc() {
+  en.tickISR();
+}
+
 bool updateTemp = false;
-
-
-
 uint8_t enc_pre;
 
 void encoder_setup(){
+
+  attachInterrupt(digitalPinToInterrupt(ENC_R_PIN), isrEnc, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENC_L_PIN), isrEnc, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENC_BTN_PIN), isrEnc, FALLING);
+  eb.setEncISR(true);
+  
   en.setEncType(EB_STEP4_LOW);
   en.setBtnLevel(HIGH);
 }
@@ -43,11 +48,7 @@ int getResult(){
 
 bool flagEnc = false;
 
-
 void read_encoder(){
-
- 
-    
     en.tick();
 
     if(en.leftH()){
@@ -77,7 +78,6 @@ void read_encoder(){
         menu.lineUpdate(&menu, TempSetC);
       }
     }
-
     else if (en.left()) {
         enc_pre = 0x03;
         Serial.println("3");
@@ -90,10 +90,6 @@ void read_encoder(){
     {
       Serial.println("press");
     }
-  
-
-
-
 }
 
 #endif
