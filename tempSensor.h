@@ -8,12 +8,12 @@
   class TermSensor{
     private:
       DallasTemperature* sensor;
-      uint8_t period;
+      uint32_t period;
       float temp;
-      uint16_t TimerBuffer = 0;
+      uint32_t TimerBuffer = 0;
       void (*callbackOnChange)() = NULL;
 
-      uint8_t flags = 0;
+      uint16_t flags = 0;
 
     
     public:
@@ -65,7 +65,7 @@
           this->period = time* 1000;
         }
       }
-      void setPeriodInt(uint8_t time){
+      void setPeriodInt(uint32_t time){
         if(time != 0){
           this->period = time;
         }
