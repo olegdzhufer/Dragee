@@ -15,6 +15,7 @@ class SwitchButton : public VirtButton
 {
 private:
   uint8_t btnPin;
+  uint8_t TimBufer;
 
 public:
   BTN_PRESS_t type = BTN_TYPE;
@@ -33,7 +34,7 @@ public:
   }
 
 
-  void init(uint8_t btnPin, BTN_PRESS_t pressType, uint8_t btnMode = INPUT, uint8_t btnLevel = LOW)
+  void init(uint8_t btnPin, BTN_PRESS_t pressType, uint8_t btnMode = INPUT, uint8_t btnLevel = HIGH)
   {
     this->btnPin = btnPin;
     EB_mode(btnPin, btnMode);
@@ -84,7 +85,9 @@ public:
     uint16_t btnState = VirtButton::action();
     if (type == SWITCH_TYPE)
     {
-          DEBUG_PRINT("Action for type %d", (int)type);
+      if(type && (int)type){
+        DEBUG_PRINT("Action for type %d", (int)type);
+      }
 
       switch (btnState)
       {
