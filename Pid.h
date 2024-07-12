@@ -103,6 +103,7 @@ class simpPid{
       this->target = target;
       this->pin = pin;
     }
+    
     void PidActivate(){
       this->work = true;
     }

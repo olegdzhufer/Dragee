@@ -48,43 +48,50 @@ int getResult(){
 
 bool flagEnc = false;
 
+
+void MinusTemp(){
+  if(menu.curr == Heat && TargetTemp > MIN_TEMP_HEAT){
+    updateTemp = true;
+    TargetTemp -= 0.5;
+    TempSetH->val->setfloat(TempSetH->val, TargetTemp);
+    menu.lineUpdate(&menu, TempSetH);
+  }else if(menu.curr == Cooling && FrostTemp > MIN_TEMP_COOL){
+    updateTemp = true;
+    FrostTemp -= 0.5;
+    TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+    menu.lineUpdate(&menu, TempSetC);
+  }
+}
+
+void PlusTemp(){
+  if(menu.curr == Heat && TargetTemp < MAX_TEMP_HEAT){
+    updateTemp = true;
+    TargetTemp += 0.5;
+    Serial.println(TargetTemp);
+    TempSetH->val->setfloat(TempSetH->val, TargetTemp);
+    menu.lineUpdate(&menu, TempSetH);
+  }else if(menu.curr == Cooling && FrostTemp < MAX_TEMP_COOL){
+    updateTemp = true;
+    FrostTemp += 0.5;
+    TempSetC->val->setfloat(TempSetC->val, FrostTemp);
+    menu.lineUpdate(&menu, TempSetC);
+  }
+}
+
 void read_encoder(){
     en.tick();
 
     if(en.leftH()){
-      if(menu.curr == Heat && TargetTemp > MIN_TEMP_HEAT){
-        updateTemp = true;
-        TargetTemp -= 0.5;
-        TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-        menu.lineUpdate(&menu, TempSetH);
-      }else if(menu.curr == Cooling && FrostTemp > MIN_TEMP_COOL){
-        updateTemp = true;
-        FrostTemp -= 0.5;
-        TempSetC->val->setfloat(TempSetC->val, FrostTemp);
-        menu.lineUpdate(&menu, TempSetC);
-      }
+      MinusTemp();
     }
     else if(en.rightH()){
-      if(menu.curr == Heat && TargetTemp < MAX_TEMP_HEAT){
-        updateTemp = true;
-        TargetTemp += 0.5;
-        Serial.println(TargetTemp);
-        TempSetH->val->setfloat(TempSetH->val, TargetTemp);
-        menu.lineUpdate(&menu, TempSetH);
-      }else if(menu.curr == Cooling && FrostTemp < MAX_TEMP_COOL){
-        updateTemp = true;
-        FrostTemp += 0.5;
-        TempSetC->val->setfloat(TempSetC->val, FrostTemp);
-        menu.lineUpdate(&menu, TempSetC);
-      }
+      PlusTemp();
     }
     else if (en.left()) {
-        enc_pre = 0x03;
-        Serial.println("3");
+      MinusTemp();
     }
     else if(en.right()){
-        enc_pre = 0x04;
-        Serial.println("4");
+      PlusTemp();
     }
      else if (en.press())  
     {
