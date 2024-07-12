@@ -13,7 +13,7 @@ class simpPid{
   private:
     bool work = false;
     float* target;
-    float temp;
+    float* temp;
     uint8_t pin;
     uint16_t onTime = 0;
     uint32_t timerBuffer;
@@ -59,7 +59,8 @@ class simpPid{
       return this->dt;
     }
 
-    // ####### ++, -- Func #################################
+    // ####### (++, --) Func #################################
+
     //############# PLUS ########
     void addToKp(){
       this->kp ++;
@@ -103,7 +104,7 @@ class simpPid{
       this->target = target;
       this->pin = pin;
     }
-    
+
     void PidActivate(){
       this->work = true;
     }
@@ -111,7 +112,7 @@ class simpPid{
       this->work = false;
     }
 
-    void tempNow(float temp){
+    void tempNow(float* temp){
       this->temp = temp;
     }
 
@@ -177,7 +178,7 @@ class simpPid{
 
     private:
       int8_t PIDControler(){
-        float err = *(this->target) - this->temp;
+        float err = *(this->target) - *(this->temp);
         this->integral += err * this->dt;
         float D = (err - this->prevEr) / this->dt;
         this->prevEr = err;

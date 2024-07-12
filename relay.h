@@ -173,7 +173,7 @@ public:
     if(this->state){
       this->pidElement->PidActivate();
       this->pidElement->tickPid();
-    }else if(){
+    }else{
       this->pidElement->PidDeactivate();
       this->relayOff();
     }
