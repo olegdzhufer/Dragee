@@ -88,7 +88,7 @@ void loop()
   #endif
 
   #ifdef ENC_S
-  read_encoder();
+    read_encoder();
   #endif
 
   #ifdef MENU_S
@@ -129,11 +129,9 @@ void AddReadingToSensorData(byte RxdFromID, float Temperature)
   ptr = SensorReadingPointer[RxdFromID];
   sensordata[RxdFromID][ptr].Temp = Temperature;
   ptr++;
-  if (ptr >= SensorReadings)
-  {
+  if (ptr >= SensorReadings){
     p = 0;
-    do
-    {
+    do{
       sensordata[RxdFromID][p].Temp = sensordata[RxdFromID][p + 1].Temp;
       p++;
     } while (p < SensorReadings);

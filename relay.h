@@ -170,14 +170,13 @@ public:
       }
     }
 
-    // if(this->state && this->pidElement){
-      
-    //   this->pidElement->PidActivate();
-    //   this->pidElement->tickPid();
-    // }else{
-    //   this->pidElement->PidDeactivate();
-    //   this->relayOff();
-    // }
+    if(this->state && this->pidElement){
+      this->pidElement->PidActivate();
+      this->pidElement->tickPid();
+    }else if(this->pidElement){
+      this->pidElement->PidDeactivate();
+      this->relayOff();
+    }
   }
 
   void relayOff(){
@@ -225,6 +224,9 @@ void relaySetup()
   relayHeat.setLine(TempSetH, &TargetTemp);
 
   relayFan.setMain(true);
+
+  relayHeat.setPid(&heatPid);
+  relayCool.setPid(&coolPid);
 }
 
 void relayTick()
