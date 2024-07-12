@@ -19,12 +19,13 @@ class simpPid{
     uint16_t onTime = 0;
     uint32_t timerBuffer;
     uint32_t timerBufSec;
+    bool tickFlag = false;
 
     PidType type;
 
 
     float integral = 0 , prevEr = 0;
-    float kp = 1.5, ki = 0.3, kd = 1.5, dt = 10;
+    float kp = 1.5, ki = 0.3, kd = 1.5, dt = 1;
 
   public:
 
@@ -121,7 +122,6 @@ class simpPid{
     }
     void PidDeactivate(){
       this->work = false;
-       Serial.println("Mode");
     }
 
 
@@ -139,8 +139,9 @@ class simpPid{
     void tickPIDUp(){
       if(this->work){
         this->timeCounter();
-        if(this->onTime && this->timerBufSec){
+        if(this->onTime && this->timerBufSec && this->tickFlag){
           this->timerBufSec = millis();
+          this->tickFlag = false;
         }
 
         if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
@@ -157,17 +158,24 @@ class simpPid{
     void tickPIDDown(){
       if(this->work){
         this->timeCounter();
-        if(this->onTime && this->timerBufSec){
-          this->timerBufSec = millis();
-        }
+        // if(this->onTime && this->timerBufSec && this->tickFlag){
+        //   this->timerBufSec = millis();
+        //   this->tickFlag = false;
+        //   Serial.print("TIME");
+        //   Serial.println(this->onTime);
+        //   Serial.println("#####################################");
+        // }
 
-        if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
-          digitalWrite(this->pin, LOW);
-        }else{
-          digitalWrite(this->pin, HIGH);
-          this->onTime = 0;
-          this->timerBufSec = 0;
-        }
+        // if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
+        //   digitalWrite(this->pin, LOW);
+        //   Serial.println("LOW");
+        // }else{
+        //   digitalWrite(this->pin, HIGH);
+        //   this->onTime = 0;
+        //   this->timerBufSec = 0;
+        //   Serial.println("HIGH");
+          
+        // }
 
       }
     }
@@ -212,6 +220,13 @@ class simpPid{
           }else{
             val = ((val - fmod(val, 1.27)) / 1.27) * 10;
             this->onTime = (this->dt * val);
+
+            Serial.println("################################");
+            Serial.println(this->dt);
+            Serial.println("-----------------------");
+            Serial.println(this->onTime);
+            this->tickFlag = true;
+            Serial.println("################################");
           }
         }
       }
