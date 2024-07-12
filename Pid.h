@@ -3,6 +3,11 @@
 #include "settings.h"
 #include "relay.h"
 
+typedef enum PidType{
+  LOW_MODE,
+  HIGH_MODE
+}PidType;
+
 class simpPid{
 
   private:
@@ -10,9 +15,11 @@ class simpPid{
     float* target;
     float temp;
     uint8_t pin;
-    uint8_t onTime = 0;
+    uint16_t onTime = 0;
     uint32_t timerBuffer;
     uint32_t timerBufSec;
+
+    PidType type;
 
 
     float integral = 0 , prevEr = 0;
@@ -80,6 +87,15 @@ class simpPid{
       this->dt --;
     }
 
+    //############ MODE ############
+
+    void SetUpMode(){
+      this->type = HIGH_MODE;
+    }
+    void SetDownMode(){
+      this->type = LOW_MODE;
+    }
+
   public:
     simpPid(){}
 
@@ -98,6 +114,13 @@ class simpPid{
       this->temp = temp;
     }
 
+    void tickPid(){
+      if(this->type == LOW_MODE){
+        this->tickPIDDown();
+      }else if(this->type == HIGH_MODE){
+          this->tickPIDUp();
+      }
+    }
 
     void tickPIDUp(){
       if(this->work){
@@ -182,50 +205,14 @@ simpPid heatPid(&TargetTemp, HEAT_PIN);
 simpPid coolPid(&FrostTemp,  COOL_PIN);
 
 void setupPID(){
-
+  heatPid.SetUpMode();
+  coolPid.SetDownMode();
 }
 
 void loopPID(){
-
-
-
-
-  if(Heat->footer != NULL){
-    heatPid.PidActivate();
-    heatPid.tempNow(Temperature);
-    heatPid.tickPIDUp();
-  }
-  else{
-    heatPid.PidDeactivate();
-    relayHeat.relayOff();
-  }
-
-
-  if(Cooling->footer != NULL){
-    coolPid.PidActivate();
-  coolPid.tempNow(Temperature);
-  coolPid.tickPIDDown();
-  }
-  else{
-    coolPid.PidDeactivate();
-    relayCool.relayOff();
-  }
   
 }
 
-
-class PIDInterface{
-
-  private:
-    simpPid* pid;
-
-  public:
-    PIDInterface(){
-
-    }
-
-
-};
 
 
 

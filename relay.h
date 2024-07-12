@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "menu.h"
 #include "countTimer.h"
+#include "Pid.h"
 
 class Relay
 {
@@ -13,6 +14,7 @@ private:
   uint8_t state = false;
   uint8_t changeFlag = false;
   Line* CurrLine = NULL;
+  simpPid *pidElement;
   float* tempR = NULL;
   bool statusTemp = false;
 
@@ -63,6 +65,12 @@ public:
     temp = NULL;
     currLine = NULL;
     this->statusTemp = false;
+  }
+
+  void setPid(simpPid* pid){
+    if(pid){
+      this->pidElement = pid;
+    }
   }
 
   bool attachScreen(Screen* screen)
@@ -124,7 +132,6 @@ public:
 
   void tick()
   {
-
     if (allowed || isMain)
     {
     #ifdef DEBUG_FUNC
@@ -162,6 +169,14 @@ public:
         digitalWrite(pin, state);
       }
     }
+
+    if(this->state){
+      this->pidElement->PidActivate();
+      this->pidElement->tickPid();
+    }else if(){
+      this->pidElement->PidDeactivate();
+      this->relayOff();
+    }
   }
 
   void relayOff(){
@@ -170,6 +185,7 @@ public:
     #endif
     temp = NULL;
     currLine = NULL;
+    state = LOW;
     digitalWrite(pin, state);
   }
   void relayOn(){
@@ -182,9 +198,7 @@ public:
   }
 
 
-  ~Relay()
-  {
-
+  ~Relay(){
     this->screen = NULL;
   }
 };
