@@ -73,6 +73,8 @@ void setup()
   timerCool.onTimer();
   timerHeat.onTimer();
 
+  heatPid.PidActivate();
+
 }
 
 void loop()
@@ -97,32 +99,7 @@ void loop()
     timer_loop();
   #endif
 
-
-
   #ifdef TEMP_S
-    // if ((millis() - lastTimerSwitchCheck) > timerCheckDuration)
-    // {
-    //   lastTimerSwitchCheck = millis(); // Reset time
-    //   // Temperature = readSensorComplete();                   
-
-    //   //httpRequest(Temperature);
-      
-    //   UpdateLocalTime();               // Updates Time UnixTime to 'now'
-    //   CheckTimerEvent();               // Check for schedules actuated
-    // }
-
-    // if ((millis() - LastReadingCheck) > (lastReadingDuration * 60 * 100))//1000
-    // {
-    //   LastReadingCheck = millis(); // Update reading record every ~n-mins e.g. 60,000uS = 1-min
-    //   AssignSensorReadingsToArray();
-    // }
-
-    // if (millis() - lastConnectionTime > 10000) {
-    //   lastConnectionTime = millis();
-    //   Temperature = readSensor();
-    //   // thingSpeakSend(Temperature);
-    // }
-
     sensorTempLoop();
   #endif
 

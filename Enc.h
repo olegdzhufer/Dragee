@@ -93,8 +93,7 @@ void read_encoder(){
     else if(en.right()){
       PlusTemp();
     }
-     else if (en.press())  
-    {
+     else if (en.press()){
       Serial.println("press");
     }
 }

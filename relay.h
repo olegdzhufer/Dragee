@@ -170,13 +170,14 @@ public:
       }
     }
 
-    if(this->state){
-      this->pidElement->PidActivate();
-      this->pidElement->tickPid();
-    }else{
-      this->pidElement->PidDeactivate();
-      this->relayOff();
-    }
+    // if(this->state && this->pidElement){
+      
+    //   this->pidElement->PidActivate();
+    //   this->pidElement->tickPid();
+    // }else{
+    //   this->pidElement->PidDeactivate();
+    //   this->relayOff();
+    // }
   }
 
   void relayOff(){

@@ -1,19 +1,20 @@
 #ifndef PID_H
 #define PID_H
 #include "settings.h"
-#include "relay.h"
 
 typedef enum PidType{
   LOW_MODE,
   HIGH_MODE
 }PidType;
 
+static uint32_t bufdeb = 0;
+
 class simpPid{
 
   private:
     bool work = false;
     float* target;
-    float* temp;
+    float temp = 0;
     uint8_t pin;
     uint16_t onTime = 0;
     uint32_t timerBuffer;
@@ -23,7 +24,7 @@ class simpPid{
 
 
     float integral = 0 , prevEr = 0;
-    float kp, ki, kd, dt;
+    float kp = 1.5, ki = 0.3, kd = 1.5, dt = 10;
 
   public:
 
@@ -97,6 +98,16 @@ class simpPid{
       this->type = LOW_MODE;
     }
 
+    void setTemps(float temp){
+      this->temp = temp;
+    }
+
+    void setTarget(float* target){
+      if(target){
+        this->target = target;
+      }
+    }
+
   public:
     simpPid(){}
 
@@ -110,17 +121,18 @@ class simpPid{
     }
     void PidDeactivate(){
       this->work = false;
+       Serial.println("Mode");
     }
 
-    void tempNow(float* temp){
-      this->temp = temp;
-    }
+
 
     void tickPid(){
-      if(this->type == LOW_MODE){
-        this->tickPIDDown();
-      }else if(this->type == HIGH_MODE){
+      if(1){
+        if(this->type == LOW_MODE){
+          this->tickPIDDown();
+        }else if(this->type == HIGH_MODE){
           this->tickPIDUp();
+        }
       }
     }
 
@@ -161,10 +173,6 @@ class simpPid{
     }
 
 
-    void setTemp(float* target){
-      this->target = target;
-    }
-
     void offPid(){
       this->work = false;
       digitalWrite(this->pin, LOW);
@@ -178,12 +186,22 @@ class simpPid{
 
     private:
       int8_t PIDControler(){
-        float err = *(this->target) - *(this->temp);
+        float err = *(this->target) - this->temp;
+
         this->integral += err * this->dt;
         float D = (err - this->prevEr) / this->dt;
+
         this->prevEr = err;
-        return (err * this->kp + this->integral* this->ki + D * this->kd);
+        double resuslt = (err * this->kp + this->integral* this->ki + D * this->kd);
+
+
+        uint8_t res = (int)(resuslt/2);
+
+        
+        return res;
       }
+
+      
 
       void timeCounter(){
         if(this->timerBuffer + this->dt*1000 < millis()){
@@ -195,12 +213,8 @@ class simpPid{
             val = ((val - fmod(val, 1.27)) / 1.27) * 10;
             this->onTime = (this->dt * val);
           }
-
         }
       }
-
-      
-
 };
 
 simpPid heatPid(&TargetTemp, HEAT_PIN);
@@ -209,10 +223,12 @@ simpPid coolPid(&FrostTemp,  COOL_PIN);
 void setupPID(){
   heatPid.SetUpMode();
   coolPid.SetDownMode();
+  heatPid.setTemps(Temperature);
+  coolPid.setTemps(Temperature);
 }
 
 void loopPID(){
-  
+  heatPid.tickPid();
 }
 
 
