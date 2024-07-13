@@ -3,26 +3,7 @@
 
 
 //#########################_WORK_PARAM_#################
-// Debug mod
 
-// #define DEBUG
-// #define DEBUG_FUNC
-
-//Section
-
-#define ENC_S
-#define BTN_S
-#define RELAY_S
-#define TIMER_S
-#define WIFI_S
-#define MENU_S
-#define TEMP_S
-
-#define FILE_S
-
-#ifdef WIFI_S
-  #define WEB_S
-#endif
 
 
 //######################################################

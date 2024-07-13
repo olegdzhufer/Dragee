@@ -4,8 +4,6 @@
 #include <microDS3231.h>
 #include "settings.h"
 
-
-
 class MyRTControler{
   private:
     MicroDS3231* myRTC;
