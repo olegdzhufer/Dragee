@@ -3,26 +3,7 @@
 
 
 //#########################_WORK_PARAM_#################
-// Debug mod
 
-// #define DEBUG
-// #define DEBUG_FUNC
-
-//Section
-
-#define ENC_S
-#define BTN_S
-#define RELAY_S
-#define TIMER_S
-#define WIFI_S
-#define MENU_S
-#define TEMP_S
-
-#define FILE_S
-
-#ifdef WIFI_S
-  #define WEB_S
-#endif
 
 
 //######################################################
@@ -102,7 +83,7 @@ int connections = 0;
 // System values
 String sitetitle            = "Dragee Machine IoT";
 String Year                 = "2024";     // For the footer line
-float  Temperature          = 0.0;          // Variable for the current temperature
+float  Temperature          = 0.0;        // Variable for the current temperature
 float  TargetTemp           = 31;         // Default thermostat value for set temperature
 float  FrostTemp            = 0;          // Default thermostat value for frost protection temperature
 float  ManOverrideTemp      = 21;         // Manual override temperature

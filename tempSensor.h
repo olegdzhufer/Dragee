@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "menu.h"
+#include "Pid.h"
 #include "settings.h"
 
   class TermSensor{
@@ -151,6 +152,8 @@
         TempCurF->val->setfloat(TempCurF->val, Temperature);
         menu.lineUpdate(&menu, TempCurF);
       }
+      heatPid.setTemps(Temperature);
+      coolPid.setTemps(Temperature);
     }
 
 
