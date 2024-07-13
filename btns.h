@@ -316,7 +316,7 @@ ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 IRAM_ATTR void isrBtn() {
   btn1.tickRaw();
   btn2.tickRaw();
-  btn3.tickRaw();
+  btnSwitch.tickRaw();
 }
 
 
@@ -329,7 +329,6 @@ void callbackBtn1()
 
   case EB_CLICK:
     btn2.OffMode();
-    
     break;
 
   default:
@@ -360,9 +359,9 @@ void btnsSetup()
   #endif
   Serial.println(__FILE__);
 
-  attachInterrupt(digitalPinToInterrupt(BTN1_PIN), isrBtn, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(BTN3_PIN), isrBtn, CHANGE);
   attachInterrupt(digitalPinToInterrupt(BTN2_PIN), isrBtn, ISR_BTN_MODE);
-  attachInterrupt(digitalPinToInterrupt(BTN3_PIN), isrBtn, ISR_BTN_MODE);
+  attachInterrupt(digitalPinToInterrupt(BTN1_PIN), isrBtn, ISR_BTN_MODE);
   
   btnSwitch.EnWork();
   btn1.attachCallback(callbackBtn1);
