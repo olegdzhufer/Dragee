@@ -94,7 +94,7 @@ public:
   }
 
   void ResetK(){
-    this->pidElement
+    // this->pidElement
   }
 
   //#########################
@@ -216,7 +216,6 @@ public:
     if(this->state && this->pidElement){
       this->tempLocal = (double)Temperature;
       this->target = (double)(*(this->tempR));
-
       this->PidRelayTick();
     }
   }
@@ -250,8 +249,9 @@ Relay relayHeat(HEAT_PIN, LOW, Heat);
 Relay relayCool(COOL_PIN, LOW, Cooling);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
-PID pidHeat(&relayHeat.tempLocal, &relayHeat.Output, &relayHeat.target, Kp, Ki, Kd, DIRECT);
 PID pidCool(&relayCool.tempLocal, &relayCool.Output, &relayCool.target, Kp, Ki, Kd, DIRECT);
+PID pidHeat(&relayHeat.tempLocal, &relayHeat.Output, &relayHeat.target, Kp, Ki, Kd, DIRECT);
+
 
 void relaySetup()
 {
@@ -267,6 +267,8 @@ void relaySetup()
   relayFan.attachScreen(FAN);
 
   relayHeat.setLine(TempSetH, &TargetTemp);
+  relayCool.setLine(TempSetC, &FrostTemp);
+  
   relayFan.setMain(true);
 
   relayHeat.setPID(&pidHeat);
@@ -274,6 +276,7 @@ void relaySetup()
 
   relayHeat.PIDBegin();
   relayCool.PIDBegin();
+
   relayHeat.modePid = PidMode::HeatMode;
   relayCool.modePid = PidMode::CoolMode;
 

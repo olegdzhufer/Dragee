@@ -80,7 +80,7 @@ void PlusTemp(){
     FrostTemp += 0.5;
     TempSetC->val->setfloat(TempSetC->val, FrostTemp);
     menu.lineUpdate(&menu, TempSetC);
-  }else
+  }
 }
 
 
@@ -127,78 +127,78 @@ void settingTick(){
   }
 }
 
-void updView(double value){
-  if(menu.curr == Setting){
-    menu.curr->current->val->setfloat(menu.curr->current->val, (float)value);
-    menu.lineUpdate(&menu, menu.curr->current);
-  }
-}
+// void updView(double value){
+//   if(menu.curr == Setting){
+//     menu.curr->current->val->setfloat(menu.curr->current->val, (float)value);
+//     menu.lineUpdate(&menu, menu.curr->current);
+//   }
+// }
 
-void switchNextSetting(){
-  if(menu.curr == Setting){
-    menu.nextLine(&menu);
-    FLAG_LCD = true;
-  }
-}
+// void switchNextSetting(){
+//   if(menu.curr == Setting){
+//     menu.nextLine(&menu);
+//     FLAG_LCD = true;
+//   }
+// }
 
-void switchPrevSetting(){
-  if(menu.curr == Setting){
-    menu.prevLine(&menu);
-    FLAG_LCD = true;
-  }
-}
-void switchLeftSetting(){
-  if(menu.curr == Setting){
-    switch (menu.curr->current)
-    {
-    case KpLine:
-      Kp -= 0.1;
-      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
-      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
-      updView(Kp);
-      break;
+// void switchPrevSetting(){
+//   if(menu.curr == Setting){
+//     menu.prevLine(&menu);
+//     FLAG_LCD = true;
+//   }
+// }
+// void switchLeftSetting(){
+//   if(menu.curr == Setting){
+//     switch (menu.curr->current)
+//     {
+//     case KpLine:
+//       Kp -= 0.1;
+//       relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+//       relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+//       updView(Kp);
+//       break;
 
-    case KiLine:
-      Ki -= 0.1;
-      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
-      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
-      updView(Ki);
-      break;
+//     case KiLine:
+//       Ki -= 0.1;
+//       relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+//       relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+//       updView(Ki);
+//       break;
 
-    case KdLine:
-      Kd -= 0.1;
-      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
-      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
-      updView(Kd);
-      break;
+//     case KdLine:
+//       Kd -= 0.1;
+//       relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+//       relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+//       updView(Kd);
+//       break;
     
-    default:
-      break;
-    }
-  }
-}
-void prevLineSetting(){
-  {
-  if(menu.curr == Setting){
-    Line* sel = menu.curr->current;
-    if(sel == KpLine){
-      Kp += 0.1;
-      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
-      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
-      updView(Kp);
-    }else if(sel == KpLine){
-      Kp += 0.1;
-      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
-      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
-      updView(Kp);
+//     default:
+//       break;
+//     }
+//   }
+// }
+// void prevLineSetting(){
+//   {
+//   if(menu.curr == Setting){
+//     Line* sel = menu.curr->current;
+//     if(sel == KpLine){
+//       Kp += 0.1;
+//       relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+//       relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+//       updView(Kp);
+//     }else if(sel == KpLine){
+//       Kp += 0.1;
+//       relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+//       relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+//       updView(Kp);
     
     
-    default:
-      break;
-    }
-  }
-}
-}
+//     default:
+//       break;
+//     }
+//   }
+// }
+//}
 
 #endif
 
