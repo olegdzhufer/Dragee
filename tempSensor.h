@@ -152,8 +152,6 @@
         TempCurF->val->setfloat(TempCurF->val, Temperature);
         menu.lineUpdate(&menu, TempCurF);
       }
-      heatPid.setTemps(Temperature);
-      coolPid.setTemps(Temperature);
     }
 
 

@@ -232,18 +232,18 @@ class simpPid{
       }
 };
 
-simpPid heatPid(&TargetTemp, HEAT_PIN);
-simpPid coolPid(&FrostTemp,  COOL_PIN);
+// simpPid heatPid(&TargetTemp, HEAT_PIN);
+// simpPid coolPid(&FrostTemp,  COOL_PIN);
 
 void setupPID(){
-  heatPid.SetUpMode();
-  coolPid.SetDownMode();
-  heatPid.setTemps(Temperature);
-  coolPid.setTemps(Temperature);
+  // heatPid.SetUpMode();
+  // coolPid.SetDownMode();
+  // heatPid.setTemps(Temperature);
+  // coolPid.setTemps(Temperature);
 }
 
 void loopPID(){
-  heatPid.tickPid();
+  // heatPid.tickPid();
 }
 
 

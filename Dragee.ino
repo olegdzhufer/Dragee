@@ -73,8 +73,6 @@ void setup()
   timerCool.onTimer();
   timerHeat.onTimer();
 
-  heatPid.PidActivate();
-
 }
 
 void loop()

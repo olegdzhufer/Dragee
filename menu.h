@@ -13,7 +13,7 @@
 Menu menu;
 
 Screen *Heat, *Cooling, *FAN, *STOP, *Setting, *PIDScreen;
-Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHeat, *footerCool, *PIDLine;
+Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHeat, *footerCool, *PIDLine, *KpLine, *KiLine, *KdLine;
 
   #ifdef MENU_S
 
@@ -44,6 +44,7 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHe
       Cooling = menu.addScreen_ptr(&menu, (char*)CoolingName);
       FAN = menu.addScreen_ptr(&menu, (char*)Fan);
       STOP = menu.addScreen_ptr(&menu, (char*)Stop);
+      Setting = menu.addScreen_ptr(&menu,(char*)SettingName);
 
       if (Heat) {
         TempSetH = Heat->newLine_ptr(Heat, (char*)TSet, (char*)TempSet, NULL);
@@ -77,6 +78,19 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHe
         return FAILURE;
       }
 
+      if (Setting){
+        KpLine = Setting->newLine_ptr(Setting, (char*)kpName, (char*)kpDesc, NULL);
+        KpLine->val->setfloat(KpLine->val, (float)Kp);
+
+        KiLine = Setting->newLine_ptr(Setting, (char*)kiName, (char*)kiDesc, NULL);
+        KiLine->val->setfloat(KiLine->val, (float)Ki);
+
+        KdLine = Setting->newLine_ptr(Setting, (char*)kdName, (char*)kdDesc, NULL);
+        KdLine->val->setfloat(KdLine->val, (float)Kd);
+      }else {
+        return FAILURE;
+      }
+
 
 
       footerHeat =  initLine("HeatFooter", " ", NULL);
@@ -84,6 +98,9 @@ Line *TempSetH, *TempCurH, *TempSetC, *TempCurC, *TempCurF, *TempCurS, *footerHe
 
       footerHeat->val->setChar(footerHeat->val, " ");
       footerCool->val->setChar(footerCool->val, " ");
+
+
+      menu.curr = STOP;
 
       initScreen();
       menu.lcd->clear();

@@ -5,7 +5,12 @@
 #include "settings.h"
 #include "menu.h"
 #include "countTimer.h"
-#include "Pid.h"
+#include "PID_v2.h"
+
+typedef enum PidMode{
+  HeatMode,
+  CoolMode
+} PidMode;
 
 class Relay
 {
@@ -14,9 +19,16 @@ private:
   uint8_t state = false;
   uint8_t changeFlag = false;
   Line* CurrLine = NULL;
-  simpPid *pidElement;
+  
   float* tempR = NULL;
   bool statusTemp = false;
+
+  /* PID PARAM*/
+public:
+  uint32_t windowStartTime, WindowSize = 2000;
+  double Output, tempLocal, target;
+  PidMode modePid;
+  PID *pidElement;
 
 public:
   bool allowed = true;
@@ -54,6 +66,12 @@ public:
     this->tempR = temp;
   }
 
+  void setPID(PID* pid){
+    if(pid){
+      this->pidElement = pid;
+    }
+  }
+
   void getLine(){
     if(this->CurrLine && this->tempR){
       temp = this->tempR;
@@ -67,11 +85,19 @@ public:
     this->statusTemp = false;
   }
 
-  void setPid(simpPid* pid){
-    if(pid){
-      this->pidElement = pid;
+  void PIDBegin(){
+    if(this->pidElement){
+      windowStartTime = millis();
+      this->pidElement->SetOutputLimits(0, this->WindowSize);
+      this->pidElement->SetMode(AUTOMATIC);
     }
   }
+
+  void ResetK(){
+    this->pidElement
+  }
+
+  //#########################
 
   bool attachScreen(Screen* screen)
   {
@@ -130,6 +156,23 @@ public:
     return this->state;
   }
 
+  void PidRelayTick(){
+    if(this->pidElement){
+      this->pidElement->Compute();
+      if (millis() - this->windowStartTime > this->WindowSize){
+        this->windowStartTime += this->WindowSize;
+      }
+      if (this->Output < millis() - this->windowStartTime){
+        if(this->modePid == HeatMode) digitalWrite(this->pin, HIGH);
+        else digitalWrite(this->pin, LOW);
+      } 
+      else {
+        if(this->modePid == HeatMode) digitalWrite(this->pin, LOW);
+        else digitalWrite(this->pin, HIGH);
+      }
+    }
+  }
+
   void tick()
   {
     if (allowed || isMain)
@@ -169,13 +212,12 @@ public:
         digitalWrite(pin, state);
       }
     }
-
+    
     if(this->state && this->pidElement){
-      this->pidElement->PidActivate();
-      this->pidElement->tickPid();
-    }else if(this->pidElement){
-      this->pidElement->PidDeactivate();
-      this->relayOff();
+      this->tempLocal = (double)Temperature;
+      this->target = (double)(*(this->tempR));
+
+      this->PidRelayTick();
     }
   }
 
@@ -208,6 +250,9 @@ Relay relayHeat(HEAT_PIN, LOW, Heat);
 Relay relayCool(COOL_PIN, LOW, Cooling);
 Relay relayFan(FAN_PIN, LOW, FAN);
 
+PID pidHeat(&relayHeat.tempLocal, &relayHeat.Output, &relayHeat.target, Kp, Ki, Kd, DIRECT);
+PID pidCool(&relayCool.tempLocal, &relayCool.Output, &relayCool.target, Kp, Ki, Kd, DIRECT);
+
 void relaySetup()
 {
     #ifdef DEBUG_FUNC
@@ -222,11 +267,16 @@ void relaySetup()
   relayFan.attachScreen(FAN);
 
   relayHeat.setLine(TempSetH, &TargetTemp);
-
   relayFan.setMain(true);
 
-  relayHeat.setPid(&heatPid);
-  relayCool.setPid(&coolPid);
+  relayHeat.setPID(&pidHeat);
+  relayCool.setPID(&pidCool);
+
+  relayHeat.PIDBegin();
+  relayCool.PIDBegin();
+  relayHeat.modePid = PidMode::HeatMode;
+  relayCool.modePid = PidMode::CoolMode;
+
 }
 
 void relayTick()

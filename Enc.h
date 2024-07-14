@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "pins.h"
 #include "menu.h"
+#include "relay.h"
 
 
 #ifdef DEBUG
@@ -23,6 +24,10 @@
 #ifdef ENC_S
 
 EncButton en(CLK, DT, SW);
+uint8_t clickVal = 0;
+uint32_t buferClick = 0;
+bool settingStatus = false;
+
 
 IRAM_ATTR void isrEnc() {
   en.tickISR();
@@ -75,8 +80,17 @@ void PlusTemp(){
     FrostTemp += 0.5;
     TempSetC->val->setfloat(TempSetC->val, FrostTemp);
     menu.lineUpdate(&menu, TempSetC);
-  }
+  }else
 }
+
+
+void switchLeftSetting();
+void switchRighSetting();
+
+void nextLineSetting();
+void prevLineSetting();
+
+void settingTick();
 
 void read_encoder(){
     en.tick();
@@ -94,8 +108,96 @@ void read_encoder(){
       PlusTemp();
     }
      else if (en.press()){
-      Serial.println("press");
+      // if(clickVal >= 5){
+      //   settingStatus = !settingStatus;
+      // }
+
+      // if(millis() - buferClick <= 1000){
+      //   buferClick = millis();
+      //   clickVal += 1;
+      // }else clickVal = 0;
+
+      // settingTick();
     }
+}
+
+void settingTick(){
+  if(settingStatus){
+    menu.curr = Setting;
+  }
+}
+
+void updView(double value){
+  if(menu.curr == Setting){
+    menu.curr->current->val->setfloat(menu.curr->current->val, (float)value);
+    menu.lineUpdate(&menu, menu.curr->current);
+  }
+}
+
+void switchNextSetting(){
+  if(menu.curr == Setting){
+    menu.nextLine(&menu);
+    FLAG_LCD = true;
+  }
+}
+
+void switchPrevSetting(){
+  if(menu.curr == Setting){
+    menu.prevLine(&menu);
+    FLAG_LCD = true;
+  }
+}
+void switchLeftSetting(){
+  if(menu.curr == Setting){
+    switch (menu.curr->current)
+    {
+    case KpLine:
+      Kp -= 0.1;
+      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+      updView(Kp);
+      break;
+
+    case KiLine:
+      Ki -= 0.1;
+      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+      updView(Ki);
+      break;
+
+    case KdLine:
+      Kd -= 0.1;
+      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+      updView(Kd);
+      break;
+    
+    default:
+      break;
+    }
+  }
+}
+void prevLineSetting(){
+  {
+  if(menu.curr == Setting){
+    Line* sel = menu.curr->current;
+    if(sel == KpLine){
+      Kp += 0.1;
+      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+      updView(Kp);
+    }else if(sel == KpLine){
+      Kp += 0.1;
+      relayHeat.pidElement->SetTunings(Kp, Ki, Kd);
+      relayCool.pidElement->SetTunings(Kp, Ki, Kd);
+      updView(Kp);
+    
+    
+    default:
+      break;
+    }
+  }
+}
 }
 
 #endif

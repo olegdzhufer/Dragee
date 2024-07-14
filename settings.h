@@ -30,6 +30,7 @@
 #include <Arduino.h>
 #include <DS18B20Events.h>
 #include <MenuLib.h>
+#include "PID_v2.h"
 #include "pins.h"
 #include "mDef.h"
 // #include "flags.h"
@@ -129,6 +130,8 @@ float  LastTemperature      = 0;          // Last temperature used for rogue rea
 int    UnixTime             = 0;          // Time now (when updated) of the current time
 
 char* timeNow; 
+
+double Kp=2, Ki=5, Kd=1;
 
 
 uint32_t lastConnectionTime =0;
