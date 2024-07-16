@@ -2,7 +2,7 @@
 #define LED_STS_H
 
 #include <Arduino.h>
-#include "../../mDef.h"
+#include "mDef.h"
 
 class LedSts
 {

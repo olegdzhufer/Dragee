@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "../../../mDef.h"
+#include "mDef.h"
 
 
 class VirtTempSensor {
