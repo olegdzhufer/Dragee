@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <EncButton.h>
-#include "mDef.h"
+#include "../../mDef.h"
 
 EncButton eb(CLK, DT, SW);
 

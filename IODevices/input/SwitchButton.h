@@ -3,8 +3,8 @@
 
 
 #include <EncButton.h>
-#include "mDef.h"
-#include "Relay.h"
+#include "../../mDef.h"
+#include "../output/Relay.h"
 
 typedef enum
 {

@@ -9,10 +9,10 @@
 
 #include <pgmspace.h>
 
-#include "pins.h"
-#include "defs.h"
-#include "types.h"
-#include "debugPrint.h"
-#include "sts.h"
+#include "mDef/pins.h"
+#include "mDef/defs.h"
+#include "mDef/types.h"
+#include "mDef/debugPrint.h"
+#include "mDef/sts.h"
 
 #endif

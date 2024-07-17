@@ -5,10 +5,10 @@
 
 
 #include "mDef.h"
-#include "LinkedList.h"
-#include "Relay.h"
-#include "SwitchButton.h"
-#include "Enc.h"
+#include "PID/LinkedList.h"
+#include "IODevices/output/Relay.h"
+#include "IODevices/input/SwitchButton.h"
+#include "IODevices/input/Enc.h"
 
 Relay relayFan(FAN_PIN, LED_PIN1);
   Relay relayHeat(HEAT_PIN, LED_PIN2);
