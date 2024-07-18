@@ -2,222 +2,290 @@
 #define PID_H
 
 #include "../mDef.h"
-#include "../IODevices/output/Relay.h"
+#define DEFAULT_SAMPLE_TIME 100
 
-
-#define MIN_TEMP_HEAT  30
-#define MIN_TEMP_COOL  0
-
-#define MAX_TEMP_HEAT  60
-#define MAX_TEMP_COOL  30
-
-float        Hysteresis     = 0.2;               // Heating Hysteresis default value
-
-class simpPid{
-
-  private:
-    
-    // bool work = false;
-    float* target;
-    // float temp;
-    // uint8_t pin;
-
-
-    uint8_t onTime = 0;
-    uint32_t timerBuffer;
-    uint32_t timerBufSec;
-
-
-    float integral = 0 , prevEr = 0;
-    float kp, ki, kd, dt;
-
-  public:
-
-    //#############SETTER##########################
-    void setKp(float kp){
-      this->kp = kp;
-    }
-    void setKi(float ki){
-      this->ki = ki;
-    }
-    void setKd(float kd){
-      this->kd = kd;
-    }
-    void setDt(float dt){
-      this->dt = dt;
-    }
-
-    //#############GETERS##########################
-
-    float getKp(){
-      return this->kp;
-    }
-
-    float getKi(){
-      return this->ki;
-    }
-
-    float getKd(){
-      return this->kd;
-    }
-
-    float getDt(){
-      return this->dt;
-    }
-
-    // ####### ++, -- Func #################################
-    void addToKp(){
-      this->kp ++;
-    }
-    void addToKi(){
-      this->ki ++;
-    }
-    void addToKd(){
-      this->kd ++;
-    }
-    void addToDt(){
-      this->dt ++;
-    }
-    //############# MINUS #######
-    void SubtractFromKp(){
-      this->kp --;
-    }
-    void SubtractFromKi(){
-      this->ki --;
-    }
-    void SubtractFromKd(){
-      this->kd --;
-    }
-    void SubtractFromDt(){
-      this->dt --;
-    }
-
-  public:
-    simpPid(){}
-
-    simpPid(float* target, uint8_t pin){
-      this->target = target;
-      this->pin = pin;
-    }
-    void PidActivate(){
-      this->work = true;
-    }
-    void PidDeactivate(){
-      this->work = false;
-    }
-
-    void tempNow(float temp){
-      this->temp = temp;
-    }
-
-
-    void tickPIDUp(){
-      if(this->work){
-        this->timeCounter();
-        if(this->onTime && this->timerBufSec){
-          this->timerBufSec = millis();
-        }
-
-        if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
-          digitalWrite(this->pin, HIGH);
-        }else{
-          digitalWrite(this->pin, LOW);
-          this->onTime = 0;
-          this->timerBufSec = 0;
-        }
-
-      }
-    }
-    
-    void tickPIDDown(){
-      if(this->work){
-        this->timeCounter();
-        if(this->onTime && this->timerBufSec){
-          this->timerBufSec = millis();
-        }
-
-        if(this->timerBufSec && this->timerBufSec + this->onTime < millis() ){
-          digitalWrite(this->pin, LOW);
-        }else{
-          digitalWrite(this->pin, HIGH);
-          this->onTime = 0;
-          this->timerBufSec = 0;
-        }
-
-      }
-    }
-
-
-    void setTemp(float* target){
-      this->target = target;
-    }
-
-    void offPid(){
-      this->work = false;
-      digitalWrite(this->pin, LOW);
-      this->integral = 0;
-      this->prevEr = 0;
-    }
-
-    void switchPidMode(){
-      this->work = !work;
-    }
-
-    private:
-      int8_t PIDControler(){
-        float err = *(this->target) - this->temp;
-        this->integral += err * this->dt;
-        float D = (err - this->prevEr) / this->dt;
-        this->prevEr = err;
-        return (err * this->kp + this->integral* this->ki + D * this->kd);
-      }
-
-      void timeCounter(){
-        if(this->timerBuffer + this->dt*1000 < millis()){
-          this->timerBuffer = millis();
-          int8_t val = this->PIDControler();
-          if(val <= 0){
-            this->onTime = 0;
-          }else{
-            val = ((val - fmod(val, 1.27)) / 1.27) * 10;
-            this->onTime = (this->dt * val);
-          }
-
-        }
-      }
-
-      
-
+typedef enum PID_DIRECTION
+{
+  DIRECT,
+  REVERSE
 };
 
-simpPid heatPid(&TargetTemp, HEAT_PIN);
-simpPid coolPid(&FrostTemp,  COOL_PIN);
+typedef enum ERROR_PROPORTIONAL
+{
+  P_ON_M,
+  P_ON_E
+};
 
-void loopPID(){
-  if(Heat->footer != NULL){
-    heatPid.PidActivate();
-    heatPid.tempNow(Temperature);
-    heatPid.tickPIDUp();
-  }
-  else{
-    heatPid.PidDeactivate();
-    relayHeat.relayOff();
-  }
+typedef enum PID_MODE
+{
+  MANUAL,
+  AUTOMATIC
+};
 
 
-  if(Cooling->footer != NULL){
-    coolPid.PidActivate();
-  coolPid.tempNow(Temperature);
-  coolPid.tickPIDDown();
+class PID
+{
+public:
+  PID(){}
+
+  PID(double *input, double *output, double *setpoint,
+      double Kp, double Ki, double Kd, 
+      ERROR_PROPORTIONAL POn=P_ON_E, PID_DIRECTION controllerDirection=DIRECT)
+  {
+    if (input == NULL || output == NULL || setpoint == NULL)
+    {
+      return;
+    }
+    
+    init(input, output, setpoint, Kp, Ki, Kd, POn, controllerDirection);
   }
-  else{
-    coolPid.PidDeactivate();
-    relayCool.relayOff();
+
+
+  PID(double *input, double *output, double *setpoint,
+      double Kp, double Ki, double Kd, 
+      PID_DIRECTION controllerDirection)
+      : PID::PID(input, output, setpoint, Kp, Ki, Kd, P_ON_E, controllerDirection)
+  {}
+
+
+
+  void init(double *input, double *output, double *setpoint,
+      double Kp, double Ki, double Kd, ERROR_PROPORTIONAL POn=P_ON_E, PID_DIRECTION controllerDirection=DIRECT)
+  {
+    if (input == NULL || output == NULL || setpoint == NULL)
+    {
+      return;
+    }
+    
+    myOutput = output;
+    myInput = input;
+    mySetpoint = setpoint;
+
+    autoMode = MANUAL;
+
+    setOutputLimits(0, UINT_LEAST8_MAX);
+
+    sampleTime = DEFAULT_SAMPLE_TIME; // default Controller Sample Time is 0.1 seconds
+
+    setControllerDirection(controllerDirection);
+    setTunings(Kp, Ki, Kd, POn);
+
+    lastTime = millis() - sampleTime;
+
   }
+
+  void begin()
+  {
+    if (myOutput)
+    {
+      outputSum = *myOutput;
+    }
+
+    if (myInput)
+    {
+      lastInput = *myInput;
+    }
+ 
+    if (outputSum > outMax)
+    {
+      outputSum = outMax;
+    }
+    else if (outputSum < outMin)
+    {
+      outputSum = outMin;
+    }
+  }
+
+  void setMode(PID_MODE Mode)
+  {
+    bool newAuto = (bool)(Mode == AUTOMATIC);
+    if (newAuto && (autoMode==MANUAL))
+    { /*we just went from manual to auto*/
+      this->begin();
+    }
+    autoMode = AUTOMATIC;
+  }
+
+  // bool needsCompute(); //  Returns true if calling Compute() will actually  perform a PID computation.
   
-}
+  bool compute()
+  {
+    if (autoMode==MANUAL){
+      return false;
+    }
+
+    uint32_t now = millis();
+    uint32_t timeChange = (now - lastTime);
+    if (timeChange >= sampleTime)
+    {
+      //Compute all the working error variables
+      if(myInput == NULL || mySetpoint == NULL){
+        return false;
+      }
+
+      double input = *myInput;
+      double error = *mySetpoint - input;
+      double dInput = (input - lastInput);
+      outputSum += (ki * error);
+
+      /*Add Proportional on Measurement, if P_ON_M is specified*/
+      if (pOnE==P_ON_M){
+        outputSum -= kp * dInput;
+      }
+
+      if (outputSum > outMax)
+      {
+        outputSum = outMax;
+      }
+      else if (outputSum < outMin)
+      {
+        outputSum = outMin;
+      }
+
+      /*Add Proportional on Error, if P_ON_E is specified*/
+      double output;
+      if (pOnE==P_ON_E){
+        output = kp * error;
+      }else{
+        output = 0;
+      }
+
+      /*Compute Rest of PID Output*/
+      output += outputSum - kd * dInput;
+
+      if (output > outMax){
+        output = outMax;
+      }
+      else if (output < outMin){
+        output = outMin;
+      }
+      *myOutput = output;
+
+      /*Remember some variables for next time*/
+      lastInput = input;
+      lastTime = now;
+      return true;
+    }
+    else
+      return false;
+  }
+
+  void setOutputLimits(double min, double max)
+  {
+    if (min >= max)
+      return;
+
+    outMin = min;
+    outMax = max;
+
+    if (autoMode==AUTOMATIC)
+    {
+      if (*myOutput > outMax)
+      {
+        *myOutput = outMax;
+      }
+      else if (*myOutput < outMin)
+      {
+        *myOutput = outMin;
+      }
+      
+      outputSum = (outputSum > outMax) ? outMax : outputSum;
+      outputSum = (outputSum < outMin) ? outMin : outputSum;
+    }
+  }
+
+
+  void setTunings(double Kp, double Ki, double Kd, ERROR_PROPORTIONAL POn=P_ON_E)
+  {
+    if (Kp < 0 || Ki < 0 || Kd < 0)
+    {
+      return;
+    }
+
+    pOn = (int)POn;
+    pOnE = POn;
+
+    dispKp = Kp;
+    dispKi = Ki;
+    dispKd = Kd;
+
+    double SampleTimeInSec = ((double)sampleTime) / 1000;
+    kp = Kp;
+    ki = Ki * SampleTimeInSec;
+    kd = Kd / SampleTimeInSec;
+
+    if (controllerDirection == REVERSE)
+    {
+      kp = (0 - kp);
+      ki = (0 - ki);
+      kd = (0 - kd);
+    }
+  }
+
+  void setControllerDirection(PID_DIRECTION Direction)
+  {
+    if ((autoMode==AUTOMATIC) && (Direction != controllerDirection))
+    {
+      kp = (0 - kp);
+      ki = (0 - ki);
+      kd = (0 - kd);
+    }
+    controllerDirection = Direction;
+  }
+
+  void setSampleTime(int NewSampleTime)
+  {
+    if (NewSampleTime > 0)
+    {
+      double ratio = (double)NewSampleTime / (double)sampleTime;
+      ki *= ratio;
+      kd /= ratio;
+      sampleTime = (uint32_t)NewSampleTime;
+    }
+  }
 
 
 
 
+  double getKp() { return dispKp; } // These functions query the pid for interal values.
+  double getKi() { return dispKi; } //  they were created mainly for the pid front-end,
+  double getKd() { return dispKd; } // where it's important to know what is actually
+  
+  int getModeNum() { return (int)autoMode ? AUTOMATIC : MANUAL; }
+  PID_MODE getMode() { return autoMode; }
+
+  int getDirectionNum() { return (int)controllerDirection; }
+  PID_DIRECTION getDirection() { return controllerDirection; }
+
+  
+
+private:
+  double dispKp; //  we'll hold on to the tuning parameters in user-entered
+  double dispKi; //   format for display purposes
+  double dispKd;
+
+  double kp; // (P)roportional Tuning Parameter
+  double ki; // (I)ntegral Tuning Parameter
+  double kd; // (D)erivative Tuning Parameter
+
+  PID_DIRECTION controllerDirection;
+  int pOn;
+
+  double *myInput;    // Pointers to the Input, Output, and Setpoint variables
+  double *myOutput;   //   This creates a hard link between the variables and the
+  double *mySetpoint; //   PID, freeing the user from having to constantly tell us
+                      //   what these values are.  with pointers we'll just know.
+
+  uint32_t lastTime;
+  double outputSum, lastInput;
+
+  uint32_t sampleTime;
+  double outMin, outMax;
+  PID_MODE autoMode;
+  
+  ERROR_PROPORTIONAL pOnE;
+
+  public:
+    friend class Thermostat;
+};
 #endif

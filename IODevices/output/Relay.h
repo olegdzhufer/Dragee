@@ -8,10 +8,10 @@
 class Relay
 {
 private:
-  u8 changeFlag = false;
+  bool changeFlag = false;
   u8 pin;
   bool normallyOpen = false;
-
+  bool inited=false;
 public:
   String name;
   u8 state = LOW;
@@ -22,8 +22,8 @@ public:
 
   Relay* first_p=NULL;
 
-  Relay* prev_p=NULL;
-  Relay* next_p=NULL;
+ // Relay* prev_p=NULL;
+  //Relay* next_p=NULL;
 
 
 public:
@@ -56,6 +56,11 @@ public:
      if(first_p == NULL){
        first_p = this;
      }
+     inited=true;
+  }
+
+  bool getIsInited(){
+    return inited;
   }
 
   void setName(String name)

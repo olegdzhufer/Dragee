@@ -1,6 +1,6 @@
 
-#ifndef tempSensor_h
-#define tempSensor_h
+#ifndef VIRT_TEMP_SENSOR_H
+#define VIRT_TEMP_SENSOR_H
 
 #include <Arduino.h>
 #include <OneWire.h>
@@ -10,14 +10,13 @@
 
 class VirtTempSensor {
 public:
+    // float tempCurrent=0.0;
     virtual float getTemperature() const = 0;
+    virtual void init() = 0;
     // virtual int32_t getTemp() const = 0;
 
     // virtual ~VirtTempSensor() {};
-
-
 	// virtual float getTempC();
-
 	// virtual float getTempF();
 };
 

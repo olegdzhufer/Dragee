@@ -98,7 +98,8 @@ void tickRelayList()
 
 void setup() {
   Serial.begin(115200);
-	delay(100);
+	delay(1000);
+  Serial.println();
   Serial.println("Started");
 
   // encoderSetup();
