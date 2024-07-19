@@ -16,6 +16,7 @@ class SwitchButton : public VirtButton
 {
 private:
   uint8_t btnPin;
+  bool TestStatus = false, TestSwich = false;
 
 public:
   BTN_PRESS_t type = BTN_TYPE;
@@ -56,16 +57,17 @@ public:
   bool tick()
   {
     bool tick = VirtButton::tick(EB_read(this->btnPin));
+    
     if (tick)
     {
-      DEBUG_PRINT("Button action in tick");
+      // Serial.println(tick);
       action();
 
-      // if (attached_relay_p)
-      // {
-      //   DEBUG_PRINT("Button attached_relay_p tick");
-      //   attached_relay_p->tick();
-      // }
+      if (attached_relay_p)
+      {
+
+        attached_relay_p->tick();
+      }
       
       return true;
     }
@@ -75,54 +77,53 @@ public:
 
   bool tickRaw()
   {
-    // if (this->attached_relay_p != NULL)
-    // {
-    //     attached_relay_p->toggleFlag();
-    // }
+    if (this->attached_relay_p != NULL)
+    {
+        attached_relay_p->toggleFlag();
+    }
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
   void pressISR()
   {
     VirtButton::pressISR();
+    // Serial.println("Work?");
   }
 
 
-  void action()
+  bool action()
   {
     uint16_t btnState = VirtButton::action();
-    if (type == SWITCH_TYPE)
+    if (this->type == SWITCH_TYPE)
     {
-      DEBUG_PRINT("Action for type %d", (int)type);
-
+      DEBUG_PRINT("Switch:");
       switch (btnState)
       {
 
       case EB_HOLD:
         DEBUG_PRINT("Call btn action is EB_HOLD");
-        if (this->attached_relay_p != NULL)
-        {
+        if (this->attached_relay_p != NULL){
           attached_relay_p->toggleFlag();
         }
-        callCallback();
+        this->callCallback();
         break;
 
       case EB_RELEASE:
         DEBUG_PRINT("Call btn action is EB_RELEASE");
 
-        if (this->attached_relay_p != NULL)
-        {
+        if (this->attached_relay_p != NULL){
           attached_relay_p->toggleFlag();
         }
         break;
 
       default:
+        // DEBUG_PRINT("CHORT");
         break;
       }
     }
-    else if (type == BTN_TYPE)
+    else if (this->type == BTN_TYPE)
     {
-       DEBUG_PRINT("Action for type %d", (int)type);
+      //  DEBUG_PRINT("Action for type %d", (int)type);
       switch (btnState)
       {
       case EB_CLICK:
@@ -168,6 +169,9 @@ public:
     {
       return false;
     }
+            Serial.println(this->btnPin);
+        Serial.println(this->type);
+        DEBUG_PRINT("________________________");
      DEBUG_PRINT("Relay attached");
     this->attached_relay_p = relay;
     return true;

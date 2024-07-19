@@ -169,7 +169,7 @@ public:
       if (millis() - timerStart >= 1000){
         Serial.print("1sec+ ");
         timerSec++;
-        Serial.println(timerSec);
+        // Serial.println(timerSec);
       }
     }
     
