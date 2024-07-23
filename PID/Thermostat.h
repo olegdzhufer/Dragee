@@ -15,57 +15,47 @@
 #include "Pid.h"
 
 
-class Thermostat : public Relay, private PID
+class Thermostat : public Relay//, private PID
 {
 public:
     PID pid;
     double temp = 0.0;//double
     double output;
-    double setpoint
-
+    double setpoint;
 
     Thermostat(){}; // default constructor
 
-    Thermostat(uint8_t pinRelay, uint8_t pinLed, VirtTempSensor *tempSensor=NULL)
+    
+
+    Thermostat(uint8_t pinRelay, uint8_t pinLed, double Kp, double Ki, double Kd, DallasTemperature *tempSensor=NULL, PID_DIRECTION controllerDirection=DIRECT)
     : Relay(pinRelay, pinLed , OFF, false)
     {
         attachSensor(tempSensor); 
-    }
 
-    Thermostat(uint8_t pinRelay, uint8_t pinLed, VirtTempSensor *tempSensor, double Kp, double Ki, double Kd, ERROR_PROPORTIONAL POn, PID_DIRECTION controllerDirection)
-    : Thermostat::Thermostat(pinRelay, pinLed , tempSensor)
-    {
-        init(pinRelay, Kp, Ki, Kd, POn, controllerDirection);
+        pid.setTunings(Kp, Ki, Kd, P_ON_E);
+        init(controllerDirection);
     }
 
 
-    void init(uint8_t pinRelay, double Kp, double Ki, double Kd, VirtTempSensor *tempSensor=NULL, ERROR_PROPORTIONAL POn=P_ON_E, PID_DIRECTION controllerDirection=DIRECT)
+    void init(PID_DIRECTION controllerDirection=DIRECT)
     {
-        if (this->attached_tempSensor_p == NULL)
-        {
-            attachSensor(tempSensor);
-        }
-        else{
-            temp = (double) (this->attached_tempSensor_p->getTemperature());
-        }
-
-        if(getIsInited() == false)
-        {
-            Relay::init(pinRelay, OFF, false);
-        }
+       
+        // if(RELAY::getIsInited() == false)
+        // {
+        //     Relay::init(pinRelay, OFF, false);
+        // }
         
-
-        pid.setTunings(Kp, Ki, Kd, POn);
-        myPID.SetMode(AUTOMATIC);
+        pid.setMode(AUTOMATIC);
     }
 
-    void attachSensor(VirtTempSensor *tempSensor)
+
+    void attachSensor(DallasTemperature *tempSensor=NULL)
     {
         if (tempSensor != NULL)
         {
             this->attached_tempSensor_p = tempSensor;
-            this->attached_tempSensor_p->init();
-            this->temp = this->attached_tempSensor_p->getTemperature();
+            // this->attached_tempSensor_p->init();//todo
+            // this->temp = this->attached_tempSensor_p->getTemperature();//requestTemperatures
         }
     }
 
@@ -87,7 +77,7 @@ public:
 
 // private:
     
-    VirtTempSensor *attached_tempSensor_p = NULL;
+    DallasTemperature *attached_tempSensor_p = NULL;
 
  
 };

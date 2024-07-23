@@ -9,59 +9,76 @@
 
 #include "../mDef.h"
 #include "Thermostat.h"
+// #include "IODevices/input/Enc.h"
 
 
 class LcdThermoPid : public Thermostat
 {
 public:
-    LiquidCrystal_I2C *lcd;
+    LiquidCrystal_I2C *lcd_p=NULL;
 
-    LcdThermoPid(){}; // default constructor
+    LcdThermoPid():Thermostat()
+    {} // default constructor
 
-    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed, VirtTempSensor *tempSensor, LiquidCrystal_I2C *lcd)
-    : Thermostat(pinRelay, pinLed, tempSensor)
+    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed,  double Kp, double Ki, double Kd, DallasTemperature *tempSensor=NULL, LiquidCrystal_I2C *lcd=NULL)
+    : Thermostat(pinRelay, pinLed, Kp, Ki, Kd, tempSensor)
     {
-        attachLcd(lcd);
+      
+        if(lcd!=NULL)
+        {
+            attachLcd(lcd);
+        }
+
+        init();
     }
 
     void attachLcd(LiquidCrystal_I2C *lcd)
     {
-        this->lcd = lcd;
-        lcd->begin(20, 4);
+        this->lcd_p = lcd;
+        lcd_p->begin(20, 4);
         // lcd->setBacklightPin(xxx, POSITIVE);
-        lcd->setBacklight(HIGH);
-        lcd->clear();
+        lcd_p->setBacklight(HIGH);
+        lcd_p->clear();
+    }
+
+    void init()
+    {
+        if(lcd_p==NULL)
+        {
+            return;
+        }
+
+        lcd_p->init();
+
+        Thermostat::init();
     }
 
     void updateLcd()
     {
-        if (lcd == NULL)
+        if (lcd_p == NULL)
         {
             return;
         }
   
 
-        lcd->setCursor(8, 0);
-        lcd->print(name);
+        lcd_p->setCursor(8, 0);
+        lcd_p->print(name);
 
-        lcd->setCursor(0, 1);
-        lcd->print("Temp: ");
-        lcd->print(temp);
-        lcd->print(" C");
+        lcd_p->setCursor(0, 1);
+        lcd_p->print("Temp: ");
+        lcd_p->print(temp);
+        lcd_p->print(" C");
 
-        lcd->setCursor(0, 2);
-        lcd->print("Setpoint: ");
-        lcd->print(setpoint);
-        lcd->print(" C");
+        lcd_p->setCursor(0, 2);
+        lcd_p->print("Setpoint: ");
+        lcd_p->print(setpoint);
+        lcd_p->print(" C");
 
-        lcd->setCursor(0, 3);
-        lcd->print("State: ");
-        lcd->print(state == HIGH ? "ON" : "OFF");
+        lcd_p->setCursor(0, 3);
+        lcd_p->print("State: ");
+        lcd_p->print(state == HIGH ? "ON" : "OFF");
     }
 
-
-
-
-}
+};
 
 #endif // LCD_THERMO_PID_H

@@ -29,7 +29,7 @@ public:
 public:
   Relay() {}
 
-  Relay(u8 pinRel, u8 pinLed, u8 initState = OFF, bool isNormallyOpen = false)
+  Relay(u8 pinRel, u8 pinLed, u8 initState = OFF, bool isNormallyOpen = false) : pin{pinRel}, state{initState}, normallyOpen{isNormallyOpen}
   {
     DEBUG_PRINT("Creating relay with");
 
