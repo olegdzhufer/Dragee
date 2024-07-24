@@ -18,6 +18,7 @@
 #define SW  34                      
 
 #define ONE_WIRE_BUS 13
+#define TEMP_PIN ONE_WIRE_BUS
 #define ONE_WIRE_RTC 2
 
 #define BUZZER_PIN 25

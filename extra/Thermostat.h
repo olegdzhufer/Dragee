@@ -16,9 +16,7 @@
 #include "../IODevices/output/Relay.h"
 #include "Pid.h"
 
-#define DEFAULT_KP 1.5
-#define DEFAULT_KI 0.3
-#define DEFAULT_KD 1.5
+
 
 class Thermostat : public Relay//, private PID
 {

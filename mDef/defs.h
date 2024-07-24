@@ -19,6 +19,9 @@
 #define GET_FREE_HEAP()
 #endif
 
+#define DEFAULT_KP 1.5
+#define DEFAULT_KI 0.3
+#define DEFAULT_KD 1.5
 
 #define LCD_ADDR_DEFAULT 0x27
 #define LCD_COLS 20

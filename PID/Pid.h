@@ -22,12 +22,14 @@ typedef enum PID_MODE
   AUTOMATIC
 }PID_MODE;
 
+
 typedef struct
 {
-  double Kp;
-  double Ki;
-  double Kd;
+  double kp; // (P)roportional Tuning Parameter
+  double ki; // (I)ntegral Tuning Parameter
+  double kd; // (D)erivative Tuning Parameter
 }PID_TUNINGS;
+
 
 class PID
 {
@@ -168,11 +170,11 @@ public:
       double input = *myInput;
       double error = *mySetpoint - input;
       double dInput = (input - lastInput);
-      outputSum += (ki * error);
+      outputSum += (realTunings.ki * error);
 
       /*Add Proportional on Measurement, if P_ON_M is specified*/
       if (pOnE==P_ON_M){
-        outputSum -= kp * dInput;
+        outputSum -= realTunings.kp * dInput;
       }
 
       if (outputSum > outMax)
@@ -187,13 +189,13 @@ public:
       /*Add Proportional on Error, if P_ON_E is specified*/
       double output;
       if (pOnE==P_ON_E){
-        output = kp * error;
+        output = realTunings.kp * error;
       }else{
         output = 0;
       }
 
       /*Compute Rest of PID Output*/
-      output += outputSum - kd * dInput;
+      output += outputSum - realTunings.kd * dInput;
 
       if (output > outMax){
         output = outMax;
@@ -231,9 +233,16 @@ public:
         *myOutput = outMin;
       }
       
+      
       outputSum = (outputSum > outMax) ? outMax : outputSum;
       outputSum = (outputSum < outMin) ? outMin : outputSum;
     }
+  }
+
+
+  void setTunings(PID_TUNINGS copySettings, ERROR_PROPORTIONAL POn=P_ON_E)
+  {
+    setTunings(copySettings.kp, copySettings.ki, copySettings.kd, POn);
   }
 
 
@@ -247,51 +256,53 @@ public:
     pOn = (int)POn;
     pOnE = POn;
 
-    dispKp = Kp;
-    dispKi = Ki;
-    dispKd = Kd;
+    dispTunings.kp = Kp;
+    dispTunings.ki = Ki;
+    dispTunings.kd = Kd;
 
     double SampleTimeInSec = ((double)sampleTime) / 1000;
-    kp = Kp;
-    ki = Ki * SampleTimeInSec;
-    kd = Kd / SampleTimeInSec;
+    realTunings.kp = Kp;
+    realTunings.ki = Ki * SampleTimeInSec;
+    realTunings.kd = Kd / SampleTimeInSec;
 
     if (controllerDirection == REVERSE)
     {
-      kp = (0 - kp);
-      ki = (0 - ki);
-      kd = (0 - kd);
+      realTunings.kp = (0 - realTunings.kp);
+      realTunings.ki = (0 - realTunings.ki);
+      realTunings.kd = (0 - realTunings.kd);
     }
   }
+
 
   void setControllerDirection(PID_DIRECTION Direction)
   {
     if ((autoMode==AUTOMATIC) && (Direction != controllerDirection))
     {
-      kp = (0 - kp);
-      ki = (0 - ki);
-      kd = (0 - kd);
+      realTunings.kp = (0 - realTunings.kp);
+      realTunings.ki = (0 - realTunings.ki);
+      realTunings.kd = (0 - realTunings.kd);
     }
     controllerDirection = Direction;
   }
 
-  void setSampleTime(int NewSampleTime)
+
+  void setSampleTime(uint32_t newSampleTime)
   {
-    if (NewSampleTime > 0)
+    if (newSampleTime > 0)
     {
-      double ratio = (double)NewSampleTime / (double)sampleTime;
-      ki *= ratio;
-      kd /= ratio;
-      sampleTime = (uint32_t)NewSampleTime;
+      double ratio = (double)newSampleTime / (double)sampleTime;
+      realTunings.ki *= ratio;
+      realTunings.kd /= ratio;
+      sampleTime = newSampleTime;
     }
   }
 
 
 
-
-  double getKp() { return dispKp; } // These functions query the pid for interal values.
-  double getKi() { return dispKi; } //  they were created mainly for the pid front-end,
-  double getKd() { return dispKd; } // where it's important to know what is actually
+  PID_TUNINGS getDispPID() { return  dispTunings; }
+  double getKp() { return dispTunings.kp; } // These functions query the pid for interal values.
+  double getKi() { return dispTunings.ki; } //  they were created mainly for the pid front-end,
+  double getKd() { return dispTunings.kd; } // where it's important to know what is actually
   
   int getModeNum() { return (int)autoMode ? AUTOMATIC : MANUAL; }
   PID_MODE getMode() { return autoMode; }
@@ -300,15 +311,9 @@ public:
   PID_DIRECTION getDirection() { return controllerDirection; }
 
   
-
-private:
-  double dispKp; //  we'll hold on to the tuning parameters in user-entered
-  double dispKi; //   format for display purposes
-  double dispKd;
-
-  double kp; // (P)roportional Tuning Parameter
-  double ki; // (I)ntegral Tuning Parameter
-  double kd; // (D)erivative Tuning Parameter
+protected:
+  PID_TUNINGS dispTunings; // we'll hold on to the tuning parameters in user-entered //format for display purposes
+  PID_TUNINGS realTunings; 
 
   PID_DIRECTION controllerDirection;
   int pOn;
@@ -325,7 +330,5 @@ private:
   uint32_t sampleTime;
   double outMin, outMax;
   PID_MODE autoMode;
-  
-   
 };
 #endif

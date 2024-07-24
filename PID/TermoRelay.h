@@ -2,37 +2,58 @@
 #define TERMO_RELAY_H
 
 #include <Arduino.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
 
 #include "../mDef.h"
 
+#include "Pid.h"
 #include "../IODevices/input/SwitchButton.h"
 #include "../IODevices/output/Relay.h"
-// #include "../IODevices/input/VirtTempSensor.h"
+#include "../IODevices/input/VirtTempSensor.h"
 
-class TermoRelay
+VirtTempSensor *globalSensorInstance = nullptr;
+
+class TermoRelay: protected PID
 {
 public:
-    float tempC;
+   float tempCur=0.0;
+   float tempSet=0.0;
 
 public:
-    TermoRelay(Relay *relay, SwitchButton *button);//, DallasTemperature *sensor);
+    TermoRelay(Relay *relay, SwitchButton *button);
 
+    TermoRelay(Relay *relay, SwitchButton *button , VirtTempSensor *sensor) 
+    : TermoRelay::TermoRelay(relay, button)
+    {   
+        if((globalSensorInstance == nullptr) && (sensor != nullptr))
+        {
+            globalSensorInstance = sensor;
+            sensor_p= globalSensorInstance;
+        }else if((globalSensorInstance != nullptr) && (sensor == nullptr))
+        {
+            sensor_p = globalSensorInstance;
+        }else if((globalSensorInstance == nullptr) && (sensor == nullptr))
+        {
+            DEBUG_PRINT("ERROR: TermoRelay: Sensor is NULL");
+            return;
+        }
+    }
+
+    
     ~TermoRelay()
     {
         // delete TermoRelay::sensor_p;
-    // TermoRelay::sensor_p = nullptr;
+        // TermoRelay::sensor_p = nullptr;
     }
+
+
 
     void tick()
     {
         btnTick();
-
         sensorTick();
-
         relayTick();
     }
+    
 
     void btnTick(){
         if (button_p!= nullptr)
@@ -48,10 +69,9 @@ public:
                     this->button_p->tick();
                 }
             }
-            
-            
         }
     }
+
 
     void relayTick(){
         if (relay_p!= nullptr)
@@ -65,33 +85,31 @@ public:
                     this->relay_p->tick();
                 }
             }
-            
-            
         }
     }
+
 
     void sensorTick(){
         if (sensor_p!= nullptr)
         {
-            if (millis() - TermoRelay::sensorTimer > this->updateInterval) //this->sensorTimer
+            if (millis() - sensorTimer > this->updateInterval) 
             {
-                getTemperature();
+                tempCur = getTemperature();
             }
         }
     }
 
-    float getTemperature()
+
+    double getTemperature()
     {
-        TermoRelay::sensor_p->requestTemperatures();
-        tempC = TermoRelay::sensor_p->getTempCByIndex(0); // todo add for multiple sensors
+        tempCur = sensor_p->getTemperature();
+        this->sensorTimer = millis();
 
-        // this->sensorTimer = millis();
+        DEBUG_PRINT("Temperature timer updated: %ld", sensorTimer);
 
-        TermoRelay::sensorTimer = millis();
-        DEBUG_PRINT("Temperature timer updated: %ld", TermoRelay::sensorTimer);
-
-        return tempC;
+        return tempCur;
     }
+
 
     // Static method to get the last instance
     static TermoRelay *getLastInstance()
@@ -99,11 +117,13 @@ public:
         return lastInstance;
     }
 
+
     // Method to get the next instance
     TermoRelay *getNextInstance() const
     {
         return nextInstance_p;
     }
+
 
     // Method to get the first instance
     TermoRelay *getFirstInstance() const
@@ -111,66 +131,51 @@ public:
         return firstInstance;
     }
 
-    static uint32_t sensorTimer;
-    static DallasTemperature* sensor_p;
+
 private:
     Relay *relay_p = nullptr;
     SwitchButton *button_p = nullptr;
-    // VirtTempSensor* sensor;
-    // DallasTemperature *sensor_p = nullptr;
-    // DeviceAddress sensorAddress;
-
-    
+    VirtTempSensor* sensor_p= nullptr;    
     uint32_t updateInterval = 5000;
-    // uint32_t sensorTimer = 0;
+    uint32_t sensorTimer = 0;
 
     TermoRelay *nextInstance_p = nullptr;
     TermoRelay *firstInstance = nullptr;
     static TermoRelay *lastInstance;
-    
 };
 
 TermoRelay *globalFirstInstance = nullptr;
 TermoRelay *TermoRelay::lastInstance = nullptr;
 
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature* TermoRelay::sensor_p = new DallasTemperature(&oneWire);
-
-// DallasTemperature* TermoRelay::sensor_p = nullptr;
-uint32_t TermoRelay::sensorTimer = 0;
-
-TermoRelay::TermoRelay(Relay *relay, SwitchButton *button)//, DallasTemperature *sensor)
+TermoRelay::TermoRelay(Relay *relay, SwitchButton *button) 
+            : relay_p(relay), button_p(button)  
 {
-    if (relay == nullptr || button == nullptr || TermoRelay::sensor_p == nullptr)
+    if (relay == nullptr || button == nullptr)
     {
         DEBUG_PRINT("ERROR: TermoRelay: One of the parameters is NULL");
         return;
     }
 
+    // this->relay_p = relay;
+    // this->button_p = button;
+    
     if (globalFirstInstance == nullptr)
     {
         globalFirstInstance = this;
     }
     firstInstance = globalFirstInstance;
 
-    this->relay_p = relay;
-    this->button_p = button;
-    // this->sensor_p = sensor;
-
-    this->button_p->attachRelay(relay);
-    
-    TermoRelay::sensor_p->begin();
-    // sensor->setResolution(12);
-    getTemperature();
-
     if (lastInstance != nullptr)
     {
         nextInstance_p = lastInstance;
     }
     lastInstance = this;
-}
 
-void termoRelayTick() //(TermoRelay* instance)
+    this->button_p->attachRelay(relay);
+    this->tempCur = getTemperature();
+    }
+
+void termoRelayTick()
 {
     TermoRelay *last = TermoRelay::getLastInstance();
 

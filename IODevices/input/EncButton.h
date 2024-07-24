@@ -14,7 +14,9 @@
 // #define EB_CLICK_TIME 500   // таймаут ожидания кликов (кнопка)
 // #define EB_HOLD_TIME 600    // таймаут удержания (кнопка)
 // #define EB_STEP_TIME 200    // таймаут импульсного удержания (кнопка)
-// #define EB_FAST_TIME 30
+// #define EB_FAST_TIME 30 
+// Switch() = delete;
+
 
 class MenuEncButton : public VirtEncButton {
    public:

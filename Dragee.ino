@@ -4,7 +4,8 @@
 #include "mDef.h"
 #include "IODevices/input/EncButton.h"
 #include "IODevices/input/SwitchButton.h"
-// #include "IODevices/input/VirtTempSensor.h"
+#include "IODevices/input/TempDallas.h"
+
 #include "PID/TermoRelay.h"
 
 Relay relayFan (FAN_PIN,  LED_PIN1); 
@@ -16,15 +17,17 @@ SwitchButton btnSwitch(BTN1_PIN, SWITCH_TYPE);
 SwitchButton btn2     (BTN2_PIN, BTN_TYPE);
 SwitchButton btn3     (BTN3_PIN, BTN_TYPE);
 
+TempDallas tempSensor(TEMP_PIN);
 
-TermoRelay tempRel1(&relayFan, &btnSwitch);
+TermoRelay tempRel1(&relayFan, &btnSwitch, &tempSensor);
 TermoRelay tempRel2(&relayHeat, &btn2);
 TermoRelay tempRel3(&relayCool, &btn3);
 
 
 LiquidCrystal_I2C lcd(LCD_ADDR_DEFAULT, LCD_COLS, LCD_ROWS); 
-//MenuLcdSystem menu(); //copnstructor
+//MenuLcdSystem menu(&lcd); //constructor
 MenuEncButton encBtn(DT, SW, CLK, INPUT, INPUT, HIGH);
+//encBtn.attachToMenu(&menu);
 
 void IRAM_ATTR isrEnc()
 {
@@ -63,8 +66,6 @@ void manualCtrlSetup()
   attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, RISING);  
 
   encBtn.attachISR(isrEnc, isrEnc);
-
- 
 }
 
 
@@ -80,7 +81,7 @@ void setup() {
 
 #if defined(DEBUG) && DEBUG > 0
   Serial.print("Parasite power is: ");
-  Serial.println(TermoRelay::sensor_p->isParasitePowerMode() ? "ON" : "OFF");
+  Serial.println(tempSensor.isParasitePowerMode() ? "ON" : "OFF");
 #endif
 }
 
