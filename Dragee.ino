@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+
 
 
 
@@ -15,13 +14,13 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensor(&oneWire); 
 
-LcdThermoPid relayFan (FAN_PIN,  LED_PIN1,  &sensor);
-LcdThermoPid relayHeat(HEAT_PIN, LED_PIN2,  &sensor);
-LcdThermoPid relayCool(COOL_PIN, LED_PIN3,  &sensor);
+LcdThermoPid relayFan (FAN_PIN,  LED_PIN1,  &sensor, &lcd);
+LcdThermoPid relayHeat(HEAT_PIN, LED_PIN2,  &sensor, &lcd);
+LcdThermoPid relayCool(COOL_PIN, LED_PIN3,  &sensor, &lcd);
 
 SwitchButton btnSwitch(BTN1_PIN, SWITCH_TYPE, &relayFan);
-SwitchButton btn2(BTN2_PIN, BTN_TYPE,    &relayHeat);
-SwitchButton btn3(BTN3_PIN, BTN_TYPE,    &relayCool);
+SwitchButton btn2     (BTN2_PIN, BTN_TYPE,    &relayHeat);
+SwitchButton btn3     (BTN3_PIN, BTN_TYPE,    &relayCool);
 
 void IRAM_ATTR isrBtnRaw() 
 {
@@ -54,6 +53,10 @@ void manualCtrlSetup()
 
     DEBUG_PRINT("Attaching interrupt to: %d\n", btn3.getPin());
   attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, RISING);  
+
+  relayFan.begin();
+  relayHeat.begin();
+  relayCool.begin();
 }
 
 
@@ -72,6 +75,15 @@ void setup() {
 
 void loop() 
 {  
+
+  btnSwitch.tick();
+  btn2.tick();
+  btn3.tick();
+
+  relayFan.tick();
+  relayHeat.tick();
+  relayCool.tick();
+
   // eb.tick();
 	// tickBtnList();
   // tickRelayList();

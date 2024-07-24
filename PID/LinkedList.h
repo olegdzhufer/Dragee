@@ -14,7 +14,7 @@
 #define LinkedList_h
 
 #include <stddef.h>
-#include "mDef.h"
+#include "../mDef.h"
 
 template<class T>
 struct ListNode

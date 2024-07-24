@@ -8,6 +8,8 @@
 #define MAX_TEMP_COOL 30
 
 #include <Arduino.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #include "../mDef.h"
 #include "../IODevices/input/VirtTempSensor.h"
@@ -32,22 +34,14 @@ public:
     : Relay(pinRelay, pinLed , OFF, false)
     {
         attachSensor(tempSensor); 
-        pid.init(&temp, &output, &setpoint, controllerDirection);
-        pid.setTunings(Kp, Ki, Kd, POn);
-        init(controllerDirection);
+        pid.init(&temp, &output, &setpoint, Kp, Ki, Kd, POn, controllerDirection);
+        init();
     }
 
 
-    void init(PID_DIRECTION controllerDirection=DIRECT)
+    void init()
     {
-       
-        // if(RELAY::getIsInited() == false)
-        // {
-        //     Relay::init(pinRelay, OFF, false);
-        // }
-        
         pid.setMode(AUTOMATIC);
-        
     }
 
 
@@ -56,25 +50,36 @@ public:
         if (tempSensor != NULL)
         {
             this->attached_tempSensor_p = tempSensor;
-            // this->attached_tempSensor_p->init();//todo
-            // this->temp = this->attached_tempSensor_p->getTemperature();//requestTemperatures
         }
     }
 
     void begin()
     {
-        // if (this->attached_tempSensor_p != NULL)
-        // {
-        //     this->attached_tempSensor_p->begin();
-        // }
-        
-        if(getIsInited())
+        if (this->attached_tempSensor_p != NULL)
         {
+            this->attached_tempSensor_p->begin();
+
+            this->attached_tempSensor_p->requestTemperatures();
+
+            this->temp = this->attached_tempSensor_p->getTempCByIndex(0);//todo multiple sensors
+
+            if (temp == DEVICE_DISCONNECTED_C)
+            {
+                DEBUG_PRINT("Error: Could not read temperature from sensor");
+            }
+            else{
+            
+                DEBUG_PRINT("Thermostat sensor is inited");            
+            }
+        }
+        
+        if(!getIsInited())
+        {
+            DEBUG_PRINT("Thermostat relay is not inited");
             return;
         }
 
         pid.begin();
-    
     }
 
 // private:

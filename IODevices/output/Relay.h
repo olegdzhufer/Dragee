@@ -10,11 +10,11 @@ class Relay
 private:
   bool changeFlag = false;
   u8 pin;
-  bool normallyOpen = false;
+  bool normallyOpen;
   bool inited=false;
 public:
   String name;
-  u8 state = LOW;
+  u8 state;
   LedSts ledStatus;
 
   uint32_t timerStart=0;
@@ -29,7 +29,7 @@ public:
 public:
   Relay() {}
 
-  Relay(u8 pinRel, u8 pinLed, u8 initState = OFF, bool isNormallyOpen = false) : pin{pinRel}, state{initState}, normallyOpen{isNormallyOpen}
+  Relay(u8 pinRel, u8 pinLed, u8 initState = OFF, bool isNormallyOpen = false)
   {
     DEBUG_PRINT("Creating relay with");
 

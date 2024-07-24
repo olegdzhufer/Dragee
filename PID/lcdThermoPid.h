@@ -20,7 +20,7 @@ public:
     LcdThermoPid():Thermostat()
     {} // default constructor
 
-    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed, DallasTemperature *tempSensor=NULL, double Kp=DEFAULT_KP, double Ki=DEFAULT_KI, double Kd=DEFAULT_KD,  LiquidCrystal_I2C *lcd=NULL)
+    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed, DallasTemperature *tempSensor=NULL, LiquidCrystal_I2C *lcd=NULL, double Kp=DEFAULT_KP, double Ki=DEFAULT_KI, double Kd=DEFAULT_KD)
     : Thermostat(pinRelay, pinLed,tempSensor, Kp, Ki, Kd)
     {
         if(lcd!=NULL)
@@ -54,6 +54,8 @@ public:
         lcd_p->init();
 
         Thermostat::init();
+
+        updateLcd();
     }
 
     void updateLcd()

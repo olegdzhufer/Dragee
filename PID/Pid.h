@@ -8,19 +8,19 @@ typedef enum PID_DIRECTION
 {
   DIRECT,
   REVERSE
-};
+}PID_DIRECTION;
 
 typedef enum ERROR_PROPORTIONAL
 {
   P_ON_M,
   P_ON_E
-};
+}ERROR_PROPORTIONAL;
 
 typedef enum PID_MODE
 {
   MANUAL,
   AUTOMATIC
-};
+}PID_MODE;
 
 typedef struct
 {
@@ -312,6 +312,7 @@ private:
 
   PID_DIRECTION controllerDirection;
   int pOn;
+  ERROR_PROPORTIONAL pOnE;  
 
   double *myInput;    // Pointers to the Input, Output, and Setpoint variables
   double *myOutput;   //   This creates a hard link between the variables and the
@@ -325,6 +326,6 @@ private:
   double outMin, outMax;
   PID_MODE autoMode;
   
-  ERROR_PROPORTIONAL pOnE;   
+   
 };
 #endif
