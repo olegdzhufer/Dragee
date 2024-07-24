@@ -3,7 +3,7 @@
 
 
 #include <Arduino.h>
-// #include <Wire.h>
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 
@@ -20,10 +20,9 @@ public:
     LcdThermoPid():Thermostat()
     {} // default constructor
 
-    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed,  double Kp, double Ki, double Kd, DallasTemperature *tempSensor=NULL, LiquidCrystal_I2C *lcd=NULL)
-    : Thermostat(pinRelay, pinLed, Kp, Ki, Kd, tempSensor)
+    LcdThermoPid(uint8_t pinRelay, uint8_t pinLed, DallasTemperature *tempSensor=NULL, double Kp=DEFAULT_KP, double Ki=DEFAULT_KI, double Kd=DEFAULT_KD,  LiquidCrystal_I2C *lcd=NULL)
+    : Thermostat(pinRelay, pinLed,tempSensor, Kp, Ki, Kd)
     {
-      
         if(lcd!=NULL)
         {
             attachLcd(lcd);
@@ -34,6 +33,10 @@ public:
 
     void attachLcd(LiquidCrystal_I2C *lcd)
     {
+        if(lcd==NULL)
+        {
+            return;
+        }
         this->lcd_p = lcd;
         lcd_p->begin(20, 4);
         // lcd->setBacklightPin(xxx, POSITIVE);

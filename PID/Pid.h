@@ -22,10 +22,17 @@ typedef enum PID_MODE
   AUTOMATIC
 };
 
+typedef struct
+{
+  double Kp;
+  double Ki;
+  double Kd;
+}PID_TUNINGS;
 
 class PID
 {
 public:
+ friend class Thermostat;
   PID(){}
 
   PID(double *input, double *output, double *setpoint,
@@ -34,6 +41,7 @@ public:
   {
     if (input == NULL || output == NULL || setpoint == NULL)
     {
+      DEBUG_PRINT("ERROR: Null pointer in PID init");
       return;
     }
     
@@ -57,9 +65,7 @@ public:
       return;
     }
     
-    myOutput = output;
-    myInput = input;
-    mySetpoint = setpoint;
+    attachValues(input, output, setpoint);
 
     autoMode = MANUAL;
 
@@ -95,6 +101,42 @@ public:
       outputSum = outMin;
     }
   }
+
+  void attachInput(double *input)
+  {
+    if (input == NULL)
+    {
+      return;
+    }
+    myInput = input;
+  }
+
+  void attachOutput(double *output)
+  {
+    if (output == NULL)
+    {
+      return;
+    }
+    
+    myOutput = output;
+  }
+
+  void attachSetpoint(double *setpoint)
+  {
+    if (setpoint == NULL)
+    {
+      return;
+    }
+    mySetpoint = setpoint;
+  }
+
+  void attachValues(double *input, double *output, double *setpoint)
+  {
+    attachInput(input);
+    attachOutput(output);
+    attachSetpoint(setpoint);
+  }
+
 
   void setMode(PID_MODE Mode)
   {
@@ -283,9 +325,6 @@ private:
   double outMin, outMax;
   PID_MODE autoMode;
   
-  ERROR_PROPORTIONAL pOnE;
-
-  public:
-    friend class Thermostat;
+  ERROR_PROPORTIONAL pOnE;   
 };
 #endif

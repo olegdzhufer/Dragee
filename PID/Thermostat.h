@@ -14,6 +14,9 @@
 #include "../IODevices/output/Relay.h"
 #include "Pid.h"
 
+#define DEFAULT_KP 1.5
+#define DEFAULT_KI 0.3
+#define DEFAULT_KD 1.5
 
 class Thermostat : public Relay//, private PID
 {
@@ -25,14 +28,12 @@ public:
 
     Thermostat(){}; // default constructor
 
-    
-
-    Thermostat(uint8_t pinRelay, uint8_t pinLed, double Kp, double Ki, double Kd, DallasTemperature *tempSensor=NULL, PID_DIRECTION controllerDirection=DIRECT)
+    Thermostat(uint8_t pinRelay, uint8_t pinLed, DallasTemperature *tempSensor=NULL, double Kp=DEFAULT_KP, double Ki=DEFAULT_KI, double Kd=DEFAULT_KD, PID_DIRECTION controllerDirection=DIRECT, ERROR_PROPORTIONAL POn=P_ON_E)
     : Relay(pinRelay, pinLed , OFF, false)
     {
         attachSensor(tempSensor); 
-
-        pid.setTunings(Kp, Ki, Kd, P_ON_E);
+        pid.init(&temp, &output, &setpoint, controllerDirection);
+        pid.setTunings(Kp, Ki, Kd, POn);
         init(controllerDirection);
     }
 
@@ -46,6 +47,7 @@ public:
         // }
         
         pid.setMode(AUTOMATIC);
+        
     }
 
 

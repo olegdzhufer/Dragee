@@ -15,7 +15,7 @@ typedef enum
 class SwitchButton : public VirtButton
 {
 private:
-  uint8_t btnPin;
+  uint8_t btnPin=0;
 
 public:
   BTN_PRESS_t type = BTN_TYPE;
@@ -44,6 +44,11 @@ public:
 
   uint8_t getPin()
   {
+    if (this->btnPin == 0)
+    {
+      DEBUG_PRINT("ERROR: Button pin is not set");
+    }
+    
     return this->btnPin;
   }
 

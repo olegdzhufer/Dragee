@@ -5,6 +5,7 @@
 
 #define DEBUG 1
 
+#define DEBUG_SERIAL_SPD 115200
 
 #ifdef DEBUG
 #define D_SerialBegin(...) Serial.begin(__VA_ARGS__);
