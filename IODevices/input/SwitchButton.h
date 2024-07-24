@@ -19,18 +19,18 @@ private:
 
 public:
   BTN_PRESS_t type = BTN_TYPE;
-  Relay *attached_relay_p = NULL;
+  Relay *attached_relay_p = nullptr;
   func_p callbackOnPress = nullptr;
 
-  SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=NULL, uint8_t btnMode = INPUT, uint8_t btnLevel = HIGH)
+  SwitchButton(uint8_t btnPin, BTN_PRESS_t pressType, Relay *attachRelay_p=nullptr, uint8_t btnMode = INPUT, uint8_t btnLevel = HIGH)
   {
     DEBUG_PRINT("Creating switchbutton");
 
     init(btnPin, pressType);//, btnMode, btnLevel);
     
-    if (!attachRelay(attachRelay_p))
+    if (attachRelay_p != nullptr)
     {
-      DEBUG_PRINT("ERROR: Relay not attached to button!!!");
+      attachRelay(attachRelay_p);
     }
   }
 
@@ -105,7 +105,7 @@ public:
 
       case EB_HOLD:
         DEBUG_PRINT("Call btn action is EB_HOLD");
-        if (this->attached_relay_p != NULL)
+        if (this->attached_relay_p != nullptr)
         {
           attached_relay_p->toggleFlag();
         }
@@ -115,7 +115,7 @@ public:
       case EB_RELEASE:
         DEBUG_PRINT("Call btn action is EB_RELEASE");
 
-        if (this->attached_relay_p != NULL)
+        if (this->attached_relay_p != nullptr)
         {
           attached_relay_p->toggleFlag();
         }
@@ -131,7 +131,7 @@ public:
       switch (btnState)
       {
       case EB_CLICK:
-        if (this->attached_relay_p != NULL)
+        if (this->attached_relay_p != nullptr)
         {
            DEBUG_PRINT("Btn is clicked");
           attached_relay_p->toggleFlag();
@@ -148,7 +148,7 @@ public:
 
   bool setCallback(func_p callback)
   {
-    if (callback != NULL)
+    if (callback != nullptr)
     {
        this->callbackOnPress = callback;
         return true;
@@ -159,7 +159,7 @@ public:
 
   void callCallback()
   {
-    if (callbackOnPress != NULL)//todo
+    if (callbackOnPress != nullptr)
     {
        DEBUG_PRINT("Call btn callback");
       callbackOnPress();
@@ -169,7 +169,7 @@ public:
 
   bool attachRelay(Relay *relay)
   {
-    if (relay == NULL)//nullptr
+    if (relay == nullptr)
     {
       return false;
     }

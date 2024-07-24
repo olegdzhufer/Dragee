@@ -20,6 +20,10 @@
 #endif
 
 
+#define LCD_ADDR_DEFAULT 0x27
+#define LCD_COLS 20
+#define LCD_ROWS 4
+
 
 // #define PGM_VAL(T, name, val) const T name PROGMEM = val;
 

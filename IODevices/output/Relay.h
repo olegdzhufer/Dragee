@@ -159,7 +159,7 @@ public:
     digitalWrite(pin, state);
   }
 
-  void tick()
+  bool tick()
   {
     if (changeFlag==true)
     {
@@ -167,6 +167,7 @@ public:
       changeFlag = false;
       
       toggle();
+      return true;
     }
 
     if (timerStart > 0)
@@ -177,6 +178,8 @@ public:
         Serial.println(timerSec);
       }
     }
+
+    return false;
     
   }
 
