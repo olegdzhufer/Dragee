@@ -1,5 +1,5 @@
 {
-    "accessibility.voice.keywordActivation": "inlineChat",
+    "accessibility.voice.keywordActivation": "chatInView",
     "files.associations": {
         "type_traits": "cpp",
         "new": "cpp",
@@ -19,9 +19,40 @@
         "string": "cpp",
         "unordered_map": "cpp",
         "unordered_set": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "atomic": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "exception": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "iosfwd": "cpp",
+        "limits": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "cinttypes": "cpp",
+        "typeinfo": "cpp"
     },
     "cSpell.words": [
         "Countimer"
-    ]
+    ],
+    "inlineChat.mode": "live",
+    "inlineChat.accessibleDiffView": "on"
 }

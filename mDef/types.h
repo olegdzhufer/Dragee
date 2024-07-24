@@ -34,11 +34,27 @@ typedef struct FLAG_PACK
     bool flag8:1;
 } flag_pack_t;
 
+#ifdef __AVR__
+typedef void (*func_t)();//why
+typedef void (*funcVoid_t)(void);//why esp compiler....why...vva
+
 typedef void (*func_p)();
 typedef void (*funcVoid_p)(void);
 typedef void (*funcUInt_p)(u16);
 typedef void (*funcInt_p)(i16);
 typedef void (*funcStr_p)(c8_p);
 typedef void (*obj_func_p)(void *);
+#else
+
+typedef void (*func_t)();
+typedef void (*funcVoid_t)(void);
+
+typedef std::function<void()> func_p;
+typedef std::function<void(void)> funcVoid_p;
+typedef std::function<void(u16)> funcUInt_p;
+typedef std::function<void(i16)> funcInt_p;
+typedef std::function<void(c8_p)> funcStr_p;
+typedef std::function<void(void*)> obj_func_p;
+#endif
 
 #endif

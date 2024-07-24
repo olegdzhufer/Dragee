@@ -2,6 +2,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "buildTime.h"
 
 #define DEBUG 1
 

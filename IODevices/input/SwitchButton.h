@@ -2,7 +2,7 @@
 #define BTNS_DEF_H
 
 
-#include <EncButton.h>
+#include "EncButton.h"
 #include "../../mDef.h"
 #include "../output/Relay.h"
 
@@ -159,7 +159,7 @@ public:
 
   void callCallback()
   {
-    if (callbackOnPress != NULL)
+    if (callbackOnPress != NULL)//todo
     {
        DEBUG_PRINT("Call btn callback");
       callbackOnPress();
@@ -169,7 +169,7 @@ public:
 
   bool attachRelay(Relay *relay)
   {
-    if (relay == NULL)
+    if (relay == NULL)//nullptr
     {
       return false;
     }
