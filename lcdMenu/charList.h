@@ -6,9 +6,9 @@
 
 #define EMPTY_CHAR ""
 
-const char initFirstLine[] PROGMEM = "      INIT.....   ";
-const char initSecondLine[] PROGMEM = " Slava Ukraine";
-const char initThirdLine[] PROGMEM = "     Smert Moskalam";
+const char initFirstLine[] PROGMEM = "INITIALIZING";
+const char initSecondLine[] PROGMEM = "Slava Ukraine";
+const char initThirdLine[] PROGMEM = "Smert Moskalam";
 
 const char* Fan PROGMEM = "FAN";
 const char* HeatName PROGMEM = "HEAT";

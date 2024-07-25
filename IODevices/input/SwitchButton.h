@@ -78,6 +78,17 @@ public:
   }
 
 
+   bool tick(Relay *relay)
+   {
+    if(this->tick())
+    {
+      relay = this->attached_relay_p;
+      return true;
+    }
+    return false;
+   }
+
+
   bool tickRaw()
   {
     // if (this->attached_relay_p != NULL)
@@ -87,10 +98,10 @@ public:
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
-  void pressISR()
-  {
-    VirtButton::pressISR();
-  }
+  // void pressISR()
+  // {
+  //   VirtButton::pressISR();
+  // }
 
 
   void action()
@@ -177,6 +188,16 @@ public:
     this->attached_relay_p = relay;
     return true;
   }
+
+  void attachISR(funcVoid_t isrBtn, int mode=FALLING)
+  { 
+        if (isrBtn == NULL)
+        {
+            return;
+        }
+        
+        attachInterrupt(digitalPinToInterrupt(this->btnPin), isrBtn, mode);
+    }
   
 };
 

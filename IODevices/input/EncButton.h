@@ -10,18 +10,19 @@
 // #include "eb_core/Encoder.h"
 // #include "eb_core/EncButton.h"
 
-// #define EB_DEB_TIME 50      // таймаут гашения дребезга кнопки (кнопка)
-// #define EB_CLICK_TIME 500   // таймаут ожидания кликов (кнопка)
-// #define EB_HOLD_TIME 600    // таймаут удержания (кнопка)
-// #define EB_STEP_TIME 200    // таймаут импульсного удержания (кнопка)
+// #include "../../lcdMenu/Menu.h"
+
+// #define EB_DEB_TIME 50      // debounce timeout for the button
+// #define EB_CLICK_TIME 500   // click waiting timeout for the button
+// #define EB_HOLD_TIME 600    // hold timeout for the button
+// #define EB_STEP_TIME 200    // pulse hold timeout for the button
 // #define EB_FAST_TIME 30 
 // Switch() = delete;
 
 
 class MenuEncButton : public VirtEncButton {
    public:
-    // configure pins (encoder, encoder, button, pinmode encoder, pinmode button)
-    
+    // Menu *menu_p = nullptr;    
     MenuEncButton(uint8_t encA = 0, uint8_t encB = 0, uint8_t btn = 0, uint8_t modeEnc = INPUT, uint8_t modeBtn = INPUT, uint8_t btnLevel = HIGH) {
         init(encA, encB, btn, modeEnc, modeBtn, btnLevel);
     }
@@ -61,6 +62,13 @@ class MenuEncButton : public VirtEncButton {
         encB_pin = encB;
         btn_pin = btn;
     }
+
+    // void attachMenu(Menu *menu_p){
+    //     if (menu_p != nullptr)
+    //     {
+    //         this->menu_p = menu_p;
+    //     }
+    // }
 
     // ====================== TICK ======================
 
@@ -114,6 +122,7 @@ class MenuEncButton : public VirtEncButton {
                 // var += 5 * enc.dir();
                 // var += enc.fast() ? 10 : 1;
                 // var += enc.pressing() ? 10 : 1;
+                // if(menu_p != nullptr) menu_p->changeSelection(this->dir());
 
                 break;
 
@@ -187,7 +196,7 @@ class MenuEncButton : public VirtEncButton {
     // ===================== PRIVATE =====================
    private:
     uint8_t encA_pin, encB_pin, btn_pin;
-    // Menu *ptr;
+    
 };
 
 

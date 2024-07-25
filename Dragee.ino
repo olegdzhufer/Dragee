@@ -1,11 +1,11 @@
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
 
 #include "mDef.h"
+#include "lcdMenu/LiquidCrystal_Base.h"
+
+#include "lcdMenu/Menu.h"
 #include "IODevices/input/EncButton.h"
 #include "IODevices/input/SwitchButton.h"
 #include "IODevices/input/TempDallas.h"
-
 #include "PID/TermoRelay.h"
 
 Relay relayFan (FAN_PIN,  LED_PIN1); 
@@ -25,9 +25,9 @@ TermoRelay tempRel3(&relayCool, &btn3);
 
 
 LiquidCrystal_I2C lcd(LCD_ADDR_DEFAULT, LCD_COLS, LCD_ROWS); 
-//MenuLcdSystem menu(&lcd); //constructor
 MenuEncButton encBtn(DT, SW, CLK, INPUT, INPUT, HIGH);
-//encBtn.attachToMenu(&menu);
+Menu menu(&lcd, &encBtn);
+
 
 void IRAM_ATTR isrEnc()
 {
@@ -57,14 +57,18 @@ void manualCtrlSetup()
   btn3.setDebTimeout(100);
 
   DEBUG_PRINT("Attaching interrupt to: %d\n", btnSwitch.getPin());
-  attachInterrupt(digitalPinToInterrupt(btnSwitch.getPin()), isrBtnRaw, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(btnSwitch.getPin()), isrBtnRaw, CHANGE);
+  btnSwitch.attachISR(isrBtnRaw, CHANGE);
 
-    DEBUG_PRINT("Attaching interrupt to: %d\n", btn2.getPin());
-  attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, FALLING);
+  DEBUG_PRINT("Attaching interrupt to: %d\n", btn2.getPin());
+  // attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, FALLING);
+  btn2.attachISR(isrBtnRaw, FALLING);
 
-    DEBUG_PRINT("Attaching interrupt to: %d\n", btn3.getPin());
-  attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, RISING);  
+  DEBUG_PRINT("Attaching interrupt to: %d\n", btn3.getPin());
+  // attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, FALLING);  
+  btn3.attachISR(isrBtnRaw, FALLING);
 
+  DEBUG_PRINT("Attaching interrupt to: encoder\n");
   encBtn.attachISR(isrEnc, isrEnc);
 }
 
@@ -83,12 +87,14 @@ void setup() {
   Serial.print("Parasite power is: ");
   Serial.println(tempSensor.isParasitePowerMode() ? "ON" : "OFF");
 #endif
+
+  menu.begin();
+
+  menu.setCurrentItem(&tempRel1);
+  menu.displayItem();
 }
 
 void loop() 
 {  
-
-  termoRelayTick();
-
-  encBtn.tick();
+  menu.tick();
 }

@@ -12,9 +12,10 @@
 
 VirtTempSensor *globalSensorInstance = nullptr;
 
-class TermoRelay: protected PID
+class TermoRelay//: protected PID
 {
 public:
+    friend class Menu;
    float tempCur=0.0;
    float tempSet=0.0;
 
@@ -47,11 +48,12 @@ public:
 
 
 
-    void tick()
+    bool tick()
     {
         btnTick();
         sensorTick();
-        relayTick();
+        bool changed = relayTick();
+        return changed;
     }
     
 
@@ -73,19 +75,21 @@ public:
     }
 
 
-    void relayTick(){
+    bool relayTick()
+    {
         if (relay_p!= nullptr)
         {
             if (firstInstance == this)
             {
-                this->relay_p->tick();
+                return this->relay_p->tick();
             }else{
                 if (firstInstance->relay_p->getState() == ON)
                 {
-                    this->relay_p->tick();
+                    return this->relay_p->tick();
                 }
             }
         }
+        return false;
     }
 
 
@@ -108,6 +112,16 @@ public:
         DEBUG_PRINT("Temperature timer updated: %ld", sensorTimer);
 
         return tempCur;
+    }
+
+    double getTempCur()
+    {
+        return tempCur;
+    }
+
+    double getTempSet()
+    {
+        return tempSet;
     }
 
 
