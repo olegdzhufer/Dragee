@@ -5,7 +5,7 @@
 #include <Wire.h>
 
 #include "../mDef.h"
-#include "LiquidCrystal_Base.h"
+#include "VirtLiquidCrystal.h"
 #include "charList.h"
 #include "../PID/TermoRelay.h"
 #include "../IODevices/input/EncButton.h"
@@ -103,11 +103,9 @@ public:
     
 
 private:
-    LiquidCrystal_Base *lcd_p;
-    MenuEncButton *encBtn_p;
-
-    TermoRelay *currentItem;
-    // uint8_t totalItems;
+    LiquidCrystal_Base *lcd_p=nullptr;
+    MenuEncButton *encBtn_p=nullptr;
+    TermoRelay *currentItem=nullptr;
 };
 
 

@@ -1,7 +1,5 @@
 
 #include "mDef.h"
-#include "lcdMenu/LiquidCrystal_Base.h"
-
 #include "lcdMenu/Menu.h"
 #include "IODevices/input/EncButton.h"
 #include "IODevices/input/SwitchButton.h"
@@ -24,9 +22,9 @@ TermoRelay tempRel2(&relayHeat, &btn2);
 TermoRelay tempRel3(&relayCool, &btn3);
 
 
-LiquidCrystal_I2C lcd(LCD_ADDR_DEFAULT, LCD_COLS, LCD_ROWS); 
+LiquidCrystal_I2C lcd_main((uint8_t)LCD_ADDR_DEFAULT, (uint8_t)LCD_COLS, (uint8_t)LCD_ROWS); 
 MenuEncButton encBtn(DT, SW, CLK, INPUT, INPUT, HIGH);
-Menu menu(&lcd, &encBtn);
+Menu menu(&lcd_main, &encBtn);
 
 
 void IRAM_ATTR isrEnc()

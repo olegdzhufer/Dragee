@@ -78,15 +78,15 @@ public:
   }
 
 
-   bool tick(Relay *relay)
-   {
-    if(this->tick())
-    {
-      relay = this->attached_relay_p;
-      return true;
-    }
-    return false;
-   }
+  //  bool tick(Relay *relay)
+  //  {
+  //   if(this->tick())
+  //   {
+  //     relay = this->attached_relay_p;
+  //     return true;
+  //   }
+  //   return false;
+  //  }
 
 
   bool tickRaw()
