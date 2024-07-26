@@ -92,17 +92,60 @@ protected:
 	// void draw_horizontal_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
 	// void draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
 	
-    inline uint8_t status() { return _displayfunction; }
-    inline void on(){ display(); }
-	inline void off() { noDisplay(); }
-    inline void blink_on() { blink(); } 
-	inline void blink_off() { noBlink(); }
-	inline void cursor_on() { cursor(); }
-	inline void cursor_off() { noCursor(); }
-	inline void printLeft() { rightToLeft(); }
-	inline void printRight() { leftToRight(); }
-	inline void shiftIncrement() { autoscroll(); }
-	inline void shiftDecrement() { noAutoscroll(); }
+    inline uint8_t status() {
+        return _displayfunction;
+    }
+
+    inline void on(){
+        setBitFlag(_displaycontrol, LCD_DISPLAYON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+	inline void off() {
+        clearBitFlag(_displaycontrol, LCD_DISPLAYON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    inline void blink_on() {
+        setBitFlag(_displaycontrol, LCD_BLINKON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+	inline void blink_off() {
+        clearBitFlag(_displaycontrol, LCD_BLINKON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+	inline void cursor_on() {
+        setBitFlag(_displaycontrol, LCD_CURSORON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+	inline void cursor_off() {
+        clearBitFlag(_displaycontrol, LCD_CURSORON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+	inline void printLeft() {
+        clearBitFlag(_displaymode, LCD_ENTRYLEFT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+	inline void printRight() {
+        setBitFlag(_displaymode, LCD_ENTRYLEFT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+	inline void shiftIncrement() {
+        setBitFlag(_displaymode, LCD_ENTRYSHIFTINCREMENT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+	inline void shiftDecrement() {
+        clearBitFlag(_displaymode, LCD_ENTRYSHIFTINCREMENT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
     // virtual void write8bits(uint8_t value);
     // void writeNbits(uint8_t value, uint8_t numBits);
 private:
