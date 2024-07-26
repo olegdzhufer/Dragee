@@ -4,27 +4,26 @@
 #include "../../mDef.h"
 #include "LedSts.h"
 
-
 class Relay
 {
 private:
   bool changeFlag = false;
   u8 pin;
   bool normallyOpen;
-  bool inited=false;
+  bool inited = false;
+
 public:
   String name;
   u8 state;
   LedSts ledStatus;
 
-  uint32_t timerStart=0;
-  uint8_t timerSec=0;
+  uint32_t timerStart = 0;
+  uint8_t timerSec = 0;
 
-  Relay* first_p=NULL;
+  Relay *first_p = NULL;
 
- // Relay* prev_p=NULL;
-  //Relay* next_p=NULL;
-
+  // Relay* prev_p=NULL;
+  // Relay* next_p=NULL;
 
 public:
   Relay() {}
@@ -35,7 +34,6 @@ public:
 
     init(pinRel, initState, isNormallyOpen);
     ledStatus.init(pinLed, initState, isNormallyOpen);
-    
   }
 
   void init(u8 pinRel, u8 initState = LOW, bool isNormallyOpen = false)
@@ -53,13 +51,15 @@ public:
       turnOff();
     }
 
-     if(first_p == NULL){
-       first_p = this;
-     }
-     inited=true;
+    if (first_p == NULL)
+    {
+      first_p = this;
+    }
+    inited = true;
   }
 
-  bool getIsInited(){
+  bool getIsInited()
+  {
     return inited;
   }
 
@@ -77,11 +77,11 @@ public:
   {
     // if (first_p == NULL)
     // {
-      // return;
+    // return;
     // }
-    
+
     // if((first_p->getState() == true) || (first_p == this)){
-      changeFlag = true;
+    changeFlag = true;
     // ledStatus.toggle();
     // }
   }
@@ -89,22 +89,24 @@ public:
   void toggle()
   {
     DEBUG_PRINT("Toggle relay state");
-    
-      state = !state;
-      DEBUG_PRINT("Relay state changed to %d", state);
-      digitalWrite(pin, state);
 
-      DEBUG_PRINT("=ledStatus toggle signal from relay");
-      ledStatus.toggle();
-      if (getState())
-      {
-        timerStart = millis();
-        // timer->start();
-      }else{
-        // timer->stop();
-        timerSec=0;
-        timerStart = 0;
-      }
+    state = !state;
+    DEBUG_PRINT("Relay state changed to %d", state);
+    digitalWrite(pin, state);
+
+    DEBUG_PRINT("=ledStatus toggle signal from relay");
+    ledStatus.toggle();
+    if (getState())
+    {
+      timerStart = millis();
+      // timer->start();
+    }
+    else
+    {
+      // timer->stop();
+      timerSec = 0;
+      timerStart = 0;
+    }
   }
 
   bool getState()
@@ -153,26 +155,27 @@ public:
       if (state == false)
         return;
       state = false;
-      timerSec=0;
-      timerStart=0;
+      timerSec = 0;
+      timerStart = 0;
     }
     digitalWrite(pin, state);
   }
 
   bool tick()
   {
-    if (changeFlag==true)
+    if (changeFlag == true)
     {
       DEBUG_PRINT("ChangeFlag==true, turning off");
       changeFlag = false;
-      
+
       toggle();
       return true;
     }
 
     if (timerStart > 0)
     {
-      if (millis() - timerStart >= 1000){
+      if (millis() - timerStart >= 1000)
+      {
         Serial.print("1sec+ ");
         timerSec++;
         Serial.println(timerSec);
@@ -180,12 +183,9 @@ public:
     }
 
     return false;
-    
   }
 
-  ~Relay(){}
+  ~Relay() {}
 };
-
-
 
 #endif

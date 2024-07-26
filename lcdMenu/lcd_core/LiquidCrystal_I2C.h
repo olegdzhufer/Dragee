@@ -6,7 +6,7 @@
 #else
 #include <Wire.h>
 #endif
-#include "LiquidCrystal_Base.h"
+#include "VirtLiquidCrystal.h"
 
 // flags for backlight control
 #define LCD_BACKLIGHT 0x08 //0b00001000
@@ -19,7 +19,7 @@
 #define LCD_DEFAULT_ADDR 0x27 // Default I2C address
 
 
-class LiquidCrystal_I2C : public LiquidCrystal_Base {
+class LiquidCrystal_I2C : public VirtLiquidCrystal {
 public:
 	LiquidCrystal_I2C()=default;
 	LiquidCrystal_I2C(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows);
@@ -68,14 +68,14 @@ void LiquidCrystal_I2C::init(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_row
 
 	_addr = lcd_addr;
 	_backlightval = LCD_NOBACKLIGHT;
-	LiquidCrystal_Base::init(lcd_cols, lcd_rows, charsize);
+	VirtLiquidCrystal::init(lcd_cols, lcd_rows, charsize);
 }
 
 //calls second
 void LiquidCrystal_I2C::init(uint8_t mode )
 {
 	_backlightval = LCD_NOBACKLIGHT;
-	LiquidCrystal_Base::init(mode);
+	VirtLiquidCrystal::init(mode);
 	begin();
 }
 
@@ -96,7 +96,7 @@ void LiquidCrystal_I2C::begin()
 	expanderWrite(_backlightval); // reset expanderand turn backlight off (Bit 8 =1)
 	delay(1000);
 
-	LiquidCrystal_Base::begin();
+	VirtLiquidCrystal::begin();
 	backlight();
 }
 
@@ -113,7 +113,7 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t rows, uint8_t charsize, uint
 void LiquidCrystal_I2C::setCursor(uint8_t col, uint8_t row)
 {
 	uint8_t row_offsets[] = {0x00, 0x40, 0x14, 0x54};
-	LiquidCrystal_Base::setCursor(col, row, row_offsets);
+	VirtLiquidCrystal::setCursor(col, row, row_offsets);
 }
 
 // Turn the (optional) backlight off/on

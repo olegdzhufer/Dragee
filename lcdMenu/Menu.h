@@ -20,7 +20,7 @@ public:
         lcd_p = new LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows);
     }
 
-    Menu(LiquidCrystal_Base *lcd_p, MenuEncButton *encBtn_p)
+    Menu(LiquidCrystal_I2C *lcd_p, MenuEncButton *encBtn_p)
     {
         attachLcd(lcd_p);
         attachEncBtn(encBtn_p);
@@ -40,7 +40,7 @@ public:
         delay(INIT_DELAY_TEXT);
     }
 
-    void attachLcd(LiquidCrystal_Base *lcd)
+    void attachLcd(LiquidCrystal_I2C *lcd)
     {   
         if(lcd != nullptr) lcd_p = lcd;
     }
@@ -103,7 +103,7 @@ public:
     
 
 private:
-    LiquidCrystal_Base *lcd_p=nullptr;
+    LiquidCrystal_I2C *lcd_p=nullptr;
     MenuEncButton *encBtn_p=nullptr;
     TermoRelay *currentItem=nullptr;
 };

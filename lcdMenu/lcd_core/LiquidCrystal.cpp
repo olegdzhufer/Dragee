@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "VirtLiquidCrystal.h"
 #include "LiquidCrystal.h"
 
 LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
@@ -9,7 +10,7 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
                              uint8_t cols=LCD_DEFAULT_COLS, uint8_t rows=LCD_DEFAULT_ROWS,
                              uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_8BITMODE)
 {
-  LiquidCrystal_Base::init(cols, rows, charsize); //1
+  VirtLiquidCrystal::init(cols, rows, charsize); //1
   init(mode, rs, rw, enable, d0, d1, d2, d3, d4, d5, d6, d7);
 }
 
@@ -19,7 +20,7 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t enable,
                              uint8_t cols=LCD_DEFAULT_COLS, uint8_t rows=LCD_DEFAULT_ROWS,
                              uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_8BITMODE)
 {
-  LiquidCrystal_Base::init(cols, rows, charsize);
+  VirtLiquidCrystal::init(cols, rows, charsize);
   init(mode, rs, 255, enable, d0, d1, d2, d3, d4, d5, d6, d7);
 }
 
@@ -28,7 +29,7 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
                              uint8_t cols=LCD_DEFAULT_COLS, uint8_t rows=LCD_DEFAULT_ROWS,
                              uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_4BITMODE)
 {
-  LiquidCrystal_Base::init(cols, rows, charsize);
+  VirtLiquidCrystal::init(cols, rows, charsize);
   init(mode, rs, rw, enable, d0, d1, d2, d3, 0, 0, 0, 0);
 }
 
@@ -37,7 +38,7 @@ LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t enable,
                              uint8_t cols=LCD_DEFAULT_COLS, uint8_t rows=LCD_DEFAULT_ROWS,
                              uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_4BITMODE)
 {
-  LiquidCrystal_Base::init(cols, rows, charsize);
+  VirtLiquidCrystal::init(cols, rows, charsize);
   init(mode, rs, 255, enable, d0, d1, d2, d3, 0, 0, 0, 0);
 }
 
@@ -62,14 +63,14 @@ void LiquidCrystal::init(uint8_t mode, uint8_t rs, uint8_t rw, uint8_t enable,
   _data_pins[6] = d6;
   _data_pins[7] = d7;
 
-  LiquidCrystal_Base::init(mode); //2
+  VirtLiquidCrystal::init(mode); //2
 }
 
 void LiquidCrystal::init(uint8_t lcd_cols = LCD_DEFAULT_COLS, uint8_t lcd_rows=LCD_DEFAULT_ROWS, uint8_t charsize = LCD_5x8DOTS)
 {
-  LiquidCrystal_Base::init(lcd_cols, lcd_rows, charsize);
+  VirtLiquidCrystal::init(lcd_cols, lcd_rows, charsize);
   
-  LiquidCrystal_Base::init(getMode() ? LCD_8BITMODE : LCD_4BITMODE); 
+  VirtLiquidCrystal::init(getMode() ? LCD_8BITMODE : LCD_4BITMODE); 
   
   setRowOffsets(0x00, 0x40, 0x00 + lcd_cols, 0x40 + lcd_cols);
 
@@ -104,12 +105,12 @@ void LiquidCrystal::begin()
     digitalWrite(_rw_pin, LOW);
   }
 
-  LiquidCrystal_Base::begin();
+  VirtLiquidCrystal::begin();
 }
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_4BITMODE)
 {
-  LiquidCrystal_Base::init(cols, rows, charsize);
+  VirtLiquidCrystal::init(cols, rows, charsize);
   setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);
   begin();
 }
@@ -132,7 +133,7 @@ void LiquidCrystal::setCursor(uint8_t col, uint8_t row)
     row = max_lines - 1; // we count rows starting w/ 0
   }
 
-  LiquidCrystal_Base::setCursor(col, row, _row_offsets);
+  VirtLiquidCrystal::setCursor(col, row, _row_offsets);
 }
 
 

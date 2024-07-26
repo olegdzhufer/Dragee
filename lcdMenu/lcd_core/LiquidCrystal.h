@@ -1,9 +1,9 @@
 #ifndef LIQUID_CRYSTAL_h
 #define LIQUID_CRYSTAL_h
 
-#include "LiquidCrystal_Base.h"
+#include "VirtLiquidCrystal.h"
 
-class LiquidCrystal : public LiquidCrystal_Base
+class LiquidCrystal : public VirtLiquidCrystal
 {
 public:
   LiquidCrystal(uint8_t rs, uint8_t enable,
