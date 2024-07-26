@@ -12,7 +12,9 @@
 // #define FAST_MODE
 #endif
 
-#include <inttypes.h>
+// #include <inttypes.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <Print.h>
 
 #include "LCD_defs.h"
@@ -23,9 +25,9 @@
 class VirtLiquidCrystal : public Print
 {
 public:
-    // ~VirtLiquidCrystal() = default;
+    virtual ~VirtLiquidCrystal(){ }
 
-    void init(uint8_t lcd_cols, uint8_t lcd_rows, uint8_t charsize = LCD_5x8DOTS)
+    virtual void init(uint8_t lcd_cols, uint8_t lcd_rows, uint8_t charsize = LCD_5x8DOTS)
     {
         _cols = lcd_cols;
         _rows = lcd_rows;
@@ -43,7 +45,7 @@ public:
         }
     }
 
-    void init(uint8_t mode = LCD_4BITMODE)
+    virtual void init(uint8_t mode = LCD_4BITMODE)
     {
         uint8_t charsize = LCD_5x8DOTS;
 
@@ -128,36 +130,151 @@ public:
     virtual void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS, uint8_t mode = LCD_4BITMODE) = 0;
 #endif
 
-    void clear();
-    void clear(uint8_t rowStart, uint8_t colStart = 0, uint8_t colCnt = 255);
-    void home();
-    void noDisplay();
-    void display();
+    void clear()
+    {
+        command(LCD_CLEARDISPLAY); // clear display, set cursor position to zero
+        delayMicroseconds(2000);   // this command takes a long time!
+    }
+
+    void clear(uint8_t rowStart, uint8_t colStart = 0, uint8_t colCnt = 255)
+    {
+        // Maintain input parameters
+        rowStart = constrain(rowStart, 0, _rows - 1);
+        colStart = constrain(colStart, 0, _cols - 1);
+        colCnt = constrain(colCnt, 0, _cols - colStart);
+        // Clear segment
+        setCursor(colStart, rowStart);
+        for (uint8_t i = 0; i < colCnt; i++)
+            write(' ');
+        // Go to segment start
+        setCursor(colStart, rowStart);
+    }
+
+    void home()
+    {
+        command(LCD_RETURNHOME); // set cursor position to zero
+        delayMicroseconds(2000); // this command takes a long time!
+    }
+
+    void noDisplay()
+    {
+        clearBitFlag(_displaycontrol, LCD_DISPLAYON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    void display()
+    {
+        setBitFlag(_displaycontrol, LCD_DISPLAYON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
     // void display(lcd_mode_t mode);
-    void noBlink();
-    void blink();
-    void noCursor();
-    void cursor();
-    void scrollDisplayLeft();
-    void scrollDisplayRight();
-    void leftToRight();
-    void rightToLeft();
-    void autoscroll();
-    void noAutoscroll();
-    void createChar(uint8_t, uint8_t[]);
+    void noBlink()
+    {
+        clearBitFlag(_displaycontrol, LCD_BLINKON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    void blink()
+    {
+        setBitFlag(_displaycontrol, LCD_BLINKON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    void noCursor()
+    {
+        clearBitFlag(_displaycontrol, LCD_CURSORON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    void cursor()
+    {
+        setBitFlag(_displaycontrol, LCD_CURSORON);
+        command(LCD_DISPLAYCONTROL | _displaycontrol);
+    }
+
+    void scrollDisplayLeft()
+    {
+        command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+    }
+
+    void scrollDisplayRight()
+    {
+        command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+    }
+
+    void leftToRight()
+    {
+        setBitFlag(_displaymode, LCD_ENTRYLEFT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+    void rightToLeft()
+    {
+        clearBitFlag(_displaymode, LCD_ENTRYLEFT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+    void autoscroll()
+    {
+        setBitFlag(_displaymode, LCD_ENTRYSHIFTINCREMENT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+    void noAutoscroll()
+    {
+        clearBitFlag(_displaymode, LCD_ENTRYSHIFTINCREMENT);
+        command(LCD_ENTRYMODESET | _displaymode);
+    }
+
+    void createChar(uint8_t location, uint8_t charmap[])
+    {
+        location &= 0x7; // we only have 8 locations 0-7
+        command(LCD_SETCGRAMADDR | (location << 3));
+        for (int i = 0; i < 8; i++)
+        {
+            write(charmap[i]);
+        }
+    }
+
 #ifdef __AVR__
     void createChar(uint8_t location, const char *charmap);
 #endif
-    void setCursor(uint8_t col, uint8_t row, uint8_t offsets[]);
-    void printstr(const char[]);
+
+    void setCursor(uint8_t col, uint8_t row, uint8_t offsets[])
+    {
+        if (row > _rows)
+        {
+            row = _rows - 1; // we count rows starting w/0
+        }
+        command(LCD_SETDDRAMADDR | (col + offsets[row]));
+    }
+
+
+    void printstr(const char c[])
+    {
+        // This function is not identical to the function used for "real" I2C displays
+        // it's here so the user sketch doesn't have to be changed
+        print(c);
+    }
+
 
     virtual void setCursor(uint8_t col, uint8_t row);
-    virtual void command(uint8_t value);
+
+    virtual void command(uint8_t value)
+    {
+        this->send(value, COMMAND);
+    }
 
 #if (ARDUINO < 100)
-    virtual void write(uint8_t value);
+    virtual void write(uint8_t value){
+  this->send(value, DATA);
+}
 #else
-    virtual size_t write(uint8_t value);
+    virtual size_t write(uint8_t value){
+  this->send(value, DATA);
+  return 1; // assume success
+}
 #endif
 
 #if (ARDUINO < 100)

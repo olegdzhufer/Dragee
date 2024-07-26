@@ -1,4 +1,3 @@
-
 #include "mDef.h"
 #include "lcdMenu/Menu.h"
 #include "IODevices/input/EncButton.h"
@@ -22,7 +21,7 @@ TermoRelay tempRel2(&relayHeat, &btn2);
 TermoRelay tempRel3(&relayCool, &btn3);
 
 
-LiquidCrystal_I2C lcd_main((uint8_t)LCD_ADDR_DEFAULT, (uint8_t)LCD_COLS, (uint8_t)LCD_ROWS); 
+LiquidCrystal_I2C lcd_main(LCD_ADDR_DEFAULT, LCD_COLS, LCD_ROWS); 
 MenuEncButton encBtn(DT, SW, CLK, INPUT, INPUT, HIGH);
 Menu menu(&lcd_main, &encBtn);
 
@@ -60,14 +59,14 @@ void manualCtrlSetup()
 
   DEBUG_PRINT("Attaching interrupt to: %d\n", btn2.getPin());
   // attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, FALLING);
-  btn2.attachISR(isrBtnRaw, FALLING);
+//  btn2.attachISR(isrBtnRaw, FALLING);
 
   DEBUG_PRINT("Attaching interrupt to: %d\n", btn3.getPin());
   // attachInterrupt(digitalPinToInterrupt(btn3.getPin()), isrBtnRaw, FALLING);  
-  btn3.attachISR(isrBtnRaw, FALLING);
+  //btn3.attachISR(isrBtnRaw, FALLING);
 
   DEBUG_PRINT("Attaching interrupt to: encoder\n");
-  encBtn.attachISR(isrEnc, isrEnc);
+  // encBtn.attachISR(isrEnc, isrEnc);
 }
 
 

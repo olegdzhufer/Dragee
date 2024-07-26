@@ -164,15 +164,12 @@ TermoRelay *TermoRelay::lastInstance = nullptr;
 TermoRelay::TermoRelay(Relay *relay, SwitchButton *button) 
             : relay_p(relay), button_p(button)  
 {
-    if (relay == nullptr || button == nullptr)
+    if (relay_p == nullptr || button_p == nullptr)
     {
         DEBUG_PRINT("ERROR: TermoRelay: One of the parameters is NULL");
         return;
     }
 
-    // this->relay_p = relay;
-    // this->button_p = button;
-    
     if (globalFirstInstance == nullptr)
     {
         globalFirstInstance = this;
@@ -185,7 +182,7 @@ TermoRelay::TermoRelay(Relay *relay, SwitchButton *button)
     }
     lastInstance = this;
 
-    this->button_p->attachRelay(relay);
+    this->button_p->attachRelay(relay_p);
     this->tempCur = getTemperature();
     }
 

@@ -3,9 +3,10 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
 #include "../mDef.h"
-#include "VirtLiquidCrystal.h"
+// #include "LiquidCrystal_I2C.h"
 #include "charList.h"
 #include "../PID/TermoRelay.h"
 #include "../IODevices/input/EncButton.h"
@@ -17,7 +18,7 @@ public:
     
     Menu(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows)
     {
-        lcd_p = new LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows);
+       // lcd_p = new LiquidCrystal_I2C(lcd_addr, lcd_cols, lcd_rows);
     }
 
     Menu(LiquidCrystal_I2C *lcd_p, MenuEncButton *encBtn_p)
@@ -29,7 +30,9 @@ public:
 
     void begin()
     {
-        lcd_p->begin();
+        if(lcd_p == nullptr) return;
+
+        lcd_p->init();
         lcd_p->clear();
         lcd_p->setCursor(0, 0);
         lcd_p->print(initFirstLine);
