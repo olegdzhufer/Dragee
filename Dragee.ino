@@ -55,7 +55,7 @@ void manualCtrlSetup()
 
   DEBUG_PRINT("Attaching interrupt to: %d\n", btnSwitch.getPin());
   // attachInterrupt(digitalPinToInterrupt(btnSwitch.getPin()), isrBtnRaw, CHANGE);
-  btnSwitch.attachISR(isrBtnRaw, CHANGE);
+  //btnSwitch.attachISR(isrBtnRaw, CHANGE);
 
   DEBUG_PRINT("Attaching interrupt to: %d\n", btn2.getPin());
   // attachInterrupt(digitalPinToInterrupt(btn2.getPin()), isrBtnRaw, FALLING);
