@@ -1,16 +1,17 @@
 #ifndef RELAY_H
 #define RELAY_H
 
-#include "../../mDef.h"
+#include "mDef.h"
 #include "LedSts.h"
 
 class Relay
 {
 private:
-  bool changeFlag = false;
+  volatile bool changeFlag = false;
   u8 pin;
-  bool normallyOpen;
+  bool normallyOpen=false;
   bool inited = false;
+  static bool main_active=false;
 
 public:
   String name;
@@ -18,9 +19,9 @@ public:
   LedSts ledStatus;
 
   uint32_t timerStart = 0;
-  uint8_t timerSec = 0;
+  uint32_t timerSec = 0;
 
-  Relay *first_p = NULL;
+  // Relay *first_p = NULL;
 
   // Relay* prev_p=NULL;
   // Relay* next_p=NULL;
@@ -130,6 +131,7 @@ public:
         return;
       }
       state = !true;
+      timerStart=millis();
     }
     else
     {
@@ -138,6 +140,7 @@ public:
         return;
       }
       state = true;
+      timerStart=millis();
     }
     digitalWrite(pin, state);
   }
@@ -176,10 +179,13 @@ public:
     {
       if (millis() - timerStart >= 1000)
       {
-        Serial.print("1sec+ ");
+      //  Serial.print("1sec+ ");
         timerSec++;
         Serial.println(timerSec);
+        timerStart=millis();
       }
+    }else{
+      timerSec=0;
     }
 
     return false;
