@@ -11,7 +11,7 @@ private:
   u8 pin;
   bool normallyOpen=false;
   bool inited = false;
-  static bool main_active=false;
+  static bool main_active;
 
 public:
   String name;
@@ -21,7 +21,7 @@ public:
   uint32_t timerStart = 0;
   uint32_t timerSec = 0;
 
-  // Relay *first_p = NULL;
+  Relay *first_p = NULL;
 
   // Relay* prev_p=NULL;
   // Relay* next_p=NULL;
