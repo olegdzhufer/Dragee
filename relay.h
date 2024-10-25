@@ -23,6 +23,7 @@ private:
   float* tempR = NULL;
   bool statusTemp = false;
 
+
   /* PID PARAM*/
 public:
   uint32_t windowStartTime, WindowSize = 2000;

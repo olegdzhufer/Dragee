@@ -1,11 +1,11 @@
 #ifndef PINS_DEF_H
 #define PINS_DEF_H
 
-#define BTN1_PIN 16
+#define BTN1_PIN 17 //OLD->16
 #define BTN2_PIN 18
 #define BTN3_PIN 32
 
-#define LED_PIN1 17
+#define LED_PIN1 16 //OLD->17
 #define LED_PIN2 4
 #define LED_PIN3 23
 
