@@ -19,24 +19,15 @@ public:
   void (*callbackOnPress)() = NULL;
 
   ButtonSwitch() {    
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     }
 
   ButtonSwitch(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     init(btnPin, ledPin, btnMode, btnLevel, ledInitState, workEn);
   }
 
   void init(uint8_t btnPin, uint8_t ledPin, uint8_t btnMode = INPUT_PULLUP, uint8_t btnLevel = LOW, uint8_t ledInitState = LOW, bool workEn =false)
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     this->btnPin = btnPin;
     this->workEn = workEn;
     EB_mode(btnPin, btnMode);
@@ -45,11 +36,13 @@ public:
     setLed(ledPin, ledInitState);
   }
 
+
   void addTimer(TimerCount* timer){
     if(timer){
       this->timer = timer;
     }
   }
+
 
   bool swichTimer(){
     if(this->timer){
@@ -57,11 +50,15 @@ public:
     }
     return false;
   }
+
+
   void offTimer(){
     if(this->timer){
       this->timer->offTimer();
     }
   }
+
+
   void onTimer(){
     if(this->timer){
       this->timer->onTimer();
@@ -70,11 +67,7 @@ public:
 
   bool read()
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-
-    return EB_read(btnPin) ^ bf.read(EB_INV);
+   return EB_read(btnPin) ^ bf.read(EB_INV);
   }
 
   bool tick()
@@ -82,12 +75,6 @@ public:
     bool tick = VirtButton::tick(EB_read(btnPin));
     if (tick && this->workEn)
     {
-      #ifdef DEBUG_FUNC
-        Serial.println(__func__);
-        
-
-      #endif
-
     #ifdef DEBUG
       Serial.print("check");
     #endif
@@ -104,9 +91,6 @@ public:
   {
     if (tick()&& this->workEn)
     {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
       switch (VirtButton::action())
       {
 
@@ -127,9 +111,6 @@ public:
 
       case EB_RELEASE:
         // FAN_OFF;
-        #ifdef DEBUG_FUNC
-          Serial.println(__func__);
-        #endif
         menu.curr = STOP;
         if(this->relay != NULL){
           relay->toggleFlag();
@@ -152,19 +133,11 @@ public:
 
   bool tickRaw()
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     return VirtButton::tickRaw(EB_read(btnPin));
   }
 
   void setLed(uint8_t ledPin, uint8_t ledState = LOW)
   {
-
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-
     #ifdef DEBUG
       Serial.print("Led");
     #endif
@@ -177,9 +150,6 @@ public:
 
   void toggleLed()
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
   }
@@ -187,9 +157,6 @@ public:
   void pressedBtn()
   {
     uint16_t btnState = VirtButton::action();
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
 
     switch (btnState){
 
@@ -205,9 +172,6 @@ public:
       break;
 
     default:
-      #ifdef DEBUG
-        Serial.println("other action");
-      #endif
       break;
       
     }
@@ -215,9 +179,6 @@ public:
 
   void attachCallback(void (*callback)())
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     this->callbackOnPress = callback;
   }
 
@@ -234,9 +195,6 @@ public:
 
   bool attachRelay(Relay *relay)
   {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     if (relay == NULL)
     {
       return false;
@@ -246,25 +204,15 @@ public:
   }
 
   void LedOff(){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     ledState = LOW;
     digitalWrite(ledPin, ledState);
   }
   void LedOn(){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
     ledState = HIGH;
     digitalWrite(ledPin, ledState);
   }
 
   void OffMode(){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-
     this->LedOff();
     this->offTimer();
 
@@ -276,18 +224,12 @@ public:
   }
 
   void EnWork(){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
 
     this->workEn = true;
   }
+
+
   void DeWork(){
-
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
-
     this->workEn = false;
     OffMode();
     this->state = false;
@@ -317,9 +259,7 @@ ButtonSwitch btnSwitch(BTN3_PIN, LED_PIN3, INPUT_PULLUP, LOW);
 
 void callbackBtn1()
 {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+
   switch (btn1.action()){
 
   case EB_CLICK:
@@ -334,9 +274,7 @@ void callbackBtn1()
 
 void callbackBtn2()
 {
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+ 
   switch (btn2.action()){
 
   case EB_CLICK:
@@ -350,10 +288,6 @@ void callbackBtn2()
 
 void btnsSetup()
 {
-  #ifdef DEBUG_FUNC
-    Serial.println(__func__);
-  #endif
-  Serial.println(__FILE__);
 
   btnSwitch.EnWork();
   
@@ -376,9 +310,7 @@ void btnsSetup()
 void btnsLoop()
 {
   if(fan){
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+   
     btn1.EnWork();
     btn2.EnWork();
     if(!(btn2.getState() || btn1.getState()) && menu.curr != FAN){
@@ -387,9 +319,7 @@ void btnsLoop()
     }
 
   }else{
-    #ifdef DEBUG_FUNC
-      Serial.println(__func__);
-    #endif
+   
     btn1.DeWork();
     btn2.DeWork();
 

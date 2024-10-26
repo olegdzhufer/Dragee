@@ -31,11 +31,7 @@ void setup()
 {
 
   setupSystem();
-
-
-
   setupTime();
- 
 
   #ifdef MENU_S
     initSection();
@@ -51,7 +47,6 @@ void setup()
 
   initDaysArray(); // Initialise the array for storage and set some values
 
-
   #ifdef TEMP_S
     startSensor();
   #endif
@@ -64,7 +59,6 @@ void setup()
   #endif
   
 
-
   #ifdef ENC_S
     encoder_setup();
   #endif
@@ -72,8 +66,8 @@ void setup()
 
   timerCool.onTimer();
   timerHeat.onTimer();
-
 }
+
 
 void loop()
 { 

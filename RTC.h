@@ -36,7 +36,6 @@ class MyRTControler{
     //###################### Getter #########################
 
     String getTimeStd(){
-
       return this->timeComponer(this->now.hour, this->now.minute, this->now.second);
     }
 
@@ -45,6 +44,7 @@ class MyRTControler{
       String timeStd = this->timeComponer(this->now.hour, this->now.minute, this->now.second);
 
       time = this->convectorStrToChar(timeStd);
+      return time;
     }
 
     //###################### Work Part ######################
